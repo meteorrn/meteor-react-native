@@ -3,6 +3,7 @@
 
 # Compatability
 For React Native >=0.60.0 use this package
+
 For React Native <0.60.0 use the original react-native-meteor package
 
 **ATTENTION:** In order to shrink the repository, the following changes have been made from the original react-native-meteor library:
