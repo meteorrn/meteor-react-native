@@ -8,3 +8,4 @@
 - `CollectionFS` has been removed
 - `createContained` has been removed
 - Mixins (`connectMeteor`) have been removed
+- `composeWithTracker` has been removed
