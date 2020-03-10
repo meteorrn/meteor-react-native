@@ -6,6 +6,6 @@
 - cursoredFind is no longer an option. All .find() calls will return cursors (to match Meteor)
 - `MeteorListView` & `MeteorComplexListView` have been removed
 - `CollectionFS` has been removed
-- `createContained` has been removed
+- `createContainer` has been removed
 - Mixins (`connectMeteor`) have been removed
 - `composeWithTracker` has been removed
