@@ -41,7 +41,6 @@ export class Collection {
     if (!Data.db[name]) Data.db.addCollection(name);
 
     this._collection = Data.db[name];
-    this._cursoredFind = options.cursoredFind;
     this._name = name;
     this._transform = wrapTransform(options.transform);
   }
@@ -62,13 +61,7 @@ export class Collection {
       docs = this._collection.find(selector, options);
     }
 
-    if (this._cursoredFind) {
-      result = new Cursor(this, docs);
-    } else {
-      if (docs && this._transform) docs = docs.map(this._transform);
-
-      result = docs;
-    }
+    result = new Cursor(this, docs);
 
     return result;
   }
@@ -77,9 +70,7 @@ export class Collection {
     let result = this.find(selector, options);
 
     if (result) {
-      if (this._cursoredFind) result = result.fetch();
-
-      result = result[0];
+      result = result.fetch()[0];
     }
 
     return result;
