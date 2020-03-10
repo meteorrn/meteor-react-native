@@ -23,48 +23,6 @@ These methods (except update) work offline. That means that elements are correct
   * [.update(id, modifier, [options], [callback])](http://docs.meteor.com/#/full/update)
   * [.remove(id, callback(err, countRemoved))](http://docs.meteor.com/#/full/remove)
 
-## ListView Components
-
-### MeteorListView Component
-
-Same as [ListView](https://facebook.github.io/react-native/docs/listview.html) Component but does not need dataSource and accepts three arguments :
-
-* `collection` **string** _required_
-* `selector` [**string** / **object**]
-* `options` **object**
-* `listViewRef` [**string** / **function**] ref to ListView component.
-
-#### Example usage
-
-```javascript
-<MeteorListView
-  collection="todos"
-  selector={{ done: true }}
-  options={{ sort: { createdAt: -1 } }}
-  renderRow={this.renderItem}
-  //...other listview props
-/>
-```
-
-## MeteorComplexListView Component
-
-Same as [ListView](https://facebook.github.io/react-native/docs/listview.html) Component but does not need dataSource and accepts one argument. You may need it if you make complex requests combining multiples collections.
-
-* `elements` **function** _required_ : a reactive function which returns an array of elements.
-* `listViewRef` [**string** / **function**] ref to ListView component.
-
-### Example usage
-
-```javascript
-<MeteorComplexListView
-  elements={() => {
-    return Meteor.collection('todos').find();
-  }}
-  renderRow={this.renderItem}
-  //...other listview props
-/>
-```
-
 ## Meteor Collections
 
 ### Meteor.subscribe
@@ -114,7 +72,6 @@ Example `import { composeWithTracker } from 'react-native-meteor';`
 
 * EJSON
 * Tracker
-* composeWithTracker: If you want to use [react-komposer](https://github.com/kadirahq/react-komposer), you can use react-native-meteor compatible composeWithTracker
 * Accounts (see below)
 
 ### ReactiveDict
@@ -131,20 +88,6 @@ See [documentation](https://atmospherejs.com/meteor/reactive-dict).
 * [Accounts.resetPassword](http://docs.meteor.com/#/full/accounts_resetpassword)
 * [Accounts.onLogin](http://docs.meteor.com/#/full/accounts_onlogin)
 * [Accounts.onLoginFailure](http://docs.meteor.com/#/full/accounts_onloginfailure)
-
-### FSCollection
-
-* Meteor.FSCollection(collectionName) : Helper for [Meteor-CollectionFS](https://github.com/CollectionFS/Meteor-CollectionFS). Full documentation [here](https://github.com/inProgress-team/react-native-meteor/blob/master/docs/FSCollection.md)
-* This plugin also exposes a FSCollectionImagesPreloader component which helps you preload every image you want in CollectionFS (only available on ios)
-
-```javascript
-import { FSCollectionImagesPreloader } from 'react-native-meteor';
-
-<FSCollectionImagesPreloader
-  collection="imagesFiles"
-  selector={{metadata.owner: XXX}}
-/>
-```
 
 ### Meteor.ddp
 
