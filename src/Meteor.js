@@ -12,7 +12,6 @@ import { Collection } from './Collection';
 import call from './Call';
 
 import Mixin from './components/Mixin';
-import MeteorListView from './components/ListView';
 import MeteorComplexListView from './components/ComplexListView';
 import createContainer from './components/createContainer';
 import withTracker from './components/ReactMeteorData';
@@ -31,7 +30,6 @@ module.exports = {
   Accounts,
   Tracker: Trackr,
   EJSON,
-  MeteorListView,
   MeteorComplexListView,
   ReactiveDict,
   Collection,
