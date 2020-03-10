@@ -28,32 +28,6 @@ export default withTracker(params => {
 })(Orders);
 ```
 
-## createContainer (Deprecated)
-
-Very similar to getMeteorData but your separate container components from presentational components.
-
-### Example
-
-```javascript
-import Meteor, { createContainer } from 'react-native-meteor';
-
-
-class Orders extends Component {
-  render() {
-    const { pendingOrders } = this.props;
-
-    //...
-    );
-  }
-}
-
-export default createContainer(params => {
-  return {
-    pendingOrders: Meteor.collection('orders').find({ status: "pending" }),
-  };
-}, Orders);
-```
-
 ## connectMeteor && getMeteorData (Deprecated)
 
 connectMeteor is a React Mixin which enables getMeteorData (the old way of populating meteor data into your components).
