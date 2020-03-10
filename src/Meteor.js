@@ -12,7 +12,6 @@ import { Collection } from './Collection';
 import call from './Call';
 
 import Mixin from './components/Mixin';
-import createContainer from './components/createContainer';
 import withTracker from './components/ReactMeteorData';
 import composeWithTracker from './components/composeWithTracker';
 
@@ -31,7 +30,6 @@ module.exports = {
   collection(name, options) {
     return new Collection(name, options);
   },
-  createContainer,
   withTracker,
   getData() {
     return Data;
