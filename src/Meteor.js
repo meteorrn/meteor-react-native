@@ -1,7 +1,6 @@
 import { Platform, View } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
 
-import reactMixin from 'react-mixin';
 import Trackr from 'trackr';
 import EJSON from 'ejson';
 import DDP from '../lib/ddp.js';
@@ -11,7 +10,6 @@ import Data from './Data';
 import { Collection } from './Collection';
 import call from './Call';
 
-import Mixin from './components/Mixin';
 import withTracker from './components/ReactMeteorData';
 import composeWithTracker from './components/composeWithTracker';
 
@@ -33,9 +31,6 @@ module.exports = {
   withTracker,
   getData() {
     return Data;
-  },
-  connectMeteor(reactClass) {
-    return reactMixin.onClass(reactClass, Mixin);
   },
   ...User,
   status() {
