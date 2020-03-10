@@ -4,5 +4,6 @@
 
 **ATTENTION:** In order to shrink the repository, the following changes have been made from the original react-native-meteor library:
 - cursoredFind is no longer an option. All .find() calls will return cursors (to match Meteor)
-- Remove `MeteorListView` & `MeteorComplexListView`
-- `CollectionFS` has been removed. 
+- `MeteorListView` & `MeteorComplexListView` have been removed
+- `CollectionFS` has been removed
+- `createContained` has been removed
