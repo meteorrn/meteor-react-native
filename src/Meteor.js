@@ -7,6 +7,7 @@ import DDP from '../lib/ddp.js';
 import Random from '../lib/Random';
 
 import Data from './Data';
+import Mongo from './Mongo';
 import { Collection } from './Collection';
 import call from './Call';
 
@@ -19,11 +20,13 @@ import Accounts from './user/Accounts';
 
 module.exports = {
   Accounts,
+  Mongo,
   Tracker: Trackr,
   EJSON,
   ReactiveDict,
   Collection,
   collection(name, options) {
+    console.warn("Meteor.collection is deprecated. Use Mongo.Collection");
     return new Collection(name, options);
   },
   withTracker,
