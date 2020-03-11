@@ -31,14 +31,14 @@ Gets the current connection status. Returns an object with the following propert
 
 **status**: "connected" || "disconnected"
 
-### `Meteor.loggingIn()`
+#### `Meteor.loggingIn()`
 Returns true if attempting to login
 
-### `Meteor.loginWithPassword`
+#### `Meteor.loginWithPassword`
 
-### `Meteor.logout`
+#### `Meteor.logout`
 
-### `Meteor.logoutOtherClients`
+#### `Meteor.logoutOtherClients`
 
 
 
