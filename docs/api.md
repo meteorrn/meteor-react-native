@@ -52,7 +52,7 @@ https://atmospherejs.com/meteor/reactive-dict
 ## Mongo
 `import { Mongo } from 'react-native-meteor';`
 
-### `Mongo.Collection(collectionName, options)`
+#### `Mongo.Collection(collectionName, options)`
 
 **options**:
   * [.insert(doc, callback)](http://docs.meteor.com/#/full/insert)
