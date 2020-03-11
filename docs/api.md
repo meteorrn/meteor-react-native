@@ -17,9 +17,7 @@ These variables can be used inside getMeteorData or createContainer. They will b
 ## Collections
 `import { Mongo } from 'react-native-meteor';`
 
-These methods (except update) work offline. That means that elements are correctly updated offline, and when you reconnect to ddp, Meteor calls are taken care of.
-
-* Meteor.collection(collectionName, options)
+* Mongo.Collection(collectionName, options)
   * [.insert(doc, callback)](http://docs.meteor.com/#/full/insert)
   * [.update(id, modifier, [options], [callback])](http://docs.meteor.com/#/full/update)
   * [.remove(id, callback(err, countRemoved))](http://docs.meteor.com/#/full/remove)
