@@ -14,7 +14,8 @@ These variables can be used inside getMeteorData or createContainer. They will b
 * [Meteor.loggingIn()](http://docs.meteor.com/#/full/meteor_loggingin)
 * [ReactiveDict()](https://atmospherejs.com/meteor/reactive-dict)
 
-## Additionals collection methods
+## Collections
+`import { Mongo } from 'react-native-meteor';`
 
 These methods (except update) work offline. That means that elements are correctly updated offline, and when you reconnect to ddp, Meteor calls are taken care of.
 
