@@ -3,12 +3,30 @@
 ## Meteor
 `import { Meteor } from 'react-native-meteor`
 
-* [Meteor.subscribe()](http://docs.meteor.com/#/full/meteor_subscribe)
-* [Meteor.user()](http://docs.meteor.com/#/full/meteor_user)
-* [Meteor.userId()](http://docs.meteor.com/#/full/meteor_userid)
-* [Meteor.status()](http://docs.meteor.com/#/full/meteor_status)
-* [Meteor.loggingIn()](http://docs.meteor.com/#/full/meteor_loggingin)
-* [ReactiveDict()](https://atmospherejs.com/meteor/reactive-dict)
+#### `Meteor.subscribe(name, [arg1, arg2, arg3])`
+Subscribe to a collection
+
+#### `Meteor.user()`
+Returns the logged in user
+
+#### `Meteor.userId()`
+Returns the userId of the logged in user
+
+#### `Meteor.status()`
+Gets the current connection status. Returns an object with the following properties:
+
+**connected**: Boolean
+
+**status**: "connected" || "disconnected"
+
+
+### `Meteor.loggingIn()`
+Returns true if attempting to login
+
+## ReactiveDict
+`import { ReactiveDict } from 'react-native-meteor'`
+
+https://atmospherejs.com/meteor/reactive-dict
 
 ## Collections
 `import { Mongo } from 'react-native-meteor';`
