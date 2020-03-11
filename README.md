@@ -1,5 +1,7 @@
 # react-native-meteor
-**react-native-meteor client, updated to be compatible with RN0.60.0+**
+react-native-meteor client, updated to be compatible with RN0.60.0+
+
+[API Documentation](/docs/api.md)
 
 # Compatability
 For React Native >=0.60.0 use this package
