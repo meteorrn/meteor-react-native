@@ -3,16 +3,6 @@
   "version": "2.0.0",
   "description": "Full Meteor Client for React Native",
   "main": "src/Meteor.js",
-  "scripts": {
-    "test": "mocha --compilers js:babel-core/register --require test/setup --recursive",
-    "precommit": "lint-staged"
-  },
-  "lint-staged": {
-    "*.{js,json,md}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/inProgress-team/react-native-meteor.git"
@@ -26,7 +16,6 @@
     "ios",
     "android"
   ],
-  "author": "Théo Mathieu",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/inProgress-team/react-native-meteor/issues"
@@ -55,7 +44,8 @@
   },
   "peerDependencies": {
     "react": "*",
-    "@react-native-community/netinfo":"*",    
+    "@react-native-community/netinfo":"*",   
+    "@react-native-community/async-storage": ">=1.8.1",
     "react-native": ">= 0.60.0"
   }
 }
