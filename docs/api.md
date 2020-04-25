@@ -38,6 +38,9 @@ Subscribe to a collection
 #### `Meteor.user()`
 Returns the logged in user
 
+#### `Meteor.users`
+Access the meteor users collection
+
 #### `Meteor.userId()`
 Returns the userId of the logged in user
 
