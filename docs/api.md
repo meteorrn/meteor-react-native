@@ -1,5 +1,22 @@
+## withTracker
+`import { withTracker } from 'meteor-react-native`;
+
+The `withTracker` component is used the same way as [`meteor/react-meteor-data`](https://guide.meteor.com/react.html#using-withTracker)
+
+````
+export default withTracker(() => {
+    let handle = Meteor.subscribe("mySubscription");
+    let loading = !handle.ready();
+    let myStuff = Stuff.find({}).fetch();
+    
+    return {
+        myStuff
+    };
+})(MyComponent);
+````
+
 ## Meteor
-`import { Meteor } from 'react-native-meteor`
+`import { Meteor } from 'meteor-react-native`
 
 #### `Meteor.connect(url, options)`
 Connect to the Meteor Server
@@ -20,6 +37,9 @@ Subscribe to a collection
 
 #### `Meteor.user()`
 Returns the logged in user
+
+#### `Meteor.users`
+Access the meteor users collection
 
 #### `Meteor.userId()`
 Returns the userId of the logged in user
@@ -43,14 +63,14 @@ Returns true if attempting to login
 
 
 ## ReactiveDict
-`import { ReactiveDict } from 'react-native-meteor'`
+`import { ReactiveDict } from 'meteor-react-native'`
 
 https://atmospherejs.com/meteor/reactive-dict
 
 
 
 ## Mongo
-`import { Mongo } from 'react-native-meteor';`
+`import { Mongo } from 'meteor-react-native';`
 
 #### `Mongo.Collection(collectionName, options)`
 
@@ -62,7 +82,7 @@ https://atmospherejs.com/meteor/reactive-dict
 
 
 ## Accounts
-`import { Accounts } from 'react-native-meteor';`
+`import { Accounts } from 'meteor-react-native';`
 
 * [Accounts.createUser](http://docs.meteor.com/#/full/accounts_createuser)
 * [Accounts.changePassword](http://docs.meteor.com/#/full/accounts_forgotpassword)
