@@ -6,17 +6,19 @@ import call from '../Call';
 import Mongo from '../Mongo';
 
 const TOKEN_KEY = 'reactnativemeteor_usertoken';
+const Users = new Mongo.Collection("users");
 
 module.exports = {
+  users:Users,
   user() {
     if (!this._userIdSaved) return null;
 
-    return Mongo.Collection('users').findOne(this._userIdSaved);
+    return Users.findOne(this._userIdSaved);
   },
   userId() {
     if (!this._userIdSaved) return null;
 
-    const user = Mongo.Collection('users').findOne(this._userIdSaved);
+    const user = Users.findOne(this._userIdSaved);
     return user && user._id;
   },
   _isLoggingIn: true,
