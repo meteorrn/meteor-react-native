@@ -1,3 +1,20 @@
+## withTracker
+`import { withTracker } from 'react-native-meteor`;
+
+The `withTracker` component is used the same way as [`meteor/react-meteor-data`](https://guide.meteor.com/react.html#using-withTracker)
+
+````
+export default withTracker(() => {
+    let handle = Meteor.subscribe("mySubscription");
+    let loading = !handle.ready();
+    let myStuff = Stuff.find({}).fetch();
+    
+    return {
+        myStuff
+    };
+})(MyComponent);
+````
+
 ## Meteor
 `import { Meteor } from 'react-native-meteor`
 
