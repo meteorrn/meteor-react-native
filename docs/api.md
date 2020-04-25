@@ -1,5 +1,5 @@
 ## withTracker
-`import { withTracker } from 'react-native-meteor`;
+`import { withTracker } from 'meteor-react-native`;
 
 The `withTracker` component is used the same way as [`meteor/react-meteor-data`](https://guide.meteor.com/react.html#using-withTracker)
 
@@ -16,7 +16,7 @@ export default withTracker(() => {
 ````
 
 ## Meteor
-`import { Meteor } from 'react-native-meteor`
+`import { Meteor } from 'meteor-react-native`
 
 #### `Meteor.connect(url, options)`
 Connect to the Meteor Server
@@ -60,14 +60,14 @@ Returns true if attempting to login
 
 
 ## ReactiveDict
-`import { ReactiveDict } from 'react-native-meteor'`
+`import { ReactiveDict } from 'meteor-react-native'`
 
 https://atmospherejs.com/meteor/reactive-dict
 
 
 
 ## Mongo
-`import { Mongo } from 'react-native-meteor';`
+`import { Mongo } from 'meteor-react-native';`
 
 #### `Mongo.Collection(collectionName, options)`
 
@@ -79,7 +79,7 @@ https://atmospherejs.com/meteor/reactive-dict
 
 
 ## Accounts
-`import { Accounts } from 'react-native-meteor';`
+`import { Accounts } from 'meteor-react-native';`
 
 * [Accounts.createUser](http://docs.meteor.com/#/full/accounts_createuser)
 * [Accounts.changePassword](http://docs.meteor.com/#/full/accounts_forgotpassword)
