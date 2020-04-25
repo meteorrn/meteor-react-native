@@ -4,6 +4,7 @@ import User from './User';
 import { hashPassword } from '../../lib/utils';
 
 module.exports = {
+  _hashPassword:hashPassword,
   createUser(options, callback = () => {}) {
     if (options.username) options.username = options.username;
     if (options.email) options.email = options.email;

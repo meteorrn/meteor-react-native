@@ -90,3 +90,4 @@ https://atmospherejs.com/meteor/reactive-dict
 * [Accounts.resetPassword](http://docs.meteor.com/#/full/accounts_resetpassword)
 * [Accounts.onLogin](http://docs.meteor.com/#/full/accounts_onlogin)
 * [Accounts.onLoginFailure](http://docs.meteor.com/#/full/accounts_onloginfailure)
+* `Accounts._hashPassword` - SHA-256 hashes password, for use with methods that may require authentication
