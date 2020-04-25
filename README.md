@@ -1,5 +1,5 @@
-# react-native-meteor
-react-native-meteor client, updated to be compatible with RN0.60.0+
+# meteor-react-native
+Connect React Native to your Meteor app. Based on [react-native-meteor](https://github.com/inProgress-team/react-native-meteor), and compatible with the latest version of React Native.
 
 [API Documentation](/docs/api.md)
 
