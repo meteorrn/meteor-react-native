@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Data from '../Data';
 import { hashPassword } from '../../lib/utils';
 import call from '../Call';
+import Mongo from '../Mongo';
 
 const TOKEN_KEY = 'reactnativemeteor_usertoken';
 
@@ -10,12 +11,12 @@ module.exports = {
   user() {
     if (!this._userIdSaved) return null;
 
-    return this.collection('users').findOne(this._userIdSaved);
+    return Mongo.Collection('users').findOne(this._userIdSaved);
   },
   userId() {
     if (!this._userIdSaved) return null;
 
-    const user = this.collection('users').findOne(this._userIdSaved);
+    const user = Mongo.Collection('users').findOne(this._userIdSaved);
     return user && user._id;
   },
   _isLoggingIn: true,
