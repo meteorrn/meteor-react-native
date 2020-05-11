@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/TheRealNate/react-native-meteor#readme",
   "dependencies": {
+    "@babel/runtime": "^7.9.6",
     "base-64": "^0.1.0",
     "crypto-js": "^3.1.6",
     "ejson": "^2.1.2",
@@ -44,7 +45,7 @@
   },
   "peerDependencies": {
     "react": "*",
-    "@react-native-community/netinfo":"*",   
+    "@react-native-community/netinfo": "*",
     "@react-native-community/async-storage": ">=1.8.1",
     "react-native": ">= 0.60.0"
   }

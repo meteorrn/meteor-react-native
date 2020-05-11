@@ -16,12 +16,15 @@ export default withTracker(() => {
 ````
 
 ## Meteor
-`import { Meteor } from 'meteor-react-native`
+`import Meteor from 'meteor-react-native`
 
 #### `Meteor.connect(url, options)`
 Connect to the Meteor Server
 
 **options**:
+* v2.1.0 BREAKING: AsyncStorage **object** [No default]. You must import and set to your preferred AsyncStorage.  Tested libraries:
+    - `{ AsyncStorage } from 'react-native'` (preferred if using Expo),
+    - `{ AsyncStorage } from '@react-native-community/async-storage'`
 * autoConnect **boolean** [true] whether to establish the connection to the server upon instantiation. When false, one can manually establish the connection with the Meteor.ddp.connect method.
 * autoReconnect **boolean** [true] whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.
 * reconnectInterval **number** [10000] the interval in ms between reconnection attempts.

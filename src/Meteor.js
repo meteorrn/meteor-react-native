@@ -1,4 +1,3 @@
-import { Platform, View } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
 
 import Trackr from 'trackr';
@@ -63,6 +62,10 @@ module.exports = {
   connect(endpoint, options) {
     if (!endpoint) endpoint = Data._endpoint;
     if (!options) options = Data._options;
+
+    if (!options.AsyncStorage) {
+      console.error('No AsyncStorage solution.  Import an AsyncStorage package and add to options in connect() method', e);
+    }
 
     Data._endpoint = endpoint;
     Data._options = options;

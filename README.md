@@ -5,16 +5,23 @@ Connect React Native to your Meteor app. Based on [react-native-meteor](https://
 
 # Installation
 1. `npm install --save meteor-react-native`
-2. Confirm you have peer dependencies installed (`@react-native-community/netinfo` and `@react-native-community/async-storage>=1.8.1`)
+2. Confirm you have peer dependencies installed (`@react-native-community/netinfo`)
+3. An AsyncStorage library that you pass to `options`
+    - `import AsyncStorage from '@react-native-community/async-storage'` OR
+        - @react-native-community/async-storage@>=1.8.1
+    - `import AsyncStorage from 'react-native'`
+        - If using Expo, or cannot otherwise use @react-native-community/async-storage
 
 # Basic Usage
 
-````
-import { Meteor, Mongo, withTracker } from 'meteor-react-native';
+```javascript
+import Meteor, { Mongo, withTracker } from 'meteor-react-native';
+import { AsyncStorage } from 'react-native'; // OR '@react-native-community/async-storage'
+
 
 let MyCol = new Mongo.Collection("mycol");
 
-Meteor.connect("wss://myapp.meteor.com");
+Meteor.connect("wss://myapp.meteor.com", { AsyncStorage });
 
 class App extends React.Component {
     render() {
@@ -25,7 +32,7 @@ class App extends React.Component {
                 <Text>Here is the thing: {myThing.name}</Text>
             </View>
         );
-    }
+    } 
 }
 
 let AppContainer = withTracker(() => {
@@ -38,9 +45,9 @@ let AppContainer = withTracker(() => {
 })(App)
 
 export default AppContainer;
-````
+```
 
-# Compatability
+# Compatibility
 For React Native >=0.60.0 use this package
 
 For React Native <0.60.0 use [react-native-meteor](https://github.com/inProgress-team/react-native-meteor).
