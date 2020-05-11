@@ -5,7 +5,7 @@ import Data from '../Data';
 import MeteorDataManager from './MeteorDataManager';
 
 const ReactMeteorData = {
-  componentWillMount() {
+  componentDidMount() {
     Data.waitDdpReady(() => {
       if (this.getMeteorData) {
         this.data = {};
