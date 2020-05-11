@@ -64,7 +64,15 @@ module.exports = {
     if (!options) options = Data._options;
 
     if (!options.AsyncStorage) {
-      console.error('No AsyncStorage solution.  Import an AsyncStorage package and add to options in connect() method', e);
+      const requireIfExists = require('node-require-fallback');
+      // Try falling back on current AsyncStorage package.  Returns null if not installed.
+      const { AsyncStorage } = requireIfExists('@react-native-community/async-storage');
+
+      if (AsyncStorage) {
+        options.AsyncStorage = AsyncStorage;
+      } else {
+        console.error('No AsyncStorage solution.  Import an AsyncStorage package and add to `options` in connect() method', e);
+      }
     }
 
     Data._endpoint = endpoint;
