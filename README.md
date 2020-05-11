@@ -65,3 +65,6 @@ For React Native <0.60.0 use [react-native-meteor](https://github.com/inProgress
 - `createContainer` has been removed
 - Mixins (`connectMeteor`) have been removed
 - `composeWithTracker` has been removed
+
+# Changelog
+The [GitHub Releases Tab](https://github.com/TheRealNate/meteor-react-native/releases) includes a full changelog
