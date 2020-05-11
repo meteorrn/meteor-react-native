@@ -10,7 +10,7 @@ Connect React Native to your Meteor app. Based on [react-native-meteor](https://
 # Basic Usage
 
 ````
-import { Meteor, Mongo, withTracker } from 'meteor-react-native';
+import Meteor, { Mongo, withTracker } from 'meteor-react-native';
 
 let MyCol = new Mongo.Collection("mycol");
 
