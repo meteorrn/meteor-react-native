@@ -1,4 +1,3 @@
-import { Platform, View } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
 
 import Trackr from 'trackr';
@@ -63,6 +62,18 @@ module.exports = {
   connect(endpoint, options) {
     if (!endpoint) endpoint = Data._endpoint;
     if (!options) options = Data._options;
+
+    if (!options.AsyncStorage) {
+      const requireIfExists = require('node-require-fallback');
+      // Try falling back on current AsyncStorage package.  Returns null if not installed.
+      const { AsyncStorage } = requireIfExists('@react-native-community/async-storage');
+
+      if (AsyncStorage) {
+        options.AsyncStorage = AsyncStorage;
+      } else {
+        throw new Error('No AsyncStorage detected. Import an AsyncStorage package and add to `options` in the Meteor.connect() method', e);
+      }
+    }
 
     Data._endpoint = endpoint;
     Data._options = options;
