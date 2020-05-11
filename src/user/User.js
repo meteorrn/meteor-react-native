@@ -125,7 +125,4 @@ module.exports = {
       this._loginWithToken(value);
     }
   },
-  setItem(){
-
-  }
 };
