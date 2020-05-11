@@ -71,7 +71,7 @@ module.exports = {
       if (AsyncStorage) {
         options.AsyncStorage = AsyncStorage;
       } else {
-        console.error('No AsyncStorage solution.  Import an AsyncStorage package and add to `options` in connect() method', e);
+        throw new Error('No AsyncStorage detected. Import an AsyncStorage package and add to `options` in the Meteor.connect() method', e);
       }
     }
 
