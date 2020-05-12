@@ -16,7 +16,7 @@ const ReactMeteorData = {
     });
   },
 
-  componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     if (this.startMeteorSubscriptions) {
       if (
         !EJSON.equals(this.state, nextState) ||
