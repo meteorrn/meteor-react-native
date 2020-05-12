@@ -3,6 +3,8 @@ Connect React Native to your Meteor app. Based on [react-native-meteor](https://
 
 [API Documentation](/docs/api.md)
 
+You can view a guide to using React Native with Meteor on the [Official Meteor Guide](https://guide.meteor.com/react-native.html)
+
 # Installation
 1. `npm install --save meteor-react-native`
 2. Confirm you have peer dependencty `@react-native-community/netinfo` installed
@@ -65,3 +67,6 @@ For React Native <0.60.0 use [react-native-meteor](https://github.com/inProgress
 - `createContainer` has been removed
 - Mixins (`connectMeteor`) have been removed
 - `composeWithTracker` has been removed
+
+# Changelog
+The [GitHub Releases Tab](https://github.com/TheRealNate/meteor-react-native/releases) includes a full changelog
