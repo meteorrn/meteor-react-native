@@ -64,9 +64,7 @@ module.exports = {
     if (!options) options = Data._options;
 
     if (!options.AsyncStorage) {
-      const requireIfExists = require('node-require-fallback');
-      // Try falling back on current AsyncStorage package.  Returns null if not installed.
-      const { AsyncStorage } = requireIfExists('@react-native-community/async-storage');
+      const AsyncStorage = require('@react-native-community/async-storage');
 
       if (AsyncStorage) {
         options.AsyncStorage = AsyncStorage;
