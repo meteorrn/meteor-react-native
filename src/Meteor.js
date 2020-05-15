@@ -64,7 +64,7 @@ module.exports = {
     if (!options) options = Data._options;
 
     if (!options.AsyncStorage) {
-      const AsyncStorage = require('@react-native-community/async-storage');
+      const AsyncStorage = require('@react-native-community/async-storage').default;
 
       if (AsyncStorage) {
         options.AsyncStorage = AsyncStorage;
