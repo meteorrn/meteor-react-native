@@ -19,7 +19,7 @@ import { AsyncStorage } from 'react-native';
 
 // ...
 
-Meteor.connect("wss://myapp.meteor.com", { AsyncStorage });
+Meteor.connect("wss://myapp.meteor.com/websocket", { AsyncStorage });
 ```
 
 # Basic Usage
@@ -29,7 +29,7 @@ import Meteor, { Mongo, withTracker } from 'meteor-react-native';
 
 let MyCol = new Mongo.Collection("mycol");
 
-Meteor.connect("wss://myapp.meteor.com");
+Meteor.connect("wss://myapp.meteor.com/websocket"); // Note the /websocket after your URL 
 
 class App extends React.Component {
     render() {
