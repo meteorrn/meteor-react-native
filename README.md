@@ -12,7 +12,7 @@ You can view a guide to using React Native with Meteor on the [Official Meteor G
 
 
 ### Custom Storage Adapter
-To use a custom AsyncStorage implementation, pass it as an option in `Meteor.connect`:
+This package uses `@react-native-community/async-storage` by default. This may cause issues if you are using certain React Native versions, or if you are using Expo. To use a custom AsyncStorage implementation, pass it as an option in `Meteor.connect`:
 
 ```javascript
 import { AsyncStorage } from 'react-native';
