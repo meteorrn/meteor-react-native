@@ -18,7 +18,7 @@ function runAfterOtherComputations(fn) {
 
 export default {
   _endpoint: null,
-  _options: null,
+  _options: {},
   ddp: null,
   subscriptions: {},
   db: db,

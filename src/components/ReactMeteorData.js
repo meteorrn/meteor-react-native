@@ -6,6 +6,7 @@ import MeteorDataManager from './MeteorDataManager';
 
 const ReactMeteorData = {
 
+
   UNSAFE_componentWillUpdate(nextProps, nextState) {
     if (this.startMeteorSubscriptions) {
       if (
