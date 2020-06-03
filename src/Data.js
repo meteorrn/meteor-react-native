@@ -8,6 +8,23 @@ const db = new minimongo();
 db.debug = false;
 db.batchedUpdates = ReactNative.unstable_batchedUpdates;
 
+let deserializeCollection = function(db, data) {
+  let collection = new Collection(data.name, db);
+  collection.items = data.items;
+  collection.versions = data.versions;
+  collection.version = data.version;
+  return collection;
+};
+
+let loadDB = function (data) {
+  for(let collectionName in data) {
+    let collection = Collection.deserialize(db, data[collectionName]);
+    db.collections[collectionName] = collection;
+    db[collectionName] = collection;
+  }
+};
+
+
 function runAfterOtherComputations(fn) {
   InteractionManager.runAfterInteractions(() => {
     Trackr.afterFlush(() => {
@@ -23,6 +40,8 @@ export default {
   subscriptions: {},
   db: db,
   calls: [],
+  
+  loadDB,
 
   getUrl() {
     return this._endpoint.substring(0, this._endpoint.indexOf('/websocket'));
