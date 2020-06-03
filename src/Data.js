@@ -18,7 +18,7 @@ let deserializeCollection = function(db, data) {
 
 let loadDB = function (data) {
   for(let collectionName in data) {
-    let collection = Collection.deserialize(db, data[collectionName]);
+    let collection = deserializeCollection(db, data[collectionName]);
     db.collections[collectionName] = collection;
     db[collectionName] = collection;
   }
