@@ -1,12 +1,15 @@
-# meteor-react-native
+# Meteor React Native
 Connect React Native to your Meteor app. Based on [react-native-meteor](https://github.com/inProgress-team/react-native-meteor), and compatible with the latest version of React Native.
 
 [API Documentation](/docs/api.md)
 
 You can view a guide to using React Native with Meteor on the [Official Meteor Guide](https://guide.meteor.com/react-native.html)
 
+# New Package Name
+Meteor React Native is now published under `@meteorrn/core`. We will continue to publish updates to the `meteor-react-native` repository until `2.1.0`. We recommend updating to the new package name as soon as possible.
+
 # Installation
-1. `npm install --save meteor-react-native`
+1. `npm install --save @meteorrn/core`
 2. Confirm you have peer dependencty `@react-native-community/netinfo` installed
 3. Confirm you have `@react-native-community/async-storage@>=1.8.1` installed. If you are using Expo, or otherwise cannot use `@react-native-community/async-storage`, see *Custom Storage Adapter* below.
 
@@ -25,7 +28,7 @@ Meteor.connect("wss://myapp.meteor.com/websocket", { AsyncStorage });
 # Basic Usage
 
 ```javascript
-import Meteor, { Mongo, withTracker } from 'meteor-react-native';
+import Meteor, { Mongo, withTracker } from '@meteorrn/core';
 
 let MyCol = new Mongo.Collection("mycol");
 
@@ -54,6 +57,16 @@ let AppContainer = withTracker(() => {
 
 export default AppContainer;
 ```
+
+# Companion Packages
+
+Since React Native apps are completely separate from your Meteor codebase, you can't `meteor add` packages. For this reason, companion packages to the MeteorRN core will be published under the `@meteorrn` organization.
+
+Here are the list of official planned companion packages:
+- `@meteorrn/ndev-mfa`: Client-side features from `ndev:mfa`
+- `@meteorrn/local`: Package for storing of data locally that works seamlessly with MeteorRN by injecting data into collection
+
+If you have an idea for a companion package, please open an issue. If you would like to publish your own companion package, we recommend a package name with the prefix `mrn-`.
 
 # Compatibility
 For React Native >=0.60.0 use this package
