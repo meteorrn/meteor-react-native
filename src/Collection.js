@@ -6,11 +6,13 @@ import Data from './Data';
 import Random from '../lib/Random';
 import call from './Call';
 import { isPlainObject } from '../lib/utils.js';
+import { _registerObserver } from './Meteor';
 
 class Cursor {
-  constructor(collection, docs) {
+  constructor(collection, docs, selector) {
     this._docs = docs || [];
     this._collection = collection;
+    this._selector = selector;
   }
 
   count() {
@@ -33,6 +35,10 @@ class Cursor {
     return this._collection._transform
       ? this._docs.map(this._collection._transform)
       : this._docs;
+  }
+  
+  observe(callbacks) {
+    _registerObserver(this._collection.name, this, callbacks);
   }
 }
 
@@ -61,7 +67,7 @@ export class Collection {
       docs = this._collection.find(selector, options);
     }
 
-    result = new Cursor(this, docs);
+    result = new Cursor(this, docs, selector);
 
     return result;
   }
