@@ -17,7 +17,29 @@ import ReactiveDict from './ReactiveDict';
 import User from './user/User';
 import Accounts from './user/Accounts';
 
+const observers = {};
+
+const runObservers = (type, collection, newDocument, oldDocument) => {
+  if(observers[collection]) {
+    observers[collection].forEach(({cursor, callbacks}) => {
+      // TO-DO Match to Cursor (Right now for dev we are publishing all changes in a collection no matter the cursor's query)
+      if(callbacks[type]) {
+        try {
+          callbacks[type](newDocument, oldDocument);
+        }
+        catch(e) {
+          console.error("Error in observe callback", e);
+        }
+      }
+    });
+  }
+}
+
 module.exports = {
+  _registerObserver:(collection, cursor, callbacks) => {
+    observers[collection] = observers[collection] || [];
+    observers[collection].push({cursor, callbacks});
+  },
   Accounts,
   Mongo,
   Tracker: Trackr,
@@ -123,10 +145,14 @@ module.exports = {
       if (!Data.db[message.collection]) {
         Data.db.addCollection(message.collection);
       }
-      Data.db[message.collection].upsert({
+      const document = {
         _id: message.id,
         ...message.fields,
-      });
+      };
+      
+      Data.db[message.collection].upsert(document);
+      
+      runObservers("added", message.collection, document);
     });
 
     Data.ddp.on('ready', message => {
@@ -154,17 +180,27 @@ module.exports = {
         });
       }
 
-      Data.db[message.collection] &&
-        Data.db[message.collection].upsert({
+      if(Data.db[message.collection]) {
+        const document = {
           _id: message.id,
           ...message.fields,
           ...unset,
-        });
+        };
+        
+        const oldDocument = Data.db[message.collection].findOne({_id:message.id});
+        
+        Data.db[message.collection].upsert(document);
+        
+        runObservers("changed", message.collection, document, oldDocument);        
+      }
     });
 
     Data.ddp.on('removed', message => {
-      Data.db[message.collection] &&
+      if(Data.db[message.collection]) {
+        const oldDocument = Data.db[message.collection].findOne({_id:message.id});        
         Data.db[message.collection].del(message.id);
+        runObservers("removed", message.collection, oldDocument);
+      }
     });
     Data.ddp.on('result', message => {
       const call = Data.calls.find(call => call.id == message.id);
