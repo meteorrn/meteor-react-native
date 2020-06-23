@@ -61,7 +61,7 @@ class Cursor {
   }
   
   observe(callbacks) {
-    _registerObserver(this._collection.name, this, callbacks);
+    _registerObserver(this._collection._collection.name, this, callbacks);
   }
 }
 
