@@ -61,7 +61,7 @@ module.exports = {
   },
   packageInterface:() => {
     return {
-      AsyncStorage:Data._options.AsyncStorage
+      AsyncStorage:Data._options.AsyncStorage || require('@react-native-community/async-storage').default
     };
   },
   connect(endpoint, options) {
