@@ -7,7 +7,7 @@ import Random from '../lib/Random';
 
 import Data from './Data';
 import Mongo from './Mongo';
-import { Collection } from './Collection';
+import { Collection, runObservers } from './Collection';
 import call from './Call';
 
 import withTracker from './components/ReactMeteorData';
@@ -17,30 +17,7 @@ import ReactiveDict from './ReactiveDict';
 import User from './user/User';
 import Accounts from './user/Accounts';
 
-const observers = {};
-
-const runObservers = (type, collection, newDocument, oldDocument) => {
-  if(observers[collection]) {
-    observers[collection].forEach(({cursor, callbacks}) => {
-      if(callbacks[type]) {
-        if(Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]})) {
-          try {
-            callbacks[type](newDocument, oldDocument);
-          }
-          catch(e) {
-            console.error("Error in observe callback", e);
-          }
-        }
-      }
-    });
-  }
-}
-
 module.exports = {
-  _registerObserver:(collection, cursor, callbacks) => {
-    observers[collection] = observers[collection] || [];
-    observers[collection].push({cursor, callbacks});
-  },
   Accounts,
   Mongo,
   Tracker: Trackr,

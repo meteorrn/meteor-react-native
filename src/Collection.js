@@ -6,7 +6,30 @@ import Data from './Data';
 import Random from '../lib/Random';
 import call from './Call';
 import { isPlainObject } from '../lib/utils.js';
-import { _registerObserver } from './Meteor';
+
+const observers = {};
+
+export const runObservers = (type, collection, newDocument, oldDocument) => {
+  if(observers[collection]) {
+    observers[collection].forEach(({cursor, callbacks}) => {
+      if(callbacks[type]) {
+        if(Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]})) {
+          try {
+            callbacks[type](newDocument, oldDocument);
+          }
+          catch(e) {
+            console.error("Error in observe callback", e);
+          }
+        }
+      }
+    });
+  }
+};
+
+const _registerObserver = (collection, cursor, callbacks) => {
+  observers[collection] = observers[collection] || [];
+  observers[collection].push({cursor, callbacks});
+};
 
 class Cursor {
   constructor(collection, docs, selector) {
