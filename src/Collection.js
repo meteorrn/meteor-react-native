@@ -65,11 +65,14 @@ class Cursor {
   }
 }
 
+export const localCollections = [];
+
 export class Collection {
   constructor(name, options = {}) {
     if(name === null) {
       this.localCollection = true;
       name = Random.id();
+      localCollections.push(name);
     }
     
     if (!Data.db[name]) Data.db.addCollection(name);

@@ -7,7 +7,7 @@ import Random from '../lib/Random';
 
 import Data from './Data';
 import Mongo from './Mongo';
-import { Collection, runObservers } from './Collection';
+import { Collection, runObservers, localCollections } from './Collection';
 import call from './Call';
 
 import withTracker from './components/ReactMeteorData';
@@ -92,7 +92,9 @@ module.exports = {
       // Clear the collections of any stale data in case this is a reconnect
       if (Data.db && Data.db.collections) {
         for (var collection in Data.db.collections) {
-          Data.db[collection].remove({});
+          if(!localCollections.includes(collection)) { // Dont clear data from local collections
+            Data.db[collection].remove({});
+          }
         }
       }
 
