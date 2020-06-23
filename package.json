@@ -1,6 +1,6 @@
 {
   "name": "@meteorrn/core",
-  "version": "2.0.7",
+  "version": "2.0.8-beta",
   "description": "Full Meteor Client for React Native",
   "main": "src/Meteor.js",
   "repository": {
