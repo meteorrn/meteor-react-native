@@ -22,13 +22,14 @@ const observers = {};
 const runObservers = (type, collection, newDocument, oldDocument) => {
   if(observers[collection]) {
     observers[collection].forEach(({cursor, callbacks}) => {
-      // TO-DO Match to Cursor (Right now for dev we are publishing all changes in a collection no matter the cursor's query)
       if(callbacks[type]) {
-        try {
-          callbacks[type](newDocument, oldDocument);
-        }
-        catch(e) {
-          console.error("Error in observe callback", e);
+        if(Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor.selector]})) {
+          try {
+            callbacks[type](newDocument, oldDocument);
+          }
+          catch(e) {
+            console.error("Error in observe callback", e);
+          }
         }
       }
     });
