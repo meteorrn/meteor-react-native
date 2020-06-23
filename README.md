@@ -62,9 +62,14 @@ export default AppContainer;
 
 Since React Native apps are completely separate from your Meteor codebase, you can't `meteor add` packages. For this reason, companion packages to the MeteorRN core will be published under the `@meteorrn` organization.
 
-Here are the list of official planned companion packages:
-- `@meteorrn/ndev-mfa`: Client-side features from `ndev:mfa`
-- `@meteorrn/local`: Package for storing of data locally that works seamlessly with MeteorRN by injecting data into collection
+Production-Ready Packages:
+- [`@meteorrn/ndev-mfa`](/companion-packages/meteorrn-ndev-mfa): Package that allows your RN app to work with `meteor/ndev:mfa`
+
+Experimental/Beta Packages:
+- [`@meteorrn/local`](/companion-packages/meteor-local): Package for storing of data locally that works seamlessly with MeteorRN by injecting data into collection
+
+Planned/Upcoming Packages:
+- `@meteorrn/queued-calls`: Package that allows you to queue Meteor calls that will be performed when internet/server is available
 
 If you have an idea for a companion package, please open an issue. If you would like to publish your own companion package, we recommend a package name with the prefix `mrn-`.
 
