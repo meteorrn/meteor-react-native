@@ -23,7 +23,7 @@ const runObservers = (type, collection, newDocument, oldDocument) => {
   if(observers[collection]) {
     observers[collection].forEach(({cursor, callbacks}) => {
       if(callbacks[type]) {
-        if(Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor.selector]})) {
+        if(Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]})) {
           try {
             callbacks[type](newDocument, oldDocument);
           }
