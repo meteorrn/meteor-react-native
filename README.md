@@ -66,7 +66,7 @@ Production-Ready Packages:
 - [`@meteorrn/ndev-mfa`](/companion-packages/meteorrn-ndev-mfa): Package that allows your RN app to work with `meteor/ndev:mfa`
 
 Experimental/Beta Packages:
-- [`@meteorrn/local`](/companion-packages/meteor-local): Package for storing of data locally that works seamlessly with MeteorRN by injecting data into collection
+- [`@meteorrn/local`](/companion-packages/meteorrn-local): Package for storing of data locally that works seamlessly with MeteorRN by injecting data into collection
 
 Planned/Upcoming Packages:
 - `@meteorrn/queued-calls`: Package that allows you to queue Meteor calls that will be performed when internet/server is available
