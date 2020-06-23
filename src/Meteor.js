@@ -59,6 +59,11 @@ module.exports = {
   reconnect() {
     Data.ddp && Data.ddp.connect();
   },
+  packageInterface:() => {
+    return {
+      AsyncStorage:Data._options.AsyncStorage
+    };
+  },
   connect(endpoint, options) {
     if (!endpoint) endpoint = Data._endpoint;
     if (!options) options = Data._options;

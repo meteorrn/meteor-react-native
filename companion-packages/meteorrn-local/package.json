@@ -1,0 +1,14 @@
+{
+  "name": "@meteorrn/local",
+  "version": "0.0.1",
+  "description": "Store data locally",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "@meteorrn/core":">=2.0.7"
+  }
+}
