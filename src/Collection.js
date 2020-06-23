@@ -67,6 +67,11 @@ class Cursor {
 
 export class Collection {
   constructor(name, options = {}) {
+    if(name === null) {
+      this.localCollection = true;
+      name = Random.id();
+    }
+    
     if (!Data.db[name]) Data.db.addCollection(name);
 
     this._collection = Data.db[name];
@@ -126,16 +131,19 @@ export class Collection {
       });
 
     this._collection.upsert(item);
-    Data.waitDdpConnected(() => {
-      call(`/${this._name}/insert`, item, err => {
-        if (err) {
-          this._collection.del(id);
-          return callback(err);
-        }
-
-        callback(null, id);
+    
+    if(!this.localCollection) {
+      Data.waitDdpConnected(() => {
+        call(`/${this._name}/insert`, item, err => {
+          if (err) {
+            this._collection.del(id);
+            return callback(err);
+          }
+  
+          callback(null, id);
+        });
       });
-    });
+    }
 
     return id;
   }
@@ -154,16 +162,18 @@ export class Collection {
 
     // change mini mongo for optimize UI changes
     this._collection.upsert({ _id: id, ...modifier.$set });
-
-    Data.waitDdpConnected(() => {
-      call(`/${this._name}/update`, { _id: id }, modifier, err => {
-        if (err) {
-          return callback(err);
-        }
-
-        callback(null, id);
+    
+    if(!this.localCollection) {
+      Data.waitDdpConnected(() => {
+        call(`/${this._name}/update`, { _id: id }, modifier, err => {
+          if (err) {
+            return callback(err);
+          }
+  
+          callback(null, id);
+        });
       });
-    });
+    }
   }
 
   remove(id, callback = () => {}) {
@@ -172,15 +182,17 @@ export class Collection {
     if (element) {
       this._collection.del(element._id);
 
-      Data.waitDdpConnected(() => {
-        call(`/${this._name}/remove`, { _id: id }, (err, res) => {
-          if (err) {
-            this._collection.upsert(element);
-            return callback(err);
-          }
-          callback(null, res);
+      if(!this.localCollection) {
+        Data.waitDdpConnected(() => {
+          call(`/${this._name}/remove`, { _id: id }, (err, res) => {
+            if (err) {
+              this._collection.upsert(element);
+              return callback(err);
+            }
+            callback(null, res);
+          });
         });
-      });
+      }
     } else {
       callback(`No document with _id : ${id}`);
     }
