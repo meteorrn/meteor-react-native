@@ -17,17 +17,49 @@ const Local = {
         const LiveCol = new Mongo.Collection(name);
         const LocalCol = new Mongo.Collection(null);
         const storeLocalCol = async () => {
-            await AsyncStorage.setItem("@mrnlocal:" + name, JSON.stringify(LocalCol.find().fetch(), options.disableDateParser ? v=>v : fixDates));
+            const data = LocalCol.find({}, {sort:options.sort}).fetch();
+            if(options.groupBy) {
+                const groups = {};
+                
+                for(let d of data) {
+                    const v = d[options.groupBy];
+                    groups[v] = groups[v] || [];
+                    groups[v].push(d);
+                }
+                
+                for(let g in groups) {
+                    await AsyncStorage.setItem("@mrnlocal:" + name + ":" + g, JSON.stringify(groups[g].slice(0, options.limit)));
+                }
+                
+                await AsyncStorage.setItem("@mrnlocal:" + name + "_groups", JSON.stringify(Object.keys(groups)));
+            }
+            else {
+                await AsyncStorage.setItem("@mrnlocal:" + name, JSON.stringify(data));
+            }
         };
         
         const loadData = async () => {
-            const storedData = await AsyncStorage.getItem("@mrnlocal:" + name);
             
-            if(storedData) {
-                const documents = JSON.parse(storedData);
-                documents.forEach(doc => {
-                    LocalCol._collection.upsert(doc);
-                });
+            if(options.groupBy) {
+                let groups = JSON.parse((await AsyncStorage.getItem("@mrnlocal:" + name + "_groups")) || "[]");
+                for(let g of groups) {
+                    const storedData = await AsyncStorage.getItem("@mrnlocal:" + name + ":" + g);
+                    if(storedData) {
+                        const documents = JSON.parse(storedData, options.disableDateParser ? v=>v : fixDates);
+                        documents.forEach(doc => {
+                            LocalCol._collection.upsert(doc);
+                        });                        
+                    }
+                }
+            }
+            else {
+                const storedData = await AsyncStorage.getItem("@mrnlocal:" + name);
+                if(storedData) {
+                    const documents = JSON.parse(storedData, options.disableDateParser ? v=>v : fixDates);
+                    documents.forEach(doc => {
+                        LocalCol._collection.upsert(doc);
+                    });
+                }
             }
             
             LiveCol.find({}).observe({

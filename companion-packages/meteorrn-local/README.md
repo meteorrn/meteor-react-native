@@ -28,6 +28,12 @@ Creates a Local Collection that mirrors changes to collection with specified nam
 
 **Options:**
 
+*groupBy (default: null):* Specifies a field to organize items on. Items will be grouped into separate AsyncStorage keys by specified limit. If you specifiy a limit, the limit will be applied to each group instead of the collection as a whole
+
+*limit (default: -1):* Specifies a limit to the number of documents to store. The sort property is required to use this.
+
+*sort (default: null):* Specifies a sort method to maintain documents by
+
 *disableDateParser (default: false):* Disables the default behavior when parsing the stringified collection of automatically converting date strings into JS dates
 
 ### Compatability
