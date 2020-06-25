@@ -61,8 +61,6 @@ Returns true if attempting to login
 
 #### `Meteor.logoutOtherClients`
 
-
-
 ## ReactiveDict
 `import { ReactiveDict } from '@meteorrn/core'`
 
@@ -74,12 +72,15 @@ https://atmospherejs.com/meteor/reactive-dict
 `import { Mongo } from '@meteorrn/core';`
 
 #### `Mongo.Collection(collectionName, options)`
+*collectionName*: Name of the remote collection, or pass `null` for a client-side collection
 
 **options**:
   * [.insert(doc, callback)](http://docs.meteor.com/#/full/insert)
   * [.update(id, modifier, [options], [callback])](http://docs.meteor.com/#/full/update)
   * [.remove(id, callback(err, countRemoved))](http://docs.meteor.com/#/full/remove)
 
+#### *Cursor*.observe
+Mirrors Meteor's observe behavior. Accepts object with the properties `added`, `changed`, and `removed`.
 
 
 ## Accounts
