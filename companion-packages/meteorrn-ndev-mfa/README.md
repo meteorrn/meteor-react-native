@@ -2,7 +2,7 @@
 
 # ndev:mfa for MeteorRN
 
-Currently supporting U2F only. This package exposes the following client methods for MFA.
+This pacakge allows your MeteorRN app to interact with `ndev:mfa`. It does not support using a security key, but for users with u2f MFA, it takes advantage of the U2F Authorization Code feature. This package exposes the following client methods for MFA.
 - useU2FAuthorizationCode
 - finishLogin
 - loginWithMFA
