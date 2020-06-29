@@ -14,7 +14,7 @@ Meteor React Native is now published under `@meteorrn/core`. We will continue to
 3. Confirm you have `@react-native-community/async-storage@>=1.8.1` installed. If you are using Expo, or otherwise cannot use `@react-native-community/async-storage`, see *Custom Storage Adapter* below.
 
 
-### Custom Storage Adapter
+### A note on AsyncStorage
 This package uses `@react-native-community/async-storage` by default. This may cause issues if you are using certain React Native versions, or if you are using Expo. To use a custom AsyncStorage implementation, pass it as an option in `Meteor.connect`:
 
 ```javascript
@@ -24,6 +24,8 @@ import { AsyncStorage } from 'react-native';
 
 Meteor.connect("wss://myapp.meteor.com/websocket", { AsyncStorage });
 ```
+
+If you are using the `AsyncStorage` API yourself, its important that you use the same version that MeteorRN is using, or issues could be caused due to the conflicting versions. Make sure you are using the same AsyncStorage you pass into Meteor (or `@react-native-community/async-storage` if you aren't passing anything), or you can use [MeteorRN's package interface](#package-interface). 
 
 # Basic Usage
 
@@ -86,3 +88,15 @@ For React Native <0.60.0 use [react-native-meteor](https://github.com/inProgress
 
 # Changelog
 The [GitHub Releases Tab](https://github.com/TheRealNate/meteor-react-native/releases) includes a full changelog
+
+# Package Interface
+
+To ensure that MeteorRN companion packages use the same versions of external packages like AsyncStorage as the core, `@meteorrn/core` provides a package interface, where companion packages can access certain packages. Currently package interface returns an object with the following properties:
+- AsyncStorage 
+
+### Usage
+````
+import Meteor from '@meteorrn/core';
+
+const {AsyncStorage} = Meteor.packageInterface();
+````
