@@ -21,6 +21,26 @@ MyLocalCollection.find().fetch()
 
 You should use LocalCollection whenever you want to access the stored data. The Local Collection will observe the live collection and automatically update when the live collection does.
 
+### Data Loading:
+A `Local.Collection` exposes a property called `loadPromise` which resolves once local data has been loaded into the collection. You can use this to control loading flow, like so:
+
+````
+const Todos = new Local.Collection("todos");
+
+class Home extends React.Component {
+  state = {dataLoading:true};
+  
+  componentDidMount() {
+    Todos.loadPromise.then(() => {
+      this.setState({dataLoading:false});
+    }).catch(e => {
+      // Uh oh, an error loading the data.
+    });
+  }
+}
+````
+
+
 ### API Docs
 
 #### Collection(name, options)
@@ -35,6 +55,11 @@ Creates a Local Collection that mirrors changes to collection with specified nam
 *sort (default: null):* Specifies a sort method to maintain documents by
 
 *disableDateParser (default: false):* Disables the default behavior when parsing the stringified collection of automatically converting date strings into JS dates
+
+**Properties:**
+A `Local.Collection` is a local Mongo Collection that exposes the following additional properties
+
+*loadPromise (Promise):* A promise that resolves when the local data has been inserted into the collection. While this will typically only take a few hundred milliseconds, if you have UI that depends on the local data, you may want to use this promise in your loading flow.
 
 ### Compatability
 This package takes advantage of observe and local collections, added in `@meteorrn/core@2.0.8`.
