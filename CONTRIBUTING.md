@@ -25,7 +25,7 @@ Ondce you have your testing app installed on a device, use the following test ca
 - Device with Internet Connection
 - Device that is Offline
 
-**Updates that interact with `AsyncStorage` or `NetInfo`:**
+**Updates that interact with `AsyncStorage`, `NetInfo`, or `trackr`:**
 - Opening from background (device put in sleep mode for at least 60 seconds, then reopened)
 
 **Updates that interact with `NetInfo`:**
