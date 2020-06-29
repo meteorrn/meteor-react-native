@@ -47,12 +47,9 @@ let finishLogin = (finishLoginParams, code) => new Promise(async (resolve, rejec
     let methodArguments = await assembleChallengeCompletionArguments(finishLoginParams, code);
     
     Meteor._startLoggingIn();
-    Meteor.call(
-      methodName,
-      methodArguments,
-      (err, result) => {
-        this._endLoggingIn();
-        this._handleLoginCallback(err, result);
+    Meteor.call(methodName, ...methodArguments, (err, result) => {
+        Meteor._endLoggingIn();
+        Meteor._handleLoginCallback(err, result);
         
         if(err) {
             reject(err);
