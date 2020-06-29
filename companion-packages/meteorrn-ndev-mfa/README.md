@@ -19,7 +19,12 @@ MFA.login(username, password).then(r => {
     }
     else {
         let code = await collectTheCodeSomehow();
-        MFA.finishLogin(r.finishLoginParams, MFA.useU2FAuthorizationCode(code)).then(() => {
+        
+        if(r.method === "u2f") {
+          code = MFA.useU2FAuthorizationCode(code);
+        }
+        
+        MFA.finishLogin(r.finishLoginParams, code).then(() => {
             // Login Complete
         }).catch(err => {
             // Error (Invalid Code?)
