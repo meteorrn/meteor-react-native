@@ -1,3 +1,51 @@
+## Meteor
+`import Meteor from '@meteorrn/core';`
+
+### `Meteor.connect(url, options)`
+Connect to the Meteor Server
+
+**url**: The URL of your Meteor Server websocket. This should typically start with `ws://` (insecure, like `http://`) or `wss://` (secure, like `https://`), and have the path `/websocket`, e.g.: `wss://myapp.meteor.com/websocket`
+
+**options**:
+* autoConnect **boolean** [true] whether to establish the connection to the server upon instantiation. When false, one can manually establish the connection with the Meteor.ddp.connect method.
+* autoReconnect **boolean** [true] whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.
+* reconnectInterval **number** [10000] the interval in ms between reconnection attempts.
+* AsyncStorage **object** your preferred AsyncStorage. Defaults to `'@react-native-community/async-storage'` as a peer dependency. You will likely want to use `{ AsyncStorage } from 'react-native'` if using Expo
+
+### `Meteor.disconnect()`
+Disconnect from the Meteor server
+
+### `Meteor.call(name, [arg1, arg2...], [asyncCallback])`
+Perform a call to a method
+
+### `Meteor.subscribe(name, [arg1, arg2, arg3])`
+Subscribe to a collection
+
+### `Meteor.user()`
+Returns the logged in user
+
+### `Meteor.users`
+Access the meteor users collection
+
+### `Meteor.userId()`
+Returns the userId of the logged in user
+
+### `Meteor.status()`
+Gets the current connection status. Returns an object with the following properties:
+
+**connected**: Boolean
+
+**status**: "connected" || "disconnected"
+
+### `Meteor.loggingIn()`
+Returns true if attempting to login
+
+### `Meteor.loginWithPassword`
+
+### `Meteor.logout`
+
+### `Meteor.logoutOtherClients`
+
 ## withTracker
 `import { withTracker } from '@meteorrn/core'`;
 
@@ -15,57 +63,10 @@ export default withTracker(() => {
 })(MyComponent);
 ```
 
-## Meteor
-`import Meteor from '@meteorrn/core'`
-
-#### `Meteor.connect(url, options)`
-Connect to the Meteor Server
-
-**options**:
-* autoConnect **boolean** [true] whether to establish the connection to the server upon instantiation. When false, one can manually establish the connection with the Meteor.ddp.connect method.
-* autoReconnect **boolean** [true] whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.
-* reconnectInterval **number** [10000] the interval in ms between reconnection attempts.
-* AsyncStorage **object** your preferred AsyncStorage. Defaults to `'@react-native-community/async-storage'` as a peer dependency. You will likely want to use `{ AsyncStorage } from 'react-native'` if using Expo
-
-#### `Meteor.disconnect()`
-Disconnect from the Meteor server
-
-#### `Meteor.call(name, [arg1, arg2...], [asyncCallback])`
-Perform a call to a method
-
-#### `Meteor.subscribe(name, [arg1, arg2, arg3])`
-Subscribe to a collection
-
-#### `Meteor.user()`
-Returns the logged in user
-
-#### `Meteor.users`
-Access the meteor users collection
-
-#### `Meteor.userId()`
-Returns the userId of the logged in user
-
-#### `Meteor.status()`
-Gets the current connection status. Returns an object with the following properties:
-
-**connected**: Boolean
-
-**status**: "connected" || "disconnected"
-
-#### `Meteor.loggingIn()`
-Returns true if attempting to login
-
-#### `Meteor.loginWithPassword`
-
-#### `Meteor.logout`
-
-#### `Meteor.logoutOtherClients`
-
 ## ReactiveDict
 `import { ReactiveDict } from '@meteorrn/core'`
 
 https://atmospherejs.com/meteor/reactive-dict
-
 
 
 ## Mongo
