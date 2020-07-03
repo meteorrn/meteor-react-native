@@ -3,7 +3,7 @@ A set of packages allowing you to connect your React Native app to your Meteor s
 
 [Full API Documentation](/docs/api.md)
 
-You can view a guide to using React Native with Meteor on the [Official Meteor Guide](https://guide.meteor.com/react-native.html)
+If you're new to React Native, you can view a guide to using React Native with Meteor on the [Official Meteor Guide](https://guide.meteor.com/react-native.html)
 
 # New Package Name
 Meteor React Native is now published under `@meteorrn/core`. We will continue to publish updates to the `meteor-react-native` repository until `2.1.0`. We recommend updating to the new package name as soon as possible.
