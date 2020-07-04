@@ -18,6 +18,7 @@ import User from './user/User';
 import Accounts from './user/Accounts';
 
 module.exports = {
+  Random,
   Accounts,
   Mongo,
   Tracker: Trackr,
