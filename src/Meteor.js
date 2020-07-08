@@ -69,6 +69,10 @@ module.exports = {
     if (!endpoint) endpoint = Data._endpoint;
     if (!options) options = Data._options;
 
+    if((!endpoint.startsWith("ws") || !endpoint.endsWith("/websocket")) && !options.suppressUrlErrors) {
+      throw new Error(`Your url "${endpoint}" may be in the wrong format. It should start with "ws://" or "wss://" and end with "/websocket", e.g. "wss://myapp.meteor.com/websocket". To disable this warning, connect with option "suppressUrlErrors" as true, e.g. Meteor.connect("${endpoint}", {suppressUrlErrors:true});`)
+    }
+    
     if (!options.AsyncStorage) {
       const AsyncStorage = require('@react-native-community/async-storage').default;
 
