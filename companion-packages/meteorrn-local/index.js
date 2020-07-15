@@ -75,6 +75,7 @@ const Local = {
         };
         
         LocalCol.loadPromise = loadData();
+        LocalCol.save = storeLocalCol;
         
         return LocalCol;
     }
