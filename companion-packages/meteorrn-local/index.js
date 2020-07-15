@@ -8,7 +8,7 @@ let fixDates = function (k,v) {
     return v;
 };
 
-const defaultOptions = {disableDateParser:false};
+const defaultOptions = {disableDateParser:false, batchUpdates:false};
 const Local = {
     Collection:function (name, _options={}) {
         const { AsyncStorage } = packageInterface();
@@ -16,7 +16,10 @@ const Local = {
         
         const LiveCol = new Mongo.Collection(name);
         const LocalCol = new Mongo.Collection(null);
-        const storeLocalCol = async () => {
+        let batchQueued = false;
+        
+        const _storeLocalCol = async () => {
+            batchQueued = false;
             const data = LocalCol.find({}, {sort:options.sort}).fetch();
             if(options.groupBy) {
                 const groups = {};
@@ -37,6 +40,22 @@ const Local = {
                 await AsyncStorage.setItem("@mrnlocal:" + name, JSON.stringify(data));
             }
         };
+        
+        const storeLocalCol = async () => {
+            if(options.batchUpdates) {
+                if(batchQueued) {
+                    return;
+                }
+                else {
+                    batchQueued = true;
+                    setTimeout(_storeLocalCol, 150);
+                    return;
+                }
+            }
+            else {
+                await _storeLocalCol();
+            }
+        }
         
         const loadData = async () => {
             
