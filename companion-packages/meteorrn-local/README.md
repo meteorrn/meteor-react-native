@@ -40,6 +40,8 @@ class Home extends React.Component {
 }
 ````
 
+### Data Grouping
+By default, this package stores each collection in its own AsyncStorage field. If you plan to store very large amounts of data in a collection, consider grouping the data. When you specify a certain field, data will be grouped on this field and stored in separate AsyncStorage fields. If you specify a `limit`, the limit will be applied to individual groups instead of the collection as a whole.
 
 ### API Docs
 
