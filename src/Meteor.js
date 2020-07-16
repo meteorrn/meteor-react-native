@@ -32,7 +32,7 @@ module.exports = {
   ReactiveDict,
   Collection,
   collection(name, options) {
-    console.warn("Meteor.collection is deprecated. Use Mongo.Collection");
+    console.error("Meteor.collection is deprecated. Use Mongo.Collection");
     return new Collection(name, options);
   },
   withTracker,
