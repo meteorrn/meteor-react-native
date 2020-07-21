@@ -5,7 +5,7 @@
   "main": "src/Meteor.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TheRealNate/react-native-meteor.git"
+    "url": "git+https://github.com/TheRealNate/meteor-react-native.git"
   },
   "keywords": [
     "react-component",
@@ -18,9 +18,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/TheRealNate/react-native-meteor/issues"
+    "url": "https://github.com/TheRealNate/meteor-react-native/issues"
   },
-  "homepage": "https://github.com/TheRealNate/react-native-meteor#readme",
+  "homepage": "https://github.com/TheRealNate/meteor-react-native#readme",
   "dependencies": {
     "@babel/runtime": "^7.9.6",
     "base-64": "^0.1.0",
