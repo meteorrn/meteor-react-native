@@ -2,6 +2,7 @@ import Data from '../Data';
 import call from '../Call';
 import User from './User';
 import { hashPassword } from '../../lib/utils';
+import {isVerbose} from '../Meteor.js';
 
 module.exports = {
   _hashPassword:hashPassword,
@@ -14,10 +15,10 @@ module.exports = {
 
     User._startLoggingIn();
     call('createUser', options, (err, result) => {
+      isVerbose && console.info("Accounts.createUser::: err:", err, "result:", result);
+      
       User._endLoggingIn();
-
       User._handleLoginCallback(err, result);
-
       callback(err);
     });
   },
@@ -52,6 +53,8 @@ module.exports = {
     }
 
     call('resetPassword', token, hashPassword(newPassword), (err, result) => {
+      isVerbose && console.info("Accounts.resetPassword::: err:", err, "result:", result);
+
       if (!err) {
         User._loginWithToken(result.token);
       }

@@ -2,6 +2,7 @@ import Data from '../Data';
 import { hashPassword } from '../../lib/utils';
 import call from '../Call';
 import Mongo from '../Mongo';
+import {isVerbose} from '../Meteor.js';
 
 const TOKEN_KEY = 'reactnativemeteor_usertoken';
 const Users = new Mongo.Collection("users");
@@ -89,12 +90,13 @@ module.exports = {
   },
   _handleLoginCallback(err, result) {
     if (!err) {
-      //save user id and token
+      isVerbose && console.info("User._handleLoginCallback::: token:", result.token, "id:", result.id);
       Data._options.AsyncStorage.setItem(TOKEN_KEY, result.token);
       Data._tokenIdSaved = result.token;
       this._userIdSaved = result.id;
       Data.notify('onLogin');
     } else {
+      isVerbose && console.info("User._handleLoginCallback::: error:", err);
       Data.notify('onLoginFailure');
       this.handleLogout();
     }

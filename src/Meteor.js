@@ -2,7 +2,7 @@ import NetInfo from "@react-native-community/netinfo";
 
 import { name as packageName } from '../package.json';
 
-if(name !== "@meteorrn/core") {
+if(packageName !== "@meteorrn/core") {
   console.error(`DEPRECATED: Please change "meteor-react-native" in your package.json to "@meteorrn/core" and run npm install`);
 }
 
@@ -23,7 +23,12 @@ import ReactiveDict from './ReactiveDict';
 import User from './user/User';
 import Accounts from './user/Accounts';
 
+export let isVerbose = false;
+
 module.exports = {
+  enableVerbose() {
+    isVerbose = true;
+  },
   Random,
   Accounts,
   Mongo,
@@ -116,7 +121,9 @@ module.exports = {
 
       Data.notify('change');
 
-      console.info('Connected to DDP server.');
+      if(isVerbose) {
+        console.info('Connected to DDP server.');
+      }
       this._loadInitialUser().then(() => {
         this._subscriptionsRestart();
       });

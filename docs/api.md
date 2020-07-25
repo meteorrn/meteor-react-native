@@ -94,3 +94,12 @@ Mirrors Meteor's observe behavior. Accepts object with the properties `added`, `
 * [Accounts.onLogin](http://docs.meteor.com/#/full/accounts_onlogin)
 * [Accounts.onLoginFailure](http://docs.meteor.com/#/full/accounts_onloginfailure)
 * `Accounts._hashPassword` - SHA-256 hashes password, for use with methods that may require authentication
+
+## enableVerbose
+`import { enableVerbose } from '@meteorrn/core';`
+
+Enables verbose mode which logs detailed information about accounts. **Note:** this will expose login tokens and other private information to the console.
+
+````
+enableVerbose()
+````
