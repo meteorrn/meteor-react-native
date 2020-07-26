@@ -4,9 +4,10 @@ import User from './User';
 import { hashPassword } from '../../lib/utils';
 import {isVerbose} from '../Meteor.js';
 
-module.exports = {
-  _hashPassword:hashPassword,
-  createUser(options, callback = () => {}) {
+class AccountsPassword {
+  _hashPassword = hashPassword;
+  
+  createUser = (options, callback = () => {}) => {
     if (options.username) options.username = options.username;
     if (options.email) options.email = options.email;
 
@@ -21,8 +22,9 @@ module.exports = {
       User._handleLoginCallback(err, result);
       callback(err);
     });
-  },
-  changePassword(oldPassword, newPassword, callback = () => {}) {
+  };
+  
+  changePassword = (oldPassword, newPassword, callback = () => {}) => {
     //TODO check Meteor.user() to prevent if not logged
 
     if (typeof newPassword != 'string' || !newPassword) {
@@ -37,8 +39,9 @@ module.exports = {
         callback(err);
       }
     );
-  },
-  forgotPassword(options, callback = () => {}) {
+  }
+  
+  forgotPassword = (options, callback = () => {}) => {
     if (!options.email) {
       return callback('Must pass options.email');
     }
@@ -46,8 +49,9 @@ module.exports = {
     call('forgotPassword', options, err => {
       callback(err);
     });
-  },
-  resetPassword(token, newPassword, callback = () => {}) {
+  };
+  
+  resetPassword = (token, newPassword, callback = () => {}) => {
     if (!newPassword) {
       return callback('Must pass a new password');
     }
@@ -61,11 +65,15 @@ module.exports = {
 
       callback(err);
     });
-  },
-  onLogin(cb) {
+  };
+  
+  onLogin = (cb) => {
     Data.on('onLogin', cb);
-  },
-  onLoginFailure(cb) {
+  };
+  
+  onLoginFailure = (cb) => {
     Data.on('onLoginFailure', cb);
-  },
-};
+  }
+}
+
+export default new AccountsPassword();
