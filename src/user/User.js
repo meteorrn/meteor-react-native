@@ -2,7 +2,7 @@ import Data from '../Data';
 import { hashPassword } from '../../lib/utils';
 import call from '../Call';
 import Mongo from '../Mongo';
-import {isVerbose} from '../Meteor.js';
+import {connect, isVerbose} from '../Meteor.js';
 
 const TOKEN_KEY = 'reactnativemeteor_usertoken';
 const Users = new Mongo.Collection("users");
@@ -27,7 +27,7 @@ const User = {
   logout(callback) {
     call('logout', err => {
       User.handleLogout();
-      User.connect();
+      connect();
 
       typeof callback == 'function' && callback(err);
     });
