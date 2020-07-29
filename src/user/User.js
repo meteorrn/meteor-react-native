@@ -7,27 +7,27 @@ import {isVerbose} from '../Meteor.js';
 const TOKEN_KEY = 'reactnativemeteor_usertoken';
 const Users = new Mongo.Collection("users");
 
-module.exports = {
+const User = {
   users:Users,
   user() {
-    if (!this._userIdSaved) return null;
+    if (!User._userIdSaved) return null;
 
-    return Users.findOne(this._userIdSaved);
+    return Users.findOne(User._userIdSaved);
   },
   userId() {
-    if (!this._userIdSaved) return null;
+    if (!User._userIdSaved) return null;
 
-    const user = Users.findOne(this._userIdSaved);
+    const user = Users.findOne(User._userIdSaved);
     return user && user._id;
   },
   _isLoggingIn: true,
   loggingIn() {
-    return this._isLoggingIn;
+    return User._isLoggingIn;
   },
   logout(callback) {
     call('logout', err => {
-      this.handleLogout();
-      this.connect();
+      User.handleLogout();
+      User.connect();
 
       typeof callback == 'function' && callback(err);
     });
@@ -35,7 +35,7 @@ module.exports = {
   handleLogout() {
     Data._options.AsyncStorage.removeItem(TOKEN_KEY);
     Data._tokenIdSaved = null;
-    this._userIdSaved = null;
+    User._userIdSaved = null;
   },
   loginWithPassword(selector, password, callback) {
     if (typeof selector === 'string') {
@@ -43,7 +43,7 @@ module.exports = {
       else selector = { email: selector };
     }
 
-    this._startLoggingIn();
+    User._startLoggingIn();
     call(
       'login',
       {
@@ -51,9 +51,9 @@ module.exports = {
         password: hashPassword(password),
       },
       (err, result) => {
-        this._endLoggingIn();
+        User._endLoggingIn();
 
-        this._handleLoginCallback(err, result);
+        User._handleLoginCallback(err, result);
 
         typeof callback == 'function' && callback(err);
       },
@@ -63,7 +63,7 @@ module.exports = {
     call('getNewToken', (err, res) => {
       if (err) return callback(err);
 
-      this._handleLoginCallback(err, res);
+      User._handleLoginCallback(err, res);
 
       call('removeOtherTokens', err => {
         callback(err);
@@ -71,21 +71,21 @@ module.exports = {
     });
   },
   _login(user, callback) {
-    this._startLoggingIn();
-    this.call('login', user, (err, result) => {
-      this._endLoggingIn();
+    User._startLoggingIn();
+    User.call('login', user, (err, result) => {
+      User._endLoggingIn();
 
-      this._handleLoginCallback(err, result);
+      User._handleLoginCallback(err, result);
 
       typeof callback == 'function' && callback(err);
     });
   },
   _startLoggingIn() {
-    this._isLoggingIn = true;
+    User._isLoggingIn = true;
     Data.notify('loggingIn');
   },
   _endLoggingIn() {
-    this._isLoggingIn = false;
+    User._isLoggingIn = false;
     Data.notify('loggingIn');
   },
   _handleLoginCallback(err, result) {
@@ -93,25 +93,25 @@ module.exports = {
       isVerbose && console.info("User._handleLoginCallback::: token:", result.token, "id:", result.id);
       Data._options.AsyncStorage.setItem(TOKEN_KEY, result.token);
       Data._tokenIdSaved = result.token;
-      this._userIdSaved = result.id;
+      User._userIdSaved = result.id;
       Data.notify('onLogin');
     } else {
       isVerbose && console.info("User._handleLoginCallback::: error:", err);
       Data.notify('onLoginFailure');
-      this.handleLogout();
+      User.handleLogout();
     }
     Data.notify('change');
   },
   _loginWithToken(value) {
     Data._tokenIdSaved = value;
     if (value !== null) {
-      this._startLoggingIn();
+      User._startLoggingIn();
       call('login', { resume: value }, (err, result) => {
-        this._endLoggingIn();
-        this._handleLoginCallback(err, result);
+        User._endLoggingIn();
+        User._handleLoginCallback(err, result);
       });
     } else {
-      this._endLoggingIn();
+      User._endLoggingIn();
     }
   },
   getAuthToken() {
@@ -124,7 +124,9 @@ module.exports = {
     } catch (error) {
       console.warn('AsyncStorage error: ' + error.message);
     } finally {
-      this._loginWithToken(value);
+      User._loginWithToken(value);
     }
   },
 };
+
+export default User;
