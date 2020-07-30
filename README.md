@@ -62,16 +62,20 @@ export default AppContainer;
 
 # Companion Packages
 
-There are a few official companion packages available to add new features. Some packages provide a polyfill for Atmosphere packages, others simplify your app's integration with Native features (like local data storage).
+The `@meteorrn/core` package has been kept as light as possible. To access more features, you can use companion packages.
 
-Beta Packages:
-- [`@meteorrn/ndev-mfa`](/companion-packages/meteorrn-ndev-mfa): Package that allows your RN app to work with `meteor/ndev:mfa`
-- [`@meteorrn/local`](/companion-packages/meteorrn-local): Package for storing of data locally that works seamlessly with MeteorRN by injecting data into a local minimongo collection
+Companion packages are NPM packages that are made specifically to extend MeteorRN. And since Atmosphere isn't available in React Native, MeteorRN uses companion packages that contain the client-side/relevant code from a Meteor package to allow your MeteorRN app to use the same package API as your Meteor app.
+
+Native Feature Packages:
+- [`@meteorrn/local`](/companion-packages/meteorrn-local)(Beta): Package for storing of data locally that works seamlessly with MeteorRN by injecting data into a local minimongo collection
+
+Atmosphere Packages:
+- [`@meteorrn/ndev-mfa`](/companion-packages/meteorrn-ndev-mfa)(Beta): Package that allows your RN app to work with `meteor/ndev:mfa`
 
 Planned/Upcoming Packages:
 - `@meteorrn/queued-calls`: Package that allows you to queue Meteor calls that will be performed when internet/server is available
 
-If you have an idea for a companion package, please open an issue. If you would like to publish your own companion package, we recommend a package name with the prefix `mrn-`.
+If you have an idea for a companion package, please open an issue. If you would like to publish your own companion package, we recommend a package name with the prefix `mrn-`. 
 
 # Compatibility
 For React Native >=0.60.0 use this package
