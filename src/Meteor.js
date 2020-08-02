@@ -81,7 +81,7 @@ module.exports = {
     if (!options) options = Data._options;
 
     if((!endpoint.startsWith("ws") || !endpoint.endsWith("/websocket")) && !options.suppressUrlErrors) {
-      throw new Error(`Your url "${endpoint}" may be in the wrong format. It should start with "ws://" or "wss://" and end with "/websocket", e.g. "wss://myapp.meteor.com/websocket". To disable this warning, connect with option "suppressUrlErrors" as true, e.g. Meteor.connect("${endpoint}", {suppressUrlErrors:true});`)
+      throw new Error(`Your url "${endpoint}" may be in the wrong format. It should start with "ws://" or "wss://" and end with "/websocket", e.g. "wss://myapp.meteor.com/websocket". To disable this warning, connect with option "suppressUrlErrors" as true, e.g. Meteor.connect("${endpoint}", {suppressUrlErrors:true});`);
     }
     
     if (!options.AsyncStorage) {
@@ -90,7 +90,7 @@ module.exports = {
       if (AsyncStorage) {
         options.AsyncStorage = AsyncStorage;
       } else {
-        throw new Error('No AsyncStorage detected. Import an AsyncStorage package and add to `options` in the Meteor.connect() method', e);
+        throw new Error('No AsyncStorage detected. Import an AsyncStorage package and add to `options` in the Meteor.connect() method');
       }
     }
 
@@ -133,7 +133,9 @@ module.exports = {
     Data.ddp.on('disconnected', () => {
       Data.notify('change');
 
-      console.info('Disconnected from DDP server.');
+      if(isVerbose) {
+        console.info('Disconnected from DDP server.');
+      }
 
       if (!Data.ddp.autoReconnect) return;
 
@@ -222,10 +224,10 @@ module.exports = {
     });
   },
   subscribe(name) {
-    var params = Array.prototype.slice.call(arguments, 1);
-    var callbacks = {};
+    let params = Array.prototype.slice.call(arguments, 1);
+    let callbacks = {};
     if (params.length) {
-      var lastParam = params[params.length - 1];
+      let lastParam = params[params.length - 1];
       if (typeof lastParam == 'function') {
         callbacks.onReady = params.pop();
       } else if (
@@ -258,7 +260,7 @@ module.exports = {
     // them all active.
 
     let existing = false;
-    for (var i in Data.subscriptions) {
+    for (let i in Data.subscriptions) {
       const sub = Data.subscriptions[i];
       if (sub.inactive && sub.name === name && EJSON.equals(sub.params, params))
         existing = sub;
@@ -316,7 +318,7 @@ module.exports = {
       ready: function() {
         if (!Data.subscriptions[id]) return false;
 
-        var record = Data.subscriptions[id];
+        let record = Data.subscriptions[id];
         record.readyDeps.depend();
         return record.ready;
       },
