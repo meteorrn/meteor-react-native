@@ -2,7 +2,7 @@ import Data from '../Data';
 import call from '../Call';
 import User from './User';
 import { hashPassword } from '../../lib/utils';
-import {isVerbose} from '../Meteor.js';
+import Meteor from '../Meteor.js';
 
 class AccountsPassword {
   _hashPassword = hashPassword;
@@ -16,7 +16,7 @@ class AccountsPassword {
 
     User._startLoggingIn();
     call('createUser', options, (err, result) => {
-      isVerbose && console.info("Accounts.createUser::: err:", err, "result:", result);
+      Meteor.isVerbose && console.info("Accounts.createUser::: err:", err, "result:", result);
       
       User._endLoggingIn();
       User._handleLoginCallback(err, result);
@@ -57,7 +57,7 @@ class AccountsPassword {
     }
 
     call('resetPassword', token, hashPassword(newPassword), (err, result) => {
-      isVerbose && console.info("Accounts.resetPassword::: err:", err, "result:", result);
+      Meteor.isVerbose && console.info("Accounts.resetPassword::: err:", err, "result:", result);
 
       if (!err) {
         User._loginWithToken(result.token);

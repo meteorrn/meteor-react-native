@@ -23,9 +23,10 @@ import ReactiveDict from './ReactiveDict';
 import User from './user/User';
 import Accounts from './user/Accounts';
 
-export let isVerbose = false;
+let isVerbose = false;
 
 module.exports = {
+  isVerbose,
   enableVerbose() {
     isVerbose = true;
   },
@@ -348,3 +349,5 @@ module.exports = {
     return handle;
   },
 };
+
+export default module.exports;
