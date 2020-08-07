@@ -26,7 +26,7 @@ let assembleChallengeCompletionArguments = async function (finishLoginParams, co
             assertion = {challengeId, challengeSecret, ...code};
         }
         else {
-            assertion = await solveU2FChallenge(res);
+            throw new Error("Code must be a U2FAuthorizationCode");
         }
         methodArguments.push(assertion);
     }
