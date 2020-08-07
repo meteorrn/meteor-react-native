@@ -5,16 +5,7 @@ import Data from '../Data';
 import MeteorDataManager from './MeteorDataManager';
 
 const ReactMeteorData = {
-  UNSAFE_componentWillMount() {
-    Data.waitDdpReady(() => {
-      if (this.getMeteorData) {
-        this.data = {};
-        this._meteorDataManager = new MeteorDataManager(this);
-        const newData = this._meteorDataManager.calculateData();
-        this._meteorDataManager.updateData(newData);
-      }
-    });
-  },
+
 
   UNSAFE_componentWillUpdate(nextProps, nextState) {
     if (this.startMeteorSubscriptions) {
@@ -65,6 +56,7 @@ export { ReactMeteorData };
 
 class ReactComponent extends React.Component {}
 Object.assign(ReactComponent.prototype, ReactMeteorData);
+
 class ReactPureComponent extends React.PureComponent {}
 Object.assign(ReactPureComponent.prototype, ReactMeteorData);
 
@@ -81,9 +73,23 @@ export default function connect(options) {
   const BaseComponent = pure ? ReactPureComponent : ReactComponent;
   return WrappedComponent =>
     class ReactMeteorDataComponent extends BaseComponent {
+      constructor(props) {
+        super(props);
+
+        Data.waitDdpReady(() => {
+          if (this.getMeteorData) {
+            this.data = {};
+            this._meteorDataManager = new MeteorDataManager(this);
+            const newData = this._meteorDataManager.calculateData();
+            this._meteorDataManager.updateData(newData);
+          }
+        });
+      }
+
       getMeteorData() {
         return getMeteorData(this.props);
       }
+
       render() {
         return <WrappedComponent {...this.props} {...this.data} />;
       }
