@@ -1,7 +1,7 @@
 import Data from '../Data';
 import { hashPassword } from '../../lib/utils';
 import Mongo from '../Mongo';
-import {call, connect, isVerbose} from '../Meteor.js';
+import Meteor from '../Meteor.js';
 
 const TOKEN_KEY = 'reactnativemeteor_usertoken';
 const Users = new Mongo.Collection("users");
@@ -24,9 +24,9 @@ const User = {
     return User._isLoggingIn;
   },
   logout(callback) {
-    call('logout', err => {
+    Meteor.call('logout', err => {
       User.handleLogout();
-      connect();
+      Meteor.connect();
 
       typeof callback == 'function' && callback(err);
     });
@@ -43,7 +43,7 @@ const User = {
     }
 
     User._startLoggingIn();
-    call(
+    Meteor.call(
       'login',
       {
         user: selector,
@@ -59,19 +59,19 @@ const User = {
     );
   },
   logoutOtherClients(callback = () => {}) {
-    call('getNewToken', (err, res) => {
+    Meteor.call('getNewToken', (err, res) => {
       if (err) return callback(err);
 
       User._handleLoginCallback(err, res);
 
-      call('removeOtherTokens', err => {
+      Meteor.call('removeOtherTokens', err => {
         callback(err);
       });
     });
   },
   _login(user, callback) {
     User._startLoggingIn();
-    call('login', user, (err, result) => {
+    Meteor.call('login', user, (err, result) => {
       User._endLoggingIn();
 
       User._handleLoginCallback(err, result);
@@ -89,13 +89,13 @@ const User = {
   },
   _handleLoginCallback(err, result) {
     if (!err) {
-      isVerbose && console.info("User._handleLoginCallback::: token:", result.token, "id:", result.id);
+      Meteor.isVerbose && console.info("User._handleLoginCallback::: token:", result.token, "id:", result.id);
       Data._options.AsyncStorage.setItem(TOKEN_KEY, result.token);
       Data._tokenIdSaved = result.token;
       User._userIdSaved = result.id;
       Data.notify('onLogin');
     } else {
-      isVerbose && console.info("User._handleLoginCallback::: error:", err);
+      Meteor.isVerbose && console.info("User._handleLoginCallback::: error:", err);
       Data.notify('onLoginFailure');
       User.handleLogout();
     }
@@ -104,12 +104,14 @@ const User = {
   _loginWithToken(value) {
     Data._tokenIdSaved = value;
     if (value !== null) {
+      Meteor.isVerbose && console.info("User._loginWithToken::: token:", value);
       User._startLoggingIn();
-      call('login', { resume: value }, (err, result) => {
+      Meteor.call('login', { resume: value }, (err, result) => {
         User._endLoggingIn();
         User._handleLoginCallback(err, result);
       });
     } else {
+      Meteor.isVerbose && console.info("User._loginWithToken::: token is null");
       User._endLoggingIn();
     }
   },
