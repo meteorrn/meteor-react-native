@@ -1,6 +1,5 @@
 import Data from '../Data';
 import { hashPassword } from '../../lib/utils';
-import call from '../Call';
 import Mongo from '../Mongo';
 import {call, connect, isVerbose} from '../Meteor.js';
 
