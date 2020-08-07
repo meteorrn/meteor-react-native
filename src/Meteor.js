@@ -17,6 +17,7 @@ import { Collection, runObservers, localCollections } from './Collection';
 import call from './Call';
 
 import withTracker from './components/ReactMeteorData';
+import useTracker from './components/useTracker';
 
 import ReactiveDict from './ReactiveDict';
 
@@ -42,6 +43,7 @@ module.exports = {
     return new Collection(name, options);
   },
   withTracker,
+  useTracker,
   getData() {
     return Data;
   },
