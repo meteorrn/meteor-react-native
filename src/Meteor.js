@@ -16,7 +16,8 @@ import Mongo from './Mongo';
 import { Collection, runObservers, localCollections } from './Collection';
 import call from './Call';
 
-import withTracker from './components/ReactMeteorData';
+import withTracker from './components/withTracker';
+import useTracker from './components/useTracker';
 
 import ReactiveDict from './ReactiveDict';
 
@@ -42,6 +43,7 @@ module.exports = {
     return new Collection(name, options);
   },
   withTracker,
+  useTracker,
   getData() {
     return Data;
   },
@@ -84,7 +86,7 @@ module.exports = {
     if((!endpoint.startsWith("ws") || !endpoint.endsWith("/websocket")) && !options.suppressUrlErrors) {
       throw new Error(`Your url "${endpoint}" may be in the wrong format. It should start with "ws://" or "wss://" and end with "/websocket", e.g. "wss://myapp.meteor.com/websocket". To disable this warning, connect with option "suppressUrlErrors" as true, e.g. Meteor.connect("${endpoint}", {suppressUrlErrors:true});`);
     }
-    
+
     if (!options.AsyncStorage) {
       const AsyncStorage = require('@react-native-community/async-storage').default;
 
@@ -155,9 +157,9 @@ module.exports = {
         _id: message.id,
         ...message.fields,
       };
-      
+
       Data.db[message.collection].upsert(document);
-      
+
       runObservers("added", message.collection, document);
     });
 
@@ -192,18 +194,18 @@ module.exports = {
           ...message.fields,
           ...unset,
         };
-        
+
         const oldDocument = Data.db[message.collection].findOne({_id:message.id});
-        
+
         Data.db[message.collection].upsert(document);
-        
-        runObservers("changed", message.collection, document, oldDocument);        
+
+        runObservers("changed", message.collection, document, oldDocument);
       }
     });
 
     Data.ddp.on('removed', message => {
       if(Data.db[message.collection]) {
-        const oldDocument = Data.db[message.collection].findOne({_id:message.id});        
+        const oldDocument = Data.db[message.collection].findOne({_id:message.id});
         Data.db[message.collection].del(message.id);
         runObservers("removed", message.collection, oldDocument);
       }
