@@ -8,9 +8,6 @@ class AccountsPassword {
   _hashPassword = hashPassword;
   
   createUser = (options, callback = () => {}) => {
-    if (options.username) options.username = options.username;
-    if (options.email) options.email = options.email;
-
     // Replace password with the hashed password.
     options.password = hashPassword(options.password);
 
