@@ -55,7 +55,7 @@ const Local = {
             else {
                 await _storeLocalCol();
             }
-        }
+        };
         
         const loadData = async () => {
             
