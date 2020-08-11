@@ -201,7 +201,6 @@ export class Collection {
   }
 
   helpers(helpers) {
-    var self = this;
     let _transform;
 
     if (this._transform && !this._helpers) _transform = this._transform;
