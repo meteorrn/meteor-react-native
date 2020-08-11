@@ -154,7 +154,6 @@ export class Collection {
   update(id, modifier, options = {}, callback = () => {}) {
     if (typeof options == 'function') {
       callback = options;
-      options = {};
     }
 
     if (!this._collection.get(id))
