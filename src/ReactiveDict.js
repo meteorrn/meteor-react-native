@@ -74,8 +74,6 @@ export default class ReactiveDict {
     )
       throw new Error('ReactiveDict.equals: value must be scalar');
 
-    const serializedValue = stringify(value);
-
     let oldValue = undefined;
     if (Object.keys(this.keys).indexOf(key) != -1) {
       oldValue = parse(this.keys[key]);
