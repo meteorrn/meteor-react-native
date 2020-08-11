@@ -4,7 +4,7 @@ import { withTracker, Meteor } from 'meteor-react-native';
 
 class Login extends React.Component {
 
-  state = {email:"", password:"", loading:false};
+  state = {email:"", password:""};
 
   onLogin = () => {
     let { email, password } = this.state;
