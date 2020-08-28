@@ -154,7 +154,6 @@ export class Collection {
   update(id, modifier, options = {}, callback = () => {}) {
     if (typeof options == 'function') {
       callback = options;
-      options = {};
     }
 
     if (!this._collection.get(id))
@@ -202,7 +201,6 @@ export class Collection {
   }
 
   helpers(helpers) {
-    var self = this;
     let _transform;
 
     if (this._transform && !this._helpers) _transform = this._transform;
