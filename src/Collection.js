@@ -13,13 +13,15 @@ export const runObservers = (type, collection, newDocument, oldDocument) => {
   if(observers[collection]) {
     observers[collection].forEach(({cursor, callbacks}) => {
       if(callbacks[type]) {
-        if(Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]})) {
+        if(Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]}) && type !== 'removed') {
           try {
             callbacks[type](newDocument, oldDocument);
           }
           catch(e) {
             console.error("Error in observe callback", e);
           }
+        }else{
+          callbacks['removed'](newDocument);
         }
       }
     });
