@@ -74,22 +74,22 @@ https://atmospherejs.com/meteor/reactive-dict
 `import { Mongo } from '@meteorrn/core';`
 
 #### `new Mongo.Collection(collectionName, options) => Collection`
-Creates a *Collection*
+Creates and returns a *Collection*
 
 **Arguments**
   * collectionName - Name of the remote collection, or pass `null` for a client-side collection
 
-### *Collection*
+#### *`Collection`*
 
 ***Collection* Methods:**
-  * .insert(document)
-  * .update(query, modifications)
-  * .remove(query)
-  * .find(query) => *Cursor*
-  * .findOne(query) => Document
+  * .insert(document) - Inserts document into collection
+  * .update(query, modifications) - Updates document in collection
+  * .remove(query) - Removes document from collection
+  * .find(query) => *Cursor* - Returns a Cursor
+  * .findOne(query) => Document - Retrieves first matching Document
 
 
-### *Cursor*
+#### *`Cursor`*
 
 ***Cursor* Methods:**
   * .obsrve() - Mirrors Meteor's observe behavior. Accepts object with the properties `added`, `changed`, and `removed`.
