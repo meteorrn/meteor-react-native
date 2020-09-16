@@ -78,7 +78,7 @@ Planned/Upcoming Packages:
 If you have an idea for a companion package, please open an issue. If you would like to publish your own companion package, we recommend a package name with the prefix `mrn-`. 
 
 # Compatibility
-For React Native >=0.60.0 use this package
+This package is compatible with React Native versions from 0.60.0 to latest (0.63.2)
 
 For React Native <0.60.0 use [react-native-meteor](https://github.com/inProgress-team/react-native-meteor).
 
