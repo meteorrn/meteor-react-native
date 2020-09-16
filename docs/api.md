@@ -73,7 +73,7 @@ https://atmospherejs.com/meteor/reactive-dict
 ## Mongo
 `import { Mongo } from '@meteorrn/core';`
 
-#### `new Mongo.Collection(collectionName, options) => Collection`
+#### `new Mongo.Collection(collectionName, options)` => `Collection`
 Creates and returns a *Collection*
 
 **Arguments**
@@ -85,7 +85,7 @@ Creates and returns a *Collection*
   * .insert(document) - Inserts document into collection
   * .update(query, modifications) - Updates document in collection
   * .remove(query) - Removes document from collection
-  * .find(query) => *Cursor* - Returns a Cursor
+  * .find(query) => *`Cursor`* - Returns a Cursor
   * .findOne(query) => Document - Retrieves first matching Document
 
 
@@ -99,13 +99,41 @@ Creates and returns a *Collection*
 ## Accounts
 `import { Accounts } from '@meteorrn/core';`
 
-* [Accounts.createUser](http://docs.meteor.com/#/full/accounts_createuser)
-* [Accounts.changePassword](http://docs.meteor.com/#/full/accounts_forgotpassword)
+#### `Accounts.createUser(user, callback)`
+Creates a user
+
+**Arguments**
+  * user - The user object
+  * callback - Called with a single error object or null on success
+
+#### `Accounts.changePassword(oldPassword, newPassword)`
+Changes a user's password
+
+**Arguments**
+  * oldPassword - The user's current password
+  * newPassword - The user's new password
+
+#### `Accounts.onLogin(callback)`
+Registers a callback to be called when user is logged in
+
+**Arguments**
+  * callback
+
+#### `Accounts.onLoginFailure(callback)`
+Registers a callback to be called when login fails
+
+**Arguments**
+  * callback
+
+#### `Accounts._hashPassword(plaintext)` => `{algorithm:"sha-256", digest:"..."}`
+Hashes a password using the sha-256 algorithm. Returns an object formatted for use in accounts calls. You can access the raw hashed string using the digest property.
+
+**Arguments**
+  * plaintext - The plaintext string you want to hash
+
+
 * [Accounts.forgotPassword](http://docs.meteor.com/#/full/accounts_changepassword)
 * [Accounts.resetPassword](http://docs.meteor.com/#/full/accounts_resetpassword)
-* [Accounts.onLogin](http://docs.meteor.com/#/full/accounts_onlogin)
-* [Accounts.onLoginFailure](http://docs.meteor.com/#/full/accounts_onloginfailure)
-* `Accounts._hashPassword` - SHA-256 hashes password, for use with methods that may require authentication
 
 ## enableVerbose
 `import { enableVerbose } from '@meteorrn/core';`
