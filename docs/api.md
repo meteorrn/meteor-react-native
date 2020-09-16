@@ -47,27 +47,41 @@ Returns true if attempting to login
 
 ### `Meteor.logoutOtherClients`
 
-## withTracker
-`import { withTracker } from '@meteorrn/core'`;
 
-The `withTracker` component is used the same way as [`meteor/react-meteor-data`](https://guide.meteor.com/react.html#using-withTracker)
 
-```javascript
-export default withTracker(() => {
-    let handle = Meteor.subscribe("mySubscription");
-    let loading = !handle.ready();
-    let myStuff = Stuff.find({}).fetch();
-    
-    return {
-        myStuff
-    };
-})(MyComponent);
-```
+## Tracker
+`import { withTracker, useTracker } from '@meteorrn/core'`;
+
+
+#### `withTracker(trackerFunc)(Component)`
+Creates a new Tracker
+
+**Arguments:**
+  * trackerFunc - Function which will be re-run reactively when it's dependencies are updated. Must return an object that is passed as properties to `Component`
+  * Component - React Component which will receive properties from trackerFunc
+
+
+#### `useTracker(trackerFunc)` => `React Hook`
+Creates a new Tracker React Hook. Can only be used inside a function component. See React Docs for more info.
+
+**Arguments:**
+  * trackerFunc - Function which will be re-run reactively when it's dependencies are updated. 
+
+
 
 ## ReactiveDict
 `import { ReactiveDict } from '@meteorrn/core'`
 
-https://atmospherejs.com/meteor/reactive-dict
+#### `new ReactiveDict()` => *`ReactiveDict`*
+Creates a new reactive dictionary
+
+
+#### *`ReactiveDict`*
+
+***ReactiveDict* Methods:**
+  * .get(key) - Gets value of key (Reactive)
+  * .set(key, value) - Sets value of key
+
 
 
 ## Mongo
@@ -78,6 +92,7 @@ Creates and returns a *Collection*
 
 **Arguments**
   * collectionName - Name of the remote collection, or pass `null` for a client-side collection
+
 
 #### *`Collection`*
 
@@ -96,8 +111,10 @@ Creates and returns a *Collection*
   * .fetch() => `[Document]` - Retrieves an array of matching documents
 
 
+
 ## Accounts
 `import { Accounts } from '@meteorrn/core';`
+
 
 #### `Accounts.createUser(user, callback)`
 Creates a user
@@ -106,6 +123,7 @@ Creates a user
   * user - The user object
   * callback - Called with a single error object or null on success
 
+
 #### `Accounts.changePassword(oldPassword, newPassword)`
 Changes a user's password
 
@@ -113,11 +131,13 @@ Changes a user's password
   * oldPassword - The user's current password
   * newPassword - The user's new password
 
+
 #### `Accounts.onLogin(callback)`
 Registers a callback to be called when user is logged in
 
 **Arguments**
   * callback
+
 
 #### `Accounts.onLoginFailure(callback)`
 Registers a callback to be called when login fails
@@ -125,21 +145,25 @@ Registers a callback to be called when login fails
 **Arguments**
   * callback
 
+
 #### `Accounts._hashPassword(plaintext)` => `{algorithm:"sha-256", digest:"..."}`
 Hashes a password using the sha-256 algorithm. Returns an object formatted for use in accounts calls. You can access the raw hashed string using the digest property.
 
 **Arguments**
   * plaintext - The plaintext string you want to hash
 
+Other:
 
 * [Accounts.forgotPassword](http://docs.meteor.com/#/full/accounts_changepassword)
 * [Accounts.resetPassword](http://docs.meteor.com/#/full/accounts_resetpassword)
 
-## enableVerbose
+
+
+## Verbosity
 `import { enableVerbose } from '@meteorrn/core';`
 
-Enables verbose mode which logs detailed information about accounts. **Note:** this will expose login tokens and other private information to the console.
+Verbose Mode logs detailed information from various places around MeteorRN. **Note:** this will expose login tokens and other private information to the console.
 
-````
-enableVerbose()
-````
+
+#### `enableVerbose()`
+Enables verbose mode
