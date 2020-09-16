@@ -1,3 +1,4 @@
+
 ## Meteor
 `import Meteor from '@meteorrn/core';`
 
@@ -72,16 +73,27 @@ https://atmospherejs.com/meteor/reactive-dict
 ## Mongo
 `import { Mongo } from '@meteorrn/core';`
 
-#### `Mongo.Collection(collectionName, options)`
-*collectionName*: Name of the remote collection, or pass `null` for a client-side collection
+#### `new Mongo.Collection(collectionName, options) => Collection`
+Creates a *Collection*
 
-**options**:
-  * [.insert(doc, callback)](http://docs.meteor.com/#/full/insert)
-  * [.update(id, modifier, [options], [callback])](http://docs.meteor.com/#/full/update)
-  * [.remove(id, callback(err, countRemoved))](http://docs.meteor.com/#/full/remove)
+**Arguments**
+  * collectionName - Name of the remote collection, or pass `null` for a client-side collection
 
-#### *Cursor*.observe
-Mirrors Meteor's observe behavior. Accepts object with the properties `added`, `changed`, and `removed`.
+### *Collection*
+
+***Collection* Methods:**
+  * .insert(document)
+  * .update(query, modifications)
+  * .remove(query)
+  * .find(query) => *Cursor*
+  * .findOne(query) => Document
+
+
+### *Cursor*
+
+***Cursor* Methods:**
+  * .obsrve() - Mirrors Meteor's observe behavior. Accepts object with the properties `added`, `changed`, and `removed`.
+  * .fetch() => `[Document]` - Retrieves an array of matching documents
 
 
 ## Accounts
