@@ -1,6 +1,12 @@
+# Meteor React Native Docs
 
-## Meteor
+Table of Contents
+- [Meteor](#meteor)
+- [Tracker](#tracker)
+
+<h2 id="meteor">Meteor</h2>
 `import Meteor from '@meteorrn/core';`
+
 
 ### `Meteor.connect(url, options)`
 Connect to the Meteor Server
@@ -49,7 +55,7 @@ Returns true if attempting to login
 
 
 
-## Tracker
+<h2 id="tracker">Tracker</h2>
 `import { withTracker, useTracker } from '@meteorrn/core'`;
 
 
