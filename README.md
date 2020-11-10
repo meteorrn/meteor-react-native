@@ -32,6 +32,7 @@ If you are using the `AsyncStorage` API yourself, its important that you use the
 ```javascript
 import Meteor, { Mongo, withTracker } from '@meteorrn/core';
 
+// "mycol" should match the name of the collection on your meteor server
 let MyCol = new Mongo.Collection("mycol");
 
 Meteor.connect("wss://myapp.meteor.com/websocket"); // Note the /websocket after your URL 
