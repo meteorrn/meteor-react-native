@@ -29,6 +29,7 @@
     "minimongo-cache": "0.0.48",
     "node-require-fallback": "^1.0.0",
     "prop-types": "^15.5.10",
+    "react-native-meteor": "^1.4.0",
     "trackr": "^2.0.2",
     "underscore": "^1.8.3",
     "wolfy87-eventemitter": "^4.3.0"
@@ -45,11 +46,11 @@
     "sinon": "^1.17.3"
   },
   "optionalDependencies": {
-    "@react-native-community/async-storage": ">=1.8.1"
+    "@react-native-async-storage/async-storage": ">=1.8.1"
   },
   "peerDependencies": {
-    "react": "*",
     "@react-native-community/netinfo": "*",
+    "react": "*",
     "react-native": ">= 0.60.0"
   }
 }
