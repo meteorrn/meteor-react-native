@@ -13,7 +13,10 @@ export const runObservers = (type, collection, newDocument, oldDocument) => {
   if(observers[collection]) {
     observers[collection].forEach(({cursor, callbacks}) => {
       if(callbacks[type]) {
-        if(Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]})) {
+        if(type === 'removed') {
+          callbacks['removed'](newDocument);
+        }
+        else if(Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]})) {
           try {
             callbacks[type](newDocument, oldDocument);
           }
@@ -154,7 +157,6 @@ export class Collection {
   update(id, modifier, options = {}, callback = () => {}) {
     if (typeof options == 'function') {
       callback = options;
-      options = {};
     }
 
     if (!this._collection.get(id))
@@ -202,7 +204,6 @@ export class Collection {
   }
 
   helpers(helpers) {
-    var self = this;
     let _transform;
 
     if (this._transform && !this._helpers) _transform = this._transform;

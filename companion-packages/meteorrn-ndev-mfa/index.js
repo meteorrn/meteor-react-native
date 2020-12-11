@@ -1,6 +1,6 @@
 import Meteor, { Accounts } from '@meteorrn/core';
 
-import {authorizeActionChallengeHandler, authorizeActionCompletionHandler, resetPasswordCheckMFARequired, registrationChallengeHandlerTOTP, registrationCompletionHandlerTOTP, resetPasswordChallengeHandler, registrationChallengeHandlerU2F, registerCompletionHandlerU2F, loginChallengeHandler, loginCompletionHandler } from './method-names';
+import { loginChallengeHandler, loginCompletionHandler } from './method-names';
 
 let useU2FAuthorizationCode = function (code) {
     if(typeof(code) !== "string" || code.length !== 6) {
