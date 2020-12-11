@@ -73,7 +73,7 @@ const Meteor = {
   },
   packageInterface:() => {
     return {
-      AsyncStorage:Data._options.AsyncStorage || require('@react-native-community/async-storage').default
+      AsyncStorage:Data._options.AsyncStorage || require('@react-native-async-storage/async-storage').default
     };
   },
   connect(endpoint, options) {
@@ -85,7 +85,7 @@ const Meteor = {
     }
 
     if (!options.AsyncStorage) {
-      const AsyncStorage = require('@react-native-community/async-storage').default;
+      const AsyncStorage = require('@react-native-async-storage/async-storage').default;
 
       if (AsyncStorage) {
         options.AsyncStorage = AsyncStorage;

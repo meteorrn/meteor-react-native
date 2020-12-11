@@ -1,5 +1,5 @@
 # Meteor React Native
-A set of packages allowing you to connect your React Native app to your Meteor server, and take advantage of Meteor-specific features like accounts, reactive data trackers, etc.
+A set of packages allowing you to connect your React Native app to your Meteor server, and take advantage of Meteor-specific features like accounts, reactive data trackers, etc. Compatible with the latest version of React Native.
 
 [Full API Documentation](/docs/api.md)
 
@@ -11,11 +11,11 @@ Meteor React Native is now published under `@meteorrn/core`. We will continue to
 # Installation
 1. `npm install --save @meteorrn/core`
 2. Confirm you have peer dependencty `@react-native-community/netinfo` installed
-3. Confirm you have `@react-native-community/async-storage@>=1.8.1` installed. If you are using Expo, or otherwise cannot use `@react-native-community/async-storage`, see *Custom Storage Adapter* below.
+3. Confirm you have `@react-native-async-storage/async-storage@>=1.8.1` installed. If you are using Expo, or otherwise cannot use `@react-native-async-storage/async-storage`, see *Custom Storage Adapter* below.
 
 
 ### A note on AsyncStorage
-This package uses `@react-native-community/async-storage` by default. This may cause issues if you are using certain React Native versions, or if you are using Expo. To use a custom AsyncStorage implementation, pass it as an option in `Meteor.connect`:
+This package uses `@react-native-async-storage/async-storage` by default. This may cause issues if you are using certain React Native versions, or if you are using Expo. To use a custom AsyncStorage implementation, pass it as an option in `Meteor.connect`:
 
 ```javascript
 import { AsyncStorage } from 'react-native';
@@ -25,13 +25,14 @@ import { AsyncStorage } from 'react-native';
 Meteor.connect("wss://myapp.meteor.com/websocket", { AsyncStorage });
 ```
 
-If you are using the `AsyncStorage` API yourself, its important that you use the same version that MeteorRN is using, or issues could be caused due to the conflicting versions. Make sure you are using the same AsyncStorage you pass into Meteor (or `@react-native-community/async-storage` if you aren't passing anything), or you can use [MeteorRN's package interface](#package-interface). 
+If you are using the `AsyncStorage` API yourself, its important that you use the same version that MeteorRN is using, or issues could be caused due to the conflicting versions. Make sure you are using the same AsyncStorage you pass into Meteor (or `@react-native-async-storage/async-storage` if you aren't passing anything), or you can use [MeteorRN's package interface](#package-interface). 
 
 # Basic Usage
 
 ```javascript
 import Meteor, { Mongo, withTracker } from '@meteorrn/core';
 
+// "mycol" should match the name of the collection on your meteor server, or pass null for a local collection
 let MyCol = new Mongo.Collection("mycol");
 
 Meteor.connect("wss://myapp.meteor.com/websocket"); // Note the /websocket after your URL 
@@ -78,7 +79,7 @@ Planned/Upcoming Packages:
 If you have an idea for a companion package, please open an issue. If you would like to publish your own companion package, we recommend a package name with the prefix `mrn-`. 
 
 # Compatibility
-For React Native >=0.60.0 use this package
+This package is compatible with React Native versions from 0.60.0 to latest (0.63.2)
 
 For React Native <0.60.0 use [react-native-meteor](https://github.com/inProgress-team/react-native-meteor).
 
