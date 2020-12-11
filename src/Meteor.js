@@ -21,12 +21,11 @@ import useTracker from './components/useTracker';
 
 import ReactiveDict from './ReactiveDict';
 
-import User from './user/User';
 import Accounts from './user/Accounts';
 
 let isVerbose = false;
 
-module.exports = {
+const Meteor = {
   isVerbose,
   enableVerbose() {
     isVerbose = true;
@@ -46,7 +45,6 @@ module.exports = {
   getData() {
     return Data;
   },
-  ...User,
   status() {
     return {
       connected: Data.ddp ? Data.ddp.status == 'connected' : false,
@@ -351,4 +349,4 @@ module.exports = {
   },
 };
 
-export default module.exports;
+export default Meteor;

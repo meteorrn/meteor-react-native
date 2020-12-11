@@ -2,7 +2,7 @@
   "name": "@meteorrn/core",
   "version": "2.1.0-beta2",
   "description": "Full Meteor Client for React Native",
-  "main": "src/Meteor.js",
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TheRealNate/meteor-react-native.git"

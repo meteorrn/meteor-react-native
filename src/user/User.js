@@ -130,4 +130,4 @@ const User = {
   },
 };
 
-export default User;
+Object.assign(Meteor, User);
