@@ -1,5 +1,3 @@
-import NetInfo from "@react-native-community/netinfo";
-
 import { name as packageName } from '../package.json';
 
 if(packageName !== "@meteorrn/core") {
@@ -21,8 +19,6 @@ import useTracker from './components/useTracker';
 
 import ReactiveDict from './ReactiveDict';
 
-import Accounts from './user/Accounts';
-
 let isVerbose = false;
 
 const Meteor = {
@@ -31,7 +27,6 @@ const Meteor = {
     isVerbose = true;
   },
   Random,
-  Accounts,
   Mongo,
   Tracker: Trackr,
   EJSON,
@@ -102,12 +97,18 @@ const Meteor = {
       SocketConstructor: WebSocket,
       ...options,
     });
-
-    NetInfo.addEventListener(({type, isConnected, isInternetReachable, isWifiEnabled}) => {
-      if (isConnected && Data.ddp.autoReconnect) {
-        Data.ddp.connect();
-      }
-    });
+    
+    try {
+      const NetInfo = require("@react-native-community/netinfo").default;
+      NetInfo.addEventListener(({type, isConnected, isInternetReachable, isWifiEnabled}) => {
+        if (isConnected && Data.ddp.autoReconnect) {
+          Data.ddp.connect();
+        }
+      });
+    }
+    catch(e) {
+      console.warn("Warning: NetInfo not installed, so DDP will not automatically reconnect");
+    }
 
     Data.ddp.on('connected', () => {
       // Clear the collections of any stale data in case this is a reconnect

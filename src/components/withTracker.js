@@ -8,7 +8,7 @@ export default function withTracker (options) {
 
         const WithTracker = forwardRef((props, ref) => {
             const data = useTracker(() => getMeteorData(props) || {});
-            return <Component ref={ref} {...props} {...data} />;
+            return React.createElement(Component, {ref, ...props, ...data});
         });
 
         return pure ? memo(WithTracker) : WithTracker;
