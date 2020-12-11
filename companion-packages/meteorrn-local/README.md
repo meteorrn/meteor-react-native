@@ -6,8 +6,7 @@ This package introduces the `Local.Collection`, which will mirror the specified 
 
 ### Caveats
 - This package (currently) works by creating a second local Mongo Collection. This means you are esentially keeping two copies of each document (that you store locally) in memory. This issue can be mitigated by keeping an "age" or "version" on all your documents, and only publishing documents that have been changed from local
-- This package (currently) does not support the removal of documents. Once a document has been inserted into the local database, it is there forever (unless you manually call `remove` on the Local.Collection)
-- Performing `.insert`, `.update`, `.remove`, etc on a Local.Collection only makes those modifications to the in-memory minimongo. Those changes won't be sent to the server, and those changes (currently) dont trigger the saving procedure, so they will not be committed to the disk (unless a remote change is made afterwards)
+- This package (currently) does not support the automatic removal/expiry of documents. Once a document has been inserted into the local database, it is there forever (unless you manually call `remove` on the Local.Collection)
 
 ### Usage:
 
