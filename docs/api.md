@@ -10,7 +10,7 @@ Connect to the Meteor Server
 * autoConnect **boolean** [true] whether to establish the connection to the server upon instantiation. When false, one can manually establish the connection with the Meteor.ddp.connect method.
 * autoReconnect **boolean** [true] whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.
 * reconnectInterval **number** [10000] the interval in ms between reconnection attempts.
-* AsyncStorage **object** your preferred AsyncStorage. Defaults to `'@react-native-community/async-storage'` as a peer dependency. You will likely want to use `{ AsyncStorage } from 'react-native'` if using Expo
+* AsyncStorage **object** your preferred AsyncStorage. Defaults to `'@react-native-async-storage/async-storage'` as a peer dependency.
 
 ### `Meteor.disconnect()`
 Disconnect from the Meteor server
