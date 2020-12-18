@@ -93,6 +93,24 @@ const Local = {
             });
         };
         
+        
+        LocalCol.insert = LocalCol.__insert;
+        LocalCol.update = LocalCol.__update;
+        LocalCol.remove = LocalCol.__remove;
+        
+        LocalCol.insert = (...args) => {
+            LocalCol.__insert(...args);
+            storeLocalCol();
+        };
+        LocalCol.update = (...args) => {
+            LocalCol.__update(...args);
+            storeLocalCol();
+        };
+        LocalCol.remove = (...args) => {
+            LocalCol.__remove(...args);
+            storeLocalCol();
+        };
+        
         LocalCol.loadPromise = loadData();
         LocalCol.save = storeLocalCol;
         

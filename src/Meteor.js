@@ -1,5 +1,3 @@
-import NetInfo from "@react-native-community/netinfo";
-
 import { name as packageName } from '../package.json';
 
 if(packageName !== "@meteorrn/core") {
@@ -16,36 +14,32 @@ import Mongo from './Mongo';
 import { Collection, runObservers, localCollections } from './Collection';
 import call from './Call';
 
-import withTracker from './components/ReactMeteorData';
+import withTracker from './components/withTracker';
+import useTracker from './components/useTracker';
 
 import ReactiveDict from './ReactiveDict';
 
-import User from './user/User';
-import Accounts from './user/Accounts';
-
 let isVerbose = false;
 
-module.exports = {
+const Meteor = {
   isVerbose,
   enableVerbose() {
     isVerbose = true;
   },
   Random,
-  Accounts,
   Mongo,
   Tracker: Trackr,
   EJSON,
   ReactiveDict,
   Collection,
-  collection(name, options) {
-    console.error("Meteor.collection is deprecated. Use Mongo.Collection");
-    return new Collection(name, options);
+  collection() {
+    throw new Error("Meteor.collection is deprecated. Use Mongo.Collection");
   },
   withTracker,
+  useTracker,
   getData() {
     return Data;
   },
-  ...User,
   status() {
     return {
       connected: Data.ddp ? Data.ddp.status == 'connected' : false,
@@ -84,7 +78,7 @@ module.exports = {
     if((!endpoint.startsWith("ws") || !endpoint.endsWith("/websocket")) && !options.suppressUrlErrors) {
       throw new Error(`Your url "${endpoint}" may be in the wrong format. It should start with "ws://" or "wss://" and end with "/websocket", e.g. "wss://myapp.meteor.com/websocket". To disable this warning, connect with option "suppressUrlErrors" as true, e.g. Meteor.connect("${endpoint}", {suppressUrlErrors:true});`);
     }
-    
+
     if (!options.AsyncStorage) {
       const AsyncStorage = require('@react-native-async-storage/async-storage').default;
 
@@ -103,12 +97,18 @@ module.exports = {
       SocketConstructor: WebSocket,
       ...options,
     });
-
-    NetInfo.addEventListener(({type, isConnected, isInternetReachable, isWifiEnabled}) => {
-      if (isConnected && Data.ddp.autoReconnect) {
-        Data.ddp.connect();
-      }
-    });
+    
+    try {
+      const NetInfo = require("@react-native-community/netinfo").default;
+      NetInfo.addEventListener(({type, isConnected, isInternetReachable, isWifiEnabled}) => {
+        if (isConnected && Data.ddp.autoReconnect) {
+          Data.ddp.connect();
+        }
+      });
+    }
+    catch(e) {
+      console.warn("Warning: NetInfo not installed, so DDP will not automatically reconnect");
+    }
 
     Data.ddp.on('connected', () => {
       // Clear the collections of any stale data in case this is a reconnect
@@ -155,9 +155,9 @@ module.exports = {
         _id: message.id,
         ...message.fields,
       };
-      
+
       Data.db[message.collection].upsert(document);
-      
+
       runObservers("added", message.collection, document);
     });
 
@@ -192,18 +192,18 @@ module.exports = {
           ...message.fields,
           ...unset,
         };
-        
+
         const oldDocument = Data.db[message.collection].findOne({_id:message.id});
-        
+
         Data.db[message.collection].upsert(document);
-        
-        runObservers("changed", message.collection, document, oldDocument);        
+
+        runObservers("changed", message.collection, document, oldDocument);
       }
     });
 
     Data.ddp.on('removed', message => {
       if(Data.db[message.collection]) {
-        const oldDocument = Data.db[message.collection].findOne({_id:message.id});        
+        const oldDocument = Data.db[message.collection].findOne({_id:message.id});
         Data.db[message.collection].del(message.id);
         runObservers("removed", message.collection, oldDocument);
       }
@@ -350,4 +350,4 @@ module.exports = {
   },
 };
 
-export default module.exports;
+export default Meteor;
