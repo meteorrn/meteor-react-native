@@ -5,14 +5,10 @@ A set of packages allowing you to connect your React Native app to your Meteor s
 
 If you're new to React Native, you can view a guide to using React Native with Meteor on the [Official Meteor Guide](https://guide.meteor.com/react-native.html)
 
-# New Package Name
-Meteor React Native is now published under `@meteorrn/core`. We will continue to publish updates to the `meteor-react-native` repository until `2.1.0`. We recommend updating to the new package name as soon as possible.
-
 # Installation
 1. `npm install --save @meteorrn/core`
 2. Confirm you have peer dependencty `@react-native-community/netinfo` installed
 3. Confirm you have `@react-native-async-storage/async-storage@>=1.8.1` installed. If you are using Expo, or otherwise cannot use `@react-native-async-storage/async-storage`, see *Custom Storage Adapter* below.
-
 
 ### A note on AsyncStorage
 This package uses `@react-native-async-storage/async-storage` by default. This may cause issues if you are using certain React Native versions, or if you are using Expo. To use a custom AsyncStorage implementation, pass it as an option in `Meteor.connect`:
