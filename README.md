@@ -10,7 +10,7 @@ If you're new to React Native, you can view a guide to using React Native with M
 2. Confirm you have peer dependencty `@react-native-community/netinfo` installed
 3. Confirm you have `@react-native-async-storage/async-storage@>=1.8.1` installed. If you are using Expo, or otherwise cannot use `@react-native-async-storage/async-storage`, see *Custom Storage Adapter* below.
 
-### A note on AsyncStorage
+<h3 id="custom-storage-adapter">A note on AsyncStorage</h3>
 This package uses `@react-native-async-storage/async-storage` by default. This may cause issues if you are using certain React Native versions, or if you are using Expo. To use a custom AsyncStorage implementation, pass it as an option in `Meteor.connect`:
 
 ```javascript
