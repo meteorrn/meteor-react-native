@@ -1,9 +1,5 @@
 import { name as packageName } from '../package.json';
 
-if(packageName !== "@meteorrn/core") {
-  console.error(`DEPRECATED: Please change "meteor-react-native" in your package.json to "@meteorrn/core" and run npm install`);
-}
-
 import Trackr from 'trackr';
 import EJSON from 'ejson';
 import DDP from '../lib/ddp.js';
