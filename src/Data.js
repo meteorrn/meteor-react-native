@@ -9,7 +9,7 @@ const moduleExists = m => {
     return false;
   }
   return true;
-}
+};
 
 let afterInteractions;
 if(moduleExists("react-native")) { 
