@@ -1,15 +1,37 @@
-import ReactNative from 'react-native/Libraries/Renderer/shims/ReactNative';
 import minimongo from 'minimongo-cache';
 import Trackr from 'trackr';
-import { InteractionManager } from 'react-native';
-process.nextTick = setImmediate;
+
+const moduleExists = m => {
+  try {
+    require.resolve(m);
+  }
+  catch(e) {
+    return false;
+  }
+  return true;
+}
+
+let afterInteractions;
+if(moduleExists("react-native")) { 
+  db.batchedUpdates = require('react-native/Libraries/Renderer/shims/ReactNative').unstable_batchedUpdates;
+  process.nextTick = setImmediate;
+  afterInteractions = require('react-native').InteractionManager.runAfterInteractions;
+}
+else {
+  afterInteractions = requestIdleCallback;  
+  try {
+    db.batchedUpdates = require('react-dom').unstable_batchedUpdates;
+  }
+  catch(e) {
+    console.warn("react-dom isn't installed, so minimongo-cache performance may be reduced");
+  }
+}
 
 const db = new minimongo();
 db.debug = false;
-db.batchedUpdates = ReactNative.unstable_batchedUpdates;
 
 function runAfterOtherComputations(fn) {
-  InteractionManager.runAfterInteractions(() => {
+  afterInteractions(() => {
     Trackr.afterFlush(() => {
       fn();
     });
