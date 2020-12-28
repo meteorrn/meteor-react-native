@@ -3,8 +3,11 @@
 Table of Contents
 - [Meteor](#meteor)
 - [Tracker](#tracker)
+- [Mongo](#mongo)
+- [Accounts](#accounts)
 
 <h2 id="meteor">Meteor</h2>
+
 `import Meteor from '@meteorrn/core';`
 
 
@@ -56,6 +59,7 @@ Returns true if attempting to login
 
 
 <h2 id="tracker">Tracker</h2>
+
 `import { withTracker, useTracker } from '@meteorrn/core'`;
 
 
@@ -76,6 +80,7 @@ Creates a new Tracker React Hook. Can only be used inside a function component. 
 
 
 ## ReactiveDict
+
 `import { ReactiveDict } from '@meteorrn/core'`
 
 #### `new ReactiveDict()` => *`ReactiveDict`*
@@ -90,7 +95,8 @@ Creates a new reactive dictionary
 
 
 
-## Mongo
+<h2 id="mongo">Mongo</h2>
+
 `import { Mongo } from '@meteorrn/core';`
 
 #### `new Mongo.Collection(collectionName, options)` => `Collection`
@@ -118,7 +124,8 @@ Creates and returns a *Collection*
 
 
 
-## Accounts
+<h2 id="accounts">Accounts</h2>
+
 `import { Accounts } from '@meteorrn/core';`
 
 
