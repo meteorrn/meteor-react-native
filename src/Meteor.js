@@ -1,5 +1,3 @@
-import { name as packageName } from '../package.json';
-
 import Trackr from 'trackr';
 import EJSON from 'ejson';
 import DDP from '../lib/ddp.js';
