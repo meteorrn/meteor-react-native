@@ -1,6 +1,9 @@
 import minimongo from 'minimongo-cache';
 import Trackr from 'trackr';
 
+const db = new minimongo();
+db.debug = false;
+
 const moduleExists = m => {
   try {
     require.resolve(m);
@@ -26,9 +29,6 @@ else {
     console.warn("react-dom isn't installed, so minimongo-cache performance may be reduced");
   }
 }
-
-const db = new minimongo();
-db.debug = false;
 
 function runAfterOtherComputations(fn) {
   afterInteractions(() => {
