@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TextInput, Button, Alert } from 'react-native';
-import { withTracker, Meteor } from 'meteor-react-native';
+import Meteor, { withTracker } from '@meteorrn/core';
 
 class Login extends React.Component {
 
