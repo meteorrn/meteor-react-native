@@ -65,6 +65,9 @@ class AccountsPassword {
   };
   
   onLogin = (cb) => {
+    if(Data._tokenIdSaved) { // Execute callback immediately if already logged in
+      return cb();
+    }
     Data.on('onLogin', cb);
   };
   
