@@ -1,4 +1,4 @@
-import Tracker from 'trackr';
+import Tracker from './Tracker.js';
 import EJSON from 'ejson';
 import _ from 'underscore';
 
