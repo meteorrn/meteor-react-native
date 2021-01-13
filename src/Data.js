@@ -1,6 +1,6 @@
 import ReactNative from 'react-native/Libraries/Renderer/shims/ReactNative';
 import minimongo from 'minimongo-cache';
-import Trackr from 'trackr';
+import Tracker from './Tracker.js';
 import { InteractionManager } from 'react-native';
 process.nextTick = setImmediate;
 
@@ -10,7 +10,7 @@ db.batchedUpdates = ReactNative.unstable_batchedUpdates;
 
 function runAfterOtherComputations(fn) {
   InteractionManager.runAfterInteractions(() => {
-    Trackr.afterFlush(() => {
+    Tracker.afterFlush(() => {
       fn();
     });
   });
