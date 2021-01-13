@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Tracker from 'trackr';
+import Tracker from 'Tracker.js';
 import Data from '../Data';
 
 export default (trackerFn, deps = []) => {
