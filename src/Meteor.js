@@ -1,6 +1,6 @@
 import { name as packageName } from '../package.json';
 
-import Trackr from 'trackr';
+import Trackr from './Tracker.js';
 import EJSON from 'ejson';
 import DDP from '../lib/ddp.js';
 import Random from '../lib/Random';
