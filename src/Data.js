@@ -21,6 +21,8 @@ if(moduleExists("react-native")) {
   afterInteractions = require('react-native').InteractionManager.runAfterInteractions;
 }
 else {
+  // This code allows the package to work on the web, but it causes an issue in Metro <0.59.0, which is hard to upgrade to due to the react native community CLI not supporting it
+  /*
   afterInteractions = requestIdleCallback;  
   try {
     db.batchedUpdates = require('react-dom').unstable_batchedUpdates;
@@ -28,6 +30,7 @@ else {
   catch(e) {
     console.warn("react-dom isn't installed, so minimongo-cache performance may be reduced");
   }
+  */
 }
 
 function runAfterOtherComputations(fn) {
