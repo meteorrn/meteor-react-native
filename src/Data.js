@@ -1,5 +1,5 @@
 import minimongo from 'minimongo-cache';
-import Trackr from 'trackr';
+import Tracker from './Tracker.js';
 
 const db = new minimongo();
 db.debug = false;
@@ -35,7 +35,7 @@ else {
 
 function runAfterOtherComputations(fn) {
   afterInteractions(() => {
-    Trackr.afterFlush(() => {
+    Tracker.afterFlush(() => {
       fn();
     });
   });

@@ -1,6 +1,6 @@
 {
   "name": "@meteorrn/core",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Full Meteor Client for React Native",
   "main": "src/index.js",
   "repository": {
@@ -29,7 +29,6 @@
     "minimongo-cache": "0.0.48",
     "node-require-fallback": "^1.0.0",
     "prop-types": "^15.5.10",
-    "trackr": "^2.0.2",
     "underscore": "^1.8.3",
     "wolfy87-eventemitter": "^4.3.0"
   },
