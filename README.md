@@ -101,3 +101,7 @@ import Meteor from '@meteorrn/core';
 
 const {AsyncStorage} = Meteor.packageInterface();
 ````
+
+
+### Differences from Meteor Core to Note:
+- This API does not implement `observeChanges` (but it does implement `observe`)
