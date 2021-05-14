@@ -12,7 +12,7 @@ type ReactiveOptions = {
 export default function withTracker(options: ReactiveFn | ReactiveOptions) {
   return (Component) => {
     const expandedOptions = typeof options === 'function' ? { getMeteorData: options } : options;
-    const { getMeteorData, pure = true , skipUpdate} = expandedOptions;
+    const { getMeteorData, pure = true } = expandedOptions;
     const WithTracker = forwardRef((props, ref) => {
       const data = useTracker(
         () => {return getMeteorData(props) || {}},
