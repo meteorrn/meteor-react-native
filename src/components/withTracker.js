@@ -1,16 +1,29 @@
+
 import React, { forwardRef, memo } from 'react';
 import useTracker from './useTracker';
 
-export default function withTracker (options) {
-    return Component => {
-        const expandedOptions = typeof options === 'function' ? { getMeteorData: options } : options;
-        const { getMeteorData, pure = true } = expandedOptions;
+type ReactiveFn = (props: object) => any;
+type ReactiveOptions = {
+  getMeteorData: ReactiveFn;
+  pure?: boolean;
+  skipUpdate?: (prev: any, next: any) => boolean;
+}
 
-        const WithTracker = forwardRef((props, ref) => {
-            const data = useTracker(() => getMeteorData(props) || {});
-            return React.createElement(Component, {ref, ...props, ...data});
-        });
+export default function withTracker(options: ReactiveFn | ReactiveOptions) {
+  return (Component) => {
+    const expandedOptions = typeof options === 'function' ? { getMeteorData: options } : options;
+    const { getMeteorData, pure = true , skipUpdate} = expandedOptions;
+    const WithTracker = forwardRef((props, ref) => {
+      const data = useTracker(
+        () => {return getMeteorData(props) || {}},
+        [options, props]
+      );
+      
+      return (
+        <Component ref={ref} {...props} {...data} />
+      );
+    });
 
-        return pure ? memo(WithTracker) : WithTracker;
-    };
+    return pure ? memo(WithTracker) : WithTracker;
+  };
 }
