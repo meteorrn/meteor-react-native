@@ -115,3 +115,14 @@ import Meteor from '@meteorrn/core';
 
 const {AsyncStorage} = Meteor.packageInterface();
 ````
+
+
+### Differences from Meteor Core to Note:
+- This API does not implement `observeChanges` (but it does implement `observe`)
+
+# Showcase
+
+| Whazzup.co |
+| --- |
+| <img src="https://user-images.githubusercontent.com/16267331/120551863-84907c80-c3c4-11eb-8e32-39b950b67875.png" height="250" align="center"> |
+| [Whazzup.co](https://whazzup.co/) uses Meteor React Native in their native app |
