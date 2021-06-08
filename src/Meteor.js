@@ -1,6 +1,4 @@
-import { name as packageName } from '../package.json';
-
-import Trackr from 'trackr';
+import Tracker from './Tracker.js';
 import EJSON from 'ejson';
 import DDP from '../lib/ddp.js';
 import Random from '../lib/Random';
@@ -24,7 +22,7 @@ const Meteor = {
   },
   Random,
   Mongo,
-  Tracker: Trackr,
+  Tracker,
   EJSON,
   ReactiveDict,
   Collection,
@@ -292,7 +290,7 @@ const Meteor = {
         params: EJSON.clone(params),
         inactive: false,
         ready: false,
-        readyDeps: new Trackr.Dependency(),
+        readyDeps: new Tracker.Dependency(),
         readyCallback: callbacks.onReady,
         stopCallback: callbacks.onStop,
         stop: function() {
@@ -322,19 +320,19 @@ const Meteor = {
       subscriptionId: id,
     };
 
-    if (Trackr.active) {
+    if (Tracker.active) {
       // We're in a reactive computation, so we'd like to unsubscribe when the
       // computation is invalidated... but not if the rerun just re-subscribes
       // to the same subscription!  When a rerun happens, we use onInvalidate
       // as a change to mark the subscription "inactive" so that it can
       // be reused from the rerun.  If it isn't reused, it's killed from
       // an afterFlush.
-      Trackr.onInvalidate(function(c) {
+      Tracker.onInvalidate(function(c) {
         if (Data.subscriptions[id]) {
           Data.subscriptions[id].inactive = true;
         }
 
-        Trackr.afterFlush(function() {
+        Tracker.afterFlush(function() {
           if (Data.subscriptions[id] && Data.subscriptions[id].inactive) {
             handle.stop();
           }

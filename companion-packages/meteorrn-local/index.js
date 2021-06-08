@@ -94,9 +94,9 @@ const Local = {
         };
         
         
-        LocalCol.insert = LocalCol.__insert;
-        LocalCol.update = LocalCol.__update;
-        LocalCol.remove = LocalCol.__remove;
+        LocalCol.__insert = LocalCol.insert;
+        LocalCol.__update = LocalCol.update;
+        LocalCol.__remove = LocalCol.remove;
         
         LocalCol.insert = (...args) => {
             LocalCol.__insert(...args);

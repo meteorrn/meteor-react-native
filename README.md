@@ -87,6 +87,20 @@ For React Native <0.60.0 use [react-native-meteor](https://github.com/inProgress
 - Mixins (`connectMeteor`) have been removed
 - `composeWithTracker` has been removed
 
+# Using on Web
+While this package was designed with React Native in mind, it is also capable of running on web (using `react-dom`). This can be useful if you need a light-weight Meteor implementation, if you want to create a client app separate from your server codebase, etc. The only change required is providing an AsyncStorage implementation. Here is a simple example:
+
+````
+const AsyncStorage = {
+    setItem:async (key, value) => window.localStorage.setItem(key, value),
+    getItem:async (key) => window.localStorage.getItem(key)
+    removeItem:async (key) => window.localStorage.removeItem(key)    
+}
+
+Meteor.connect("wss://.../websock", {AsyncStorage});
+
+````
+
 # Changelog
 The [GitHub Releases Tab](https://github.com/TheRealNate/meteor-react-native/releases) includes a full changelog
 
