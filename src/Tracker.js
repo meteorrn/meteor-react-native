@@ -94,9 +94,7 @@ function withNoYieldsAllowed(f) {
   } else {
     return function () {
       var args = arguments;
-      Meteor._noYieldsAllowed(function () {
-        f.apply(null, args);
-      });
+      f.apply(null, args);
     };
   }
 }
