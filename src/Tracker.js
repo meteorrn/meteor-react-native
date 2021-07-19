@@ -124,7 +124,7 @@ function requireFlush() {
   if (! willFlush) {
     // We want this code to work without Meteor, see debugFunc above
     if (typeof Meteor !== "undefined")
-      Meteor._setImmediate(Tracker._runFlush);
+      setTimeout(Tracker._runFlush);
     else
       setTimeout(Tracker._runFlush, 0);
     willFlush = true;
