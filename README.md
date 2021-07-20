@@ -126,3 +126,7 @@ const {AsyncStorage} = Meteor.packageInterface();
 | --- |
 | <img src="https://user-images.githubusercontent.com/16267331/120551863-84907c80-c3c4-11eb-8e32-39b950b67875.png" height="250" align="center"> |
 | [Whazzup.co](https://whazzup.co/) uses Meteor React Native in their native app |
+
+<hr/>
+
+Meteor React Native is maintained by [Nathaniel Dsouza](github.com/therealnate) who is available for consultation: nate@hiyllo.com
