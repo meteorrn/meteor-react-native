@@ -122,10 +122,10 @@ const {AsyncStorage} = Meteor.packageInterface();
 
 # Showcase
 
-| Whazzup.co |
-| --- |
-| <img src="https://user-images.githubusercontent.com/16267331/120551863-84907c80-c3c4-11eb-8e32-39b950b67875.png" height="250" align="center"> |
-| [Whazzup.co](https://whazzup.co/) uses Meteor React Native in their native app |
+| Whazzup.co | StarlingRealtime |
+| --- | --- |
+| <img src="https://user-images.githubusercontent.com/16267331/120551863-84907c80-c3c4-11eb-8e32-39b950b67875.png" height="250" align="center"> | <img src="https://uploads-ssl.webflow.com/5f112aac57df16c9ac9c21e0/5f11b8a2e5a66ea03a1a9835_android-chrome-512x512%20copy.png" height="250" align="center"> |
+| [Whazzup.co](https://whazzup.co/) uses Meteor React Native in their native app | [StarlingRealtime](https://www.starlingrealtime.com/) uses Meteor React Native in their production app |
 
 <hr/>
 
