@@ -168,7 +168,7 @@ export class Collection {
     // change mini mongo for optimize UI changes
     this._collection.upsert({ _id: id, ...modifier.$set });
     
-    if(!this.localCollection) {
+    if(!this.localCollection || (options && options.localOnly)) {
       Data.waitDdpConnected(() => {
         call(`/${this._name}/update`, { _id: id }, modifier, err => {
           if (err) {
