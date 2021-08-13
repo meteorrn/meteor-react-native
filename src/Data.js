@@ -1,18 +1,16 @@
+import ReactDOM from 'react-dom';
 import minimongo from 'minimongo-cache';
 import Tracker from './Tracker.js';
 
 const db = new minimongo();
 db.debug = false;
-db.batchedUpdates = require('react-native/Libraries/Renderer/shims/ReactNative').unstable_batchedUpdates;
+db.batchedUpdates = ReactDOM.unstable_batchedUpdates;
 process.nextTick = setImmediate;
-afterInteractions = require('react-native').InteractionManager.runAfterInteractions;
 
 function runAfterOtherComputations(fn) {
-  afterInteractions(() => {
     Tracker.afterFlush(() => {
       fn();
     });
-  });
 }
 
 export default {

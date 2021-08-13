@@ -43,12 +43,8 @@
     "prettier": "1.12.1",
     "sinon": "^1.17.3"
   },
-  "optionalDependencies": {
-    "@react-native-async-storage/async-storage": ">=1.8.1"
-  },
   "peerDependencies": {
-    "@react-native-community/netinfo": "*",
     "react": "*",
-    "react-native": ">= 0.60.0"
+    "react-dom": "*"
   }
 }
