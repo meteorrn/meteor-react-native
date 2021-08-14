@@ -15,6 +15,12 @@ import ReactiveDict from './ReactiveDict';
 
 let isVerbose = false;
 
+const AsyncStorage =  {  
+  setItem: (key, value) => window.localStorage.setItem(key, value),
+  getItem: (key) => window.localStorage.getItem(key),
+  removeItem: (key) => window.localStorage.removeItem(key)
+};
+
 const Meteor = {
   isVerbose,
   enableVerbose() {
@@ -61,9 +67,7 @@ const Meteor = {
     Data.ddp && Data.ddp.connect();
   },
   packageInterface:() => {
-    return {
-      AsyncStorage:Data._options.AsyncStorage || require('@react-native-async-storage/async-storage').default
-    };
+    return { AsyncStorage };
   },
   connect(endpoint, options) {
     if (!endpoint) endpoint = Data._endpoint;
@@ -74,8 +78,6 @@ const Meteor = {
     }
 
     if (!options.AsyncStorage) {
-      const AsyncStorage = require('@react-native-async-storage/async-storage').default;
-
       if (AsyncStorage) {
         options.AsyncStorage = AsyncStorage;
       } else {
@@ -93,12 +95,14 @@ const Meteor = {
     });
     
     try {
-      const NetInfo = require("@react-native-community/netinfo").default;
-      NetInfo.addEventListener(({type, isConnected, isInternetReachable, isWifiEnabled}) => {
-        if (isConnected && Data.ddp.autoReconnect) {
-          Data.ddp.connect();
-        }
-      });
+      // Not used on web
+
+      // const NetInfo = require("@react-native-community/netinfo").default;
+      // NetInfo.addEventListener(({type, isConnected, isInternetReachable, isWifiEnabled}) => {
+      //   if (isConnected && Data.ddp.autoReconnect) {
+      //     Data.ddp.connect();
+      //   }
+      // });
     }
     catch(e) {
       console.warn("Warning: NetInfo not installed, so DDP will not automatically reconnect");
