@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TheRealNate/meteor-react-native.git"
+    "url": "git+https://github.com/johnwils/meteor-react-native.git"
   },
   "keywords": [
     "react-component",
@@ -18,29 +18,28 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/TheRealNate/meteor-react-native/issues"
+    "url": "https://github.com/johnwils/meteor-react-native/issues"
   },
-  "homepage": "https://github.com/TheRealNate/meteor-react-native#readme",
+  "homepage": "https://github.com/johnwils/meteor-react-native#readme",
   "dependencies": {
-    "@babel/runtime": "^7.9.6",
-    "base-64": "^0.1.0",
-    "crypto-js": "^3.1.6",
+    "@babel/runtime": "^7.15.3",
+    "crypto-js": "^4.1.1",
     "ejson": "^2.1.2",
     "minimongo-cache": "0.0.48",
     "node-require-fallback": "^1.0.0",
-    "prop-types": "^15.5.10",
-    "underscore": "^1.8.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "underscore": "^1.13.1",
     "wolfy87-eventemitter": "^4.3.0"
   },
   "devDependencies": {
-    "babel-core": "^6.7.2",
-    "babel-preset-react-native": "^4.0.0",
+    "babel-core": "^6.26.3",
     "chai": "^3.5.0",
     "husky": "^0.14.3",
     "lint-staged": "^7.1.2",
     "mocha": "^2.4.5",
     "mock-socket": "^2.0.0",
-    "prettier": "1.12.1",
+    "prettier": "2.3.2",
     "sinon": "^1.17.3"
   },
   "peerDependencies": {
