@@ -1,6 +1,8 @@
 # Meteor React Native
 A set of packages allowing you to connect your React Native app to your Meteor server, and take advantage of Meteor-specific features like accounts, reactive data trackers, etc. Compatible with the latest version of React Native.
 
+Check out [the @meteorrn github org](https://github.com/meteorrn) for more packages, examples, and tutorials.
+
 [Full API Documentation](/docs/api.md)
 
 If you're new to React Native, you can view a guide to using React Native with Meteor on the [Official Meteor Guide](https://guide.meteor.com/react-native.html)
