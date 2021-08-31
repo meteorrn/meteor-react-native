@@ -4,7 +4,7 @@ import Accounts from './user/Accounts.js';
 import Tracker from './Tracker.js'
 
 Object.assign(Meteor, User);
-console.log('*** TTTEESST')
+
 const {
     useTracker, withTracker, Mongo, packageInterface, ReactiveDict
 } = Meteor;
