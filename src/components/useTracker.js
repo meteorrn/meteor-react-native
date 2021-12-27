@@ -1,9 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useReducer } from 'react';
 import Tracker from '../Tracker.js';
 import Data from '../Data';
 
+
+const fur = (x: number): number => x + 1;
+const useForceUpdate = () => React.useReducer(fur, 0)[1];
 export default (trackerFn, deps = []) => {
-    const [response, setResponse] = useState(trackerFn());
+    const { current: refs } = useRef({data: null});
+    const forceUpdate = useForceUpdate()
+    
     const meteorDataDep = new Tracker.Dependency();
     let computation = null;
     const dataChangedCallback = () => {
@@ -17,14 +22,16 @@ export default (trackerFn, deps = []) => {
 
     Data.onChange(dataChangedCallback);
 
-    useEffect(() => {
+    
+    React.useMemo(() => {
         stopComputation();
         Tracker.autorun(currentComputation => {
             meteorDataDep.depend();
             computation = currentComputation;
-            setResponse(trackerFn());
+            refs.data = trackerFn()
+            forceUpdate()
         });
         return () => { stopComputation(); Data.offChange(dataChangedCallback); };
     }, deps);
-    return response;
+    return refs.data;
 };

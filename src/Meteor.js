@@ -339,6 +339,11 @@ const Meteor = {
         });
       });
     }
+    else{
+      if (Data.subscriptions[id]) {
+        Data.subscriptions[id].inactive = true;
+      }
+    }
 
     return handle;
   },
