@@ -67,11 +67,14 @@ export default {
     );
   },
   notify(eventName) {
-    this._cbs.map(cb => {
-      if (cb.eventName == eventName && typeof cb.callback == 'function') {
-        cb.callback();
-      }
-    });
+    setTimeout(() => {
+      this._cbs.map(cb => {
+        if (cb.eventName == eventName && typeof cb.callback == 'function') {
+          cb.callback();
+        }
+      });
+    }, 1);
+    
   },
   waitDdpConnected(cb) {
     if (this.ddp && this.ddp.status == 'connected') {
