@@ -26,6 +26,11 @@ export default (trackerFn, deps = []) => {
     useMemo(() => {
         stopComputation();
         Tracker.autorun(currentComputation => {
+            if( refs.stopped)
+            {
+                return;
+            }
+            
             meteorDataDep.depend();
             computation = currentComputation;
             refs.data = trackerFn()
@@ -33,5 +38,11 @@ export default (trackerFn, deps = []) => {
         });
         return () => { stopComputation(); Data.offChange(dataChangedCallback); };
     }, deps);
+    useEffect(()=>{
+         return () => { 
+            refs.stopped = true
+            stopComputation(); Data.offChange(dataChangedCallback); 
+        };
+    },[])
     return refs.data;
 };
