@@ -10,48 +10,8 @@ import { isPlainObject } from '../lib/utils.js';
 const observers = {};
 const observersByComp = {};
 
-export const runObservers = (type, collection, newDocument, oldDocument) => {
-  if(observers[collection]) {
-    observers[collection].forEach(({cursor, callbacks}) => {
-      if(callbacks[type]) {
-        if(type === 'removed') {
-          callbacks['removed'](newDocument);
-        }
-        else if(Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]})) {
-          try {
-            callbacks[type](newDocument, oldDocument);
-          }
-          catch(e) {
-            console.error("Error in observe callback old", e);
-          }
-        }
-      }
-    });
-  }
-  if(observersByComp[collection]){
 
-    let keys = Object.keys(observersByComp[collection])
-    for(let i = 0; i < keys.length; i++){
-      let {cursor, callback} = observersByComp[collection][keys[i]]
-
-      let findRes = Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]})
-      if(type === 'removed') {
-        callback(newDocument);
-      }
-      else if(Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]}))
-      {
-         try {
-            callback(newDocument, oldDocument);
-          }
-          catch(e) {
-            console.error("Error in observe callback 2", e);
-          }
-      }
-    }
-  }
-};
-
-export function getObservers(type, collection, newDocument, oldDocument){
+export function getObservers(type, collection, newDocument){
   let observers = []
   if(observers[collection]) {
     observers[collection].forEach(({cursor, callbacks}) => {
@@ -73,12 +33,12 @@ export function getObservers(type, collection, newDocument, oldDocument){
   if(observersByComp[collection]){
     let keys = Object.keys(observersByComp[collection])
     for(let i = 0; i < keys.length; i++){
-      let {cursor, callback} = observersByComp[collection][keys[i]]
-
-      let findRes = Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]})
-      if(findRes) {
-        observers.push(callback);
-      }
+      observersByComp[collection][keys[i]].forEach(({cursor, callback})=>{
+         let findRes = Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]})
+        if(findRes) {
+          observers.push(callback);
+        }
+      })
     }
   }
   return observers
@@ -162,8 +122,9 @@ export class Collection {
       let id = Tracker.currentComputation._id
       const dep = new Tracker.Dependency()
       observersByComp[this._name] = observersByComp[this._name] || {}
+      observersByComp[this._name][id] =  observersByComp[this._name][id] || []
       dep.depend()
-      observersByComp[this._name][id] = {
+      observersByComp[this._name][id].push({
         cursor: result,
         callback:(newVal, old)=>{
           if(old && EJSON.equals(newVal, old))
@@ -172,7 +133,7 @@ export class Collection {
           }
           dep.changed()
         }
-      }
+      })
 
       Tracker.onInvalidate(()=>{
         if(observersByComp[this._name][id])

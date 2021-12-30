@@ -5,7 +5,7 @@ import Random from '../lib/Random';
 
 import Data from './Data';
 import Mongo from './Mongo';
-import { Collection, runObservers, getObservers, localCollections } from './Collection';
+import { Collection,  getObservers, localCollections } from './Collection';
 import call from './Call';
 
 import withTracker from './components/withTracker';
@@ -153,8 +153,16 @@ const Meteor = {
       };
 
       Data.db[message.collection].upsert(document);
+      let observers = getObservers("added", message.collection, document)
+      observers.forEach(callback=>{
+        try{
+          callback(document, null)
+        }
+        catch(e) {
+          console.error("Error in observe callback", e);
+        }
+      })
 
-      runObservers("added", message.collection, document);
     });
 
     Data.ddp.on('ready', message => {
@@ -192,8 +200,15 @@ const Meteor = {
         const oldDocument = Data.db[message.collection].findOne({_id:message.id});
 
         Data.db[message.collection].upsert(document);
-
-        runObservers("changed", message.collection, document, oldDocument);
+        let observers = getObservers("changed", message.collection, document)
+        observers.forEach(callback=>{
+          try{
+            callback(document, oldDocument)
+          }
+          catch(e) {
+            console.error("Error in observe callback", e);
+          }
+        })
       }
     });
 
