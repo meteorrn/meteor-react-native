@@ -107,8 +107,20 @@ const User = {
       Meteor.isVerbose && console.info("User._loginWithToken::: token:", value);
       User._startLoggingIn();
       Meteor.call('login', { resume: value }, (err, result) => {
-        User._endLoggingIn();
-        User._handleLoginCallback(err, result);
+        if(err)
+        {
+          // Give it a second try before clearing,
+          setTimeout(() => {
+            Meteor.call('login', { resume: value }, (err, result) => {
+              User._endLoggingIn();
+              User._handleLoginCallback(err, result);
+            })
+          }, 500);
+        }
+        else{
+          User._endLoggingIn();
+          User._handleLoginCallback(err, result);
+        }
       });
     } else {
       Meteor.isVerbose && console.info("User._loginWithToken::: token is null");
