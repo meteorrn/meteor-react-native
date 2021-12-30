@@ -107,16 +107,19 @@ const User = {
       Meteor.isVerbose && console.info("User._loginWithToken::: token:", value);
       User._startLoggingIn();
       Meteor.call('login', { resume: value }, (err, result) => {
-        if(err)
+        if(err?.error == "too-many-requests")
         {
-          // Give it a second try before clearing,
+          Meteor.isVerbose && console.info("User._handleLoginCallback::: too many requests retrying:", err);
           setTimeout(() => {
-            Meteor.call('login', { resume: value }, (err, result) => {
-              User._handleLoginCallback(err, result);
-            })
-          }, 500);
+            if(User._userIdSaved)
+            {
+              return;
+            }
+            this._loadInitialUser()
+          }, err.timeToReset + 100);
         }
         else{
+
           User._handleLoginCallback(err, result);
         }
       });
