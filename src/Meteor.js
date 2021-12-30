@@ -36,7 +36,7 @@ const Meteor = {
   },
   status() {
     return {
-      connected: Data.ddp ? Data.ddp.status == 'connected' : false,
+      connected: !!this.connected,
       status: Data.ddp ? Data.ddp.status : 'disconnected',
       //retryCount: 0
       //retryTime:
@@ -114,18 +114,20 @@ const Meteor = {
         }
       }
 
-      Data.notify('change');
-
       if(isVerbose) {
         console.info('Connected to DDP server.');
       }
       this._loadInitialUser().then(() => {
         this._subscriptionsRestart();
       });
+      this.connected= true
+      Data.notify('change');
     });
 
     let lastDisconnect = null;
     Data.ddp.on('disconnected', () => {
+
+      this.connected= false
       Data.notify('change');
 
       if(isVerbose) {

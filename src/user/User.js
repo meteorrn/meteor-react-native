@@ -50,8 +50,6 @@ const User = {
         password: hashPassword(password),
       },
       (err, result) => {
-        User._endLoggingIn();
-
         User._handleLoginCallback(err, result);
 
         typeof callback == 'function' && callback(err);
@@ -72,8 +70,6 @@ const User = {
   _login(user, callback) {
     User._startLoggingIn();
     Meteor.call('login', user, (err, result) => {
-      User._endLoggingIn();
-
       User._handleLoginCallback(err, result);
 
       typeof callback == 'function' && callback(err);
@@ -93,11 +89,15 @@ const User = {
       Data._options.AsyncStorage.setItem(TOKEN_KEY, result.token);
       Data._tokenIdSaved = result.token;
       User._userIdSaved = result.id;
+      User._endLoggingIn();
+
       Data.notify('onLogin');
     } else {
       Meteor.isVerbose && console.info("User._handleLoginCallback::: error:", err);
-      Data.notify('onLoginFailure');
+
       User.handleLogout();
+      User._endLoggingIn();
+      Data.notify('onLoginFailure');
     }
     Data.notify('change');
   },
@@ -112,13 +112,11 @@ const User = {
           // Give it a second try before clearing,
           setTimeout(() => {
             Meteor.call('login', { resume: value }, (err, result) => {
-              User._endLoggingIn();
               User._handleLoginCallback(err, result);
             })
           }, 500);
         }
         else{
-          User._endLoggingIn();
           User._handleLoginCallback(err, result);
         }
       });
