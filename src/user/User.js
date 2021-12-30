@@ -129,6 +129,7 @@ const User = {
     return Data._tokenIdSaved;
   },
   async _loadInitialUser() {
+    User._startLoggingIn();
     var value = null;
     try {
       value = await Data._options.AsyncStorage.getItem(TOKEN_KEY);
