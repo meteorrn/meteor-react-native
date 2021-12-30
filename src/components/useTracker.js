@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useReducer, useMemo } from 'react';
+import { useEffect, useState, useRef, useReducer, useMemo,useCallback } from 'react';
 import Tracker from '../Tracker.js';
 import Data from '../Data';
 
@@ -6,43 +6,46 @@ import Data from '../Data';
 const fur = (x: number): number => x + 1;
 const useForceUpdate = () => useReducer(fur, 0)[1];
 export default (trackerFn, deps = []) => {
-    const { current: refs } = useRef({data: null});
+    const { current: refs } = useRef({data: null,
+    meteorDataDep: new Tracker.Dependency(),
+    trackerFn: trackerFn,
+    computation: null
+    });
     const forceUpdate = useForceUpdate()
-    
-    const meteorDataDep = new Tracker.Dependency();
-    let computation = null;
-    const dataChangedCallback = () => {
-        meteorDataDep.changed();
-    };
+    refs.trackerFn = trackerFn
 
-    const stopComputation = () => {
-        computation && computation.stop();
-        computation = null;
-    };
-
-    Data.onChange(dataChangedCallback);
-
-    
-    useMemo(() => {
-        stopComputation();
-        Tracker.autorun(currentComputation => {
-            if( refs.stopped)
+     useMemo(() => {
+        refs.computation =Tracker.nonreactive(()=>{
+            Tracker.autorun(currentComputation => {
+                refs.data = trackerFn()
+            });
+        })
+        setTimeout(() => {
+            if(refs.computation)
             {
-                return;
+                refs.computation.stop()
+                refs.computation = null
             }
-            
-            meteorDataDep.depend();
-            computation = currentComputation;
-            refs.data = trackerFn()
+        }, 1);
+    }, deps);
+    
+    useEffect(() => {
+        if(refs.computation)
+        {
+            refs.computation.stop()
+            refs.computation = null
+        }
+
+        const computation =Tracker.nonreactive(()=>{
+        Tracker.autorun((c) => {
+            refs.data = refs.trackerFn(c)
             forceUpdate()
         });
-        return () => { stopComputation(); Data.offChange(dataChangedCallback); };
+        return ()=>{
+            computation.stop()
+        }
+         } )
     }, deps);
-    useEffect(()=>{
-         return () => { 
-            refs.stopped = true
-            stopComputation(); Data.offChange(dataChangedCallback); 
-        };
-    },[])
+   
     return refs.data;
 };

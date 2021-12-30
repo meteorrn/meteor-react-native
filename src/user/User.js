@@ -2,26 +2,31 @@ import Data from '../Data';
 import { hashPassword } from '../../lib/utils';
 import Mongo from '../Mongo';
 import Meteor from '../Meteor.js';
+import ReactiveDict from '../ReactiveDict';
 
 const TOKEN_KEY = 'reactnativemeteor_usertoken';
 const Users = new Mongo.Collection("users");
 
 const User = {
   users:Users,
+  _reactiveDict: new ReactiveDict(),
   user() {
-    if (!User._userIdSaved) return null;
+    let user_id = this._reactiveDict.get('_userIdSaved')
 
-    return Users.findOne(User._userIdSaved);
+    if (!user_id) return null;
+
+    return Users.findOne(user_id);
   },
   userId() {
-    if (!User._userIdSaved) return null;
+    let user_id = this._reactiveDict.get('_userIdSaved')
 
-    const user = Users.findOne(User._userIdSaved);
+    if (!user_id) return null;
+
+    const user = Users.findOne(user_id);
     return user && user._id;
   },
-  _isLoggingIn: true,
   loggingIn() {
-    return User._isLoggingIn;
+    return this._reactiveDict.get('_isLoggingIn')
   },
   logout(callback) {
     Meteor.call('logout', err => {
@@ -34,6 +39,8 @@ const User = {
   handleLogout() {
     Data._options.AsyncStorage.removeItem(TOKEN_KEY);
     Data._tokenIdSaved = null;
+    this._reactiveDict.set('_userIdSaved', null)
+
     User._userIdSaved = null;
   },
   loginWithPassword(selector, password, callback) {
@@ -76,11 +83,11 @@ const User = {
     });
   },
   _startLoggingIn() {
-    User._isLoggingIn = true;
+    this._reactiveDict.set('_loggingIn', true)
     Data.notify('loggingIn');
   },
   _endLoggingIn() {
-    User._isLoggingIn = false;
+    this._reactiveDict.set('_loggingIn', false)
     Data.notify('loggingIn');
   },
   _handleLoginCallback(err, result) {
@@ -88,9 +95,9 @@ const User = {
       Meteor.isVerbose && console.info("User._handleLoginCallback::: token:", result.token, "id:", result.id);
       Data._options.AsyncStorage.setItem(TOKEN_KEY, result.token);
       Data._tokenIdSaved = result.token;
+      this._reactiveDict.set('_userIdSaved', result.id)
       User._userIdSaved = result.id;
       User._endLoggingIn();
-
       Data.notify('onLogin');
     } else {
       Meteor.isVerbose && console.info("User._handleLoginCallback::: error:", err);

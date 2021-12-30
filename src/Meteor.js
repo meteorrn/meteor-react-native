@@ -5,7 +5,7 @@ import Random from '../lib/Random';
 
 import Data from './Data';
 import Mongo from './Mongo';
-import { Collection, runObservers, localCollections } from './Collection';
+import { Collection, runObservers, getObservers, localCollections } from './Collection';
 import call from './Call';
 
 import withTracker from './components/withTracker';
@@ -200,8 +200,17 @@ const Meteor = {
     Data.ddp.on('removed', message => {
       if(Data.db[message.collection]) {
         const oldDocument = Data.db[message.collection].findOne({_id:message.id});
+        let observers = getObservers("removed", message.collection, oldDocument)
         Data.db[message.collection].del(message.id);
-        runObservers("removed", message.collection, oldDocument);
+        observers.forEach(callback=>{
+          try{
+            callback(null, oldDocument)
+          }
+          catch(e) {
+            console.error("Error in observe callback", e);
+          }
+        })
+
       }
     });
     Data.ddp.on('result', message => {

@@ -417,7 +417,9 @@ Tracker.Dependency = class Dependency {
    */
   changed() {
     for (var id in this._dependentsById)
+    {
       this._dependentsById[id].invalidate();
+    }
   }
 
   // http://docs.meteor.com/#dependency_hasdependents
