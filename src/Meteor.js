@@ -20,6 +20,7 @@ const Meteor = {
   enableVerbose() {
     isVerbose = true;
   },
+  _reactiveDict: new ReactiveDict(),
   Random,
   Mongo,
   Tracker,
@@ -36,7 +37,7 @@ const Meteor = {
   },
   status() {
     return {
-      connected: !!this.connected,
+      connected: !!this._reactiveDict.get('connected'),
       status: Data.ddp ? Data.ddp.status : 'disconnected',
       //retryCount: 0
       //retryTime:
@@ -99,6 +100,12 @@ const Meteor = {
           Data.ddp.connect();
         }
       });
+
+      NetInfo.fetch().then(({type, isConnected, isInternetReachable, isWifiEnabled})=>{
+        if (isConnected && Data.ddp.autoReconnect) {
+          Data.ddp.connect();
+        }
+      })
     }
     catch(e) {
       console.warn("Warning: NetInfo not installed, so DDP will not automatically reconnect");
@@ -120,14 +127,17 @@ const Meteor = {
       this._loadInitialUser().then(() => {
         this._subscriptionsRestart();
       });
-      this.connected= true
+      this._reactiveDict.set('connected', true)
+      this.connected = true
       Data.notify('change');
     });
 
     let lastDisconnect = null;
     Data.ddp.on('disconnected', () => {
 
-      this.connected= false
+      this.connected = false
+      this._reactiveDict.set('connected', false)
+
       Data.notify('change');
 
       if(isVerbose) {
@@ -242,6 +252,9 @@ const Meteor = {
           console.warn('No subscription existing for', sub.name);
         }
       }
+    });
+    Data.ddp.on('error', message => {
+      console.warn(message)
     });
   },
   subscribe(name) {
