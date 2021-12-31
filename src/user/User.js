@@ -26,7 +26,7 @@ const User = {
     return user && user._id;
   },
   loggingIn() {
-    return this._reactiveDict.get('_isLoggingIn')
+    return this._reactiveDict.get('_loggingIn')
   },
   logout(callback) {
     Meteor.call('logout', err => {
