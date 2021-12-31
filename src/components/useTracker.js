@@ -27,11 +27,15 @@ export default (trackerFn, deps = []) => {
       refs.computation.stop();
       refs.computation = null;
     }
-    refs.computation = Tracker.nonreactive(() => {
+    Tracker.nonreactive(() => {
       Tracker.autorun(currentComputation => {
         if (refs.isMounted) {
+          refs.computation = currentComputation
           refs.data = trackerFn();
           forceUpdate();
+        }
+        else{
+            refs.computation?.stop();
         }
       });
     });
@@ -41,6 +45,7 @@ export default (trackerFn, deps = []) => {
     return () => {
       refs.isMounted = false;
       refs.computation?.stop();
+      refs.computation = null;
     };
   }, []);
 
