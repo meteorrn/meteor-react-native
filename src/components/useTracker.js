@@ -1,51 +1,48 @@
-import { useEffect, useState, useRef, useReducer, useMemo,useCallback } from 'react';
+import {
+  useEffect,
+  useState,
+  useRef,
+  useReducer,
+  useMemo,
+  useCallback,
+} from 'react';
 import Tracker from '../Tracker.js';
 import Data from '../Data';
-
 
 const fur = (x: number): number => x + 1;
 const useForceUpdate = () => useReducer(fur, 0)[1];
 export default (trackerFn, deps = []) => {
-    const { current: refs } = useRef({data: null,
+  const { current: refs } = useRef({
+    data: null,
     meteorDataDep: new Tracker.Dependency(),
     trackerFn: trackerFn,
-    computation: null
+    computation: null,
+    isMounted: true,
+  });
+  const forceUpdate = useForceUpdate();
+  refs.trackerFn = trackerFn;
+
+  useMemo(() => {
+    if (refs.computation) {
+      refs.computation.stop();
+      refs.computation = null;
+    }
+    refs.computation = Tracker.nonreactive(() => {
+      Tracker.autorun(currentComputation => {
+        if (refs.isMounted) {
+          refs.data = trackerFn();
+          forceUpdate();
+        }
+      });
     });
-    const forceUpdate = useForceUpdate()
-    refs.trackerFn = trackerFn
+  }, deps);
 
-     useMemo(() => {
-        refs.computation =Tracker.nonreactive(()=>{
-            Tracker.autorun(currentComputation => {
-                refs.data = trackerFn()
-            });
-        })
-        setTimeout(() => {
-            if(refs.computation)
-            {
-                refs.computation.stop()
-                refs.computation = null
-            }
-        }, 1);
-    }, deps);
-    
-    useEffect(() => {
-        if(refs.computation)
-        {
-            refs.computation.stop()
-            refs.computation = null
-        }
+  useEffect(() => {
+    return () => {
+      refs.isMounted = false;
+      refs.computation?.stop();
+    };
+  }, []);
 
-        const computation =Tracker.nonreactive(()=>{
-        Tracker.autorun((c) => {
-            refs.data = refs.trackerFn(c)
-            forceUpdate()
-        });
-        return ()=>{
-            computation.stop()
-        }
-         } )
-    }, deps);
-   
-    return refs.data;
+  return refs.data;
 };

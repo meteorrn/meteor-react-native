@@ -5,20 +5,20 @@ import Meteor from '../Meteor.js';
 import ReactiveDict from '../ReactiveDict';
 
 const TOKEN_KEY = 'reactnativemeteor_usertoken';
-const Users = new Mongo.Collection("users");
+const Users = new Mongo.Collection('users');
 
 const User = {
-  users:Users,
+  users: Users,
   _reactiveDict: new ReactiveDict(),
   user() {
-    let user_id = this._reactiveDict.get('_userIdSaved')
+    let user_id = this._reactiveDict.get('_userIdSaved');
 
     if (!user_id) return null;
 
     return Users.findOne(user_id);
   },
   userId() {
-    let user_id = this._reactiveDict.get('_userIdSaved')
+    let user_id = this._reactiveDict.get('_userIdSaved');
 
     if (!user_id) return null;
 
@@ -26,7 +26,7 @@ const User = {
     return user && user._id;
   },
   loggingIn() {
-    return this._reactiveDict.get('_loggingIn')
+    return this._reactiveDict.get('_loggingIn');
   },
   logout(callback) {
     Meteor.call('logout', err => {
@@ -39,7 +39,7 @@ const User = {
   handleLogout() {
     Data._options.AsyncStorage.removeItem(TOKEN_KEY);
     Data._tokenIdSaved = null;
-    this._reactiveDict.set('_userIdSaved', null)
+    this._reactiveDict.set('_userIdSaved', null);
 
     User._userIdSaved = null;
   },
@@ -60,7 +60,7 @@ const User = {
         User._handleLoginCallback(err, result);
 
         typeof callback == 'function' && callback(err);
-      },
+      }
     );
   },
   logoutOtherClients(callback = () => {}) {
@@ -83,24 +83,31 @@ const User = {
     });
   },
   _startLoggingIn() {
-    this._reactiveDict.set('_loggingIn', true)
+    this._reactiveDict.set('_loggingIn', true);
     Data.notify('loggingIn');
   },
   _endLoggingIn() {
-    this._reactiveDict.set('_loggingIn', false)
+    this._reactiveDict.set('_loggingIn', false);
     Data.notify('loggingIn');
   },
   _handleLoginCallback(err, result) {
     if (!err) {
-      Meteor.isVerbose && console.info("User._handleLoginCallback::: token:", result.token, "id:", result.id);
+      Meteor.isVerbose &&
+        console.info(
+          'User._handleLoginCallback::: token:',
+          result.token,
+          'id:',
+          result.id
+        );
       Data._options.AsyncStorage.setItem(TOKEN_KEY, result.token);
       Data._tokenIdSaved = result.token;
-      this._reactiveDict.set('_userIdSaved', result.id)
+      this._reactiveDict.set('_userIdSaved', result.id);
       User._userIdSaved = result.id;
       User._endLoggingIn();
       Data.notify('onLogin');
     } else {
-      Meteor.isVerbose && console.info("User._handleLoginCallback::: error:", err);
+      Meteor.isVerbose &&
+        console.info('User._handleLoginCallback::: error:', err);
 
       User.handleLogout();
       User._endLoggingIn();
@@ -111,27 +118,27 @@ const User = {
   _loginWithToken(value) {
     Data._tokenIdSaved = value;
     if (value !== null) {
-      Meteor.isVerbose && console.info("User._loginWithToken::: token:", value);
+      Meteor.isVerbose && console.info('User._loginWithToken::: token:', value);
       User._startLoggingIn();
       Meteor.call('login', { resume: value }, (err, result) => {
-        if(err?.error == "too-many-requests")
-        {
-          Meteor.isVerbose && console.info("User._handleLoginCallback::: too many requests retrying:", err);
+        if (err?.error == 'too-many-requests') {
+          Meteor.isVerbose &&
+            console.info(
+              'User._handleLoginCallback::: too many requests retrying:',
+              err
+            );
           setTimeout(() => {
-            if(User._userIdSaved)
-            {
+            if (User._userIdSaved) {
               return;
             }
-            this._loadInitialUser()
+            this._loadInitialUser();
           }, err.timeToReset + 100);
-        }
-        else{
-
+        } else {
           User._handleLoginCallback(err, result);
         }
       });
     } else {
-      Meteor.isVerbose && console.info("User._loginWithToken::: token is null");
+      Meteor.isVerbose && console.info('User._loginWithToken::: token is null');
       User._endLoggingIn();
     }
   },

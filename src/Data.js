@@ -5,7 +5,8 @@ const db = new minimongo();
 db.debug = false;
 db.batchedUpdates = require('react-native/Libraries/Renderer/shims/ReactNative').unstable_batchedUpdates;
 process.nextTick = setImmediate;
-afterInteractions = require('react-native').InteractionManager.runAfterInteractions;
+afterInteractions = require('react-native').InteractionManager
+  .runAfterInteractions;
 
 function runAfterOtherComputations(fn) {
   afterInteractions(() => {
@@ -74,7 +75,6 @@ export default {
         }
       });
     }, 1);
-    
   },
   waitDdpConnected(cb) {
     if (this.ddp && this.ddp.status == 'connected') {

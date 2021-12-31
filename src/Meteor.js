@@ -5,7 +5,7 @@ import Random from '../lib/Random';
 
 import Data from './Data';
 import Mongo from './Mongo';
-import { Collection,  getObservers, localCollections } from './Collection';
+import { Collection, getObservers, localCollections } from './Collection';
 import call from './Call';
 
 import withTracker from './components/withTracker';
@@ -28,7 +28,7 @@ const Meteor = {
   ReactiveDict,
   Collection,
   collection() {
-    throw new Error("Meteor.collection is deprecated. Use Mongo.Collection");
+    throw new Error('Meteor.collection is deprecated. Use Mongo.Collection');
   },
   withTracker,
   useTracker,
@@ -61,26 +61,36 @@ const Meteor = {
   reconnect() {
     Data.ddp && Data.ddp.connect();
   },
-  packageInterface:() => {
+  packageInterface: () => {
     return {
-      AsyncStorage:Data._options.AsyncStorage || require('@react-native-community/async-storage').default
+      AsyncStorage:
+        Data._options.AsyncStorage ||
+        require('@react-native-community/async-storage').default,
     };
   },
   connect(endpoint, options) {
     if (!endpoint) endpoint = Data._endpoint;
     if (!options) options = Data._options;
 
-    if((!endpoint.startsWith("ws") || !endpoint.endsWith("/websocket")) && !options.suppressUrlErrors) {
-      throw new Error(`Your url "${endpoint}" may be in the wrong format. It should start with "ws://" or "wss://" and end with "/websocket", e.g. "wss://myapp.meteor.com/websocket". To disable this warning, connect with option "suppressUrlErrors" as true, e.g. Meteor.connect("${endpoint}", {suppressUrlErrors:true});`);
+    if (
+      (!endpoint.startsWith('ws') || !endpoint.endsWith('/websocket')) &&
+      !options.suppressUrlErrors
+    ) {
+      throw new Error(
+        `Your url "${endpoint}" may be in the wrong format. It should start with "ws://" or "wss://" and end with "/websocket", e.g. "wss://myapp.meteor.com/websocket". To disable this warning, connect with option "suppressUrlErrors" as true, e.g. Meteor.connect("${endpoint}", {suppressUrlErrors:true});`
+      );
     }
 
     if (!options.AsyncStorage) {
-      const AsyncStorage = require('@react-native-community/async-storage').default;
+      const AsyncStorage = require('@react-native-community/async-storage')
+        .default;
 
       if (AsyncStorage) {
         options.AsyncStorage = AsyncStorage;
       } else {
-        throw new Error('No AsyncStorage detected. Import an AsyncStorage package and add to `options` in the Meteor.connect() method');
+        throw new Error(
+          'No AsyncStorage detected. Import an AsyncStorage package and add to `options` in the Meteor.connect() method'
+        );
       }
     }
 
@@ -92,55 +102,60 @@ const Meteor = {
       SocketConstructor: WebSocket,
       ...options,
     });
-    
-    try {
-      const NetInfo = require("@react-native-community/netinfo").default;
-      NetInfo.addEventListener(({type, isConnected, isInternetReachable, isWifiEnabled}) => {
-        if (isConnected && Data.ddp.autoReconnect) {
-          Data.ddp.connect();
-        }
-      });
 
-      NetInfo.fetch().then(({type, isConnected, isInternetReachable, isWifiEnabled})=>{
-        if (isConnected && Data.ddp.autoReconnect) {
-          Data.ddp.connect();
+    try {
+      const NetInfo = require('@react-native-community/netinfo').default;
+      NetInfo.addEventListener(
+        ({ type, isConnected, isInternetReachable, isWifiEnabled }) => {
+          if (isConnected && Data.ddp.autoReconnect) {
+            Data.ddp.connect();
+          }
         }
-      })
-    }
-    catch(e) {
-      console.warn("Warning: NetInfo not installed, so DDP will not automatically reconnect");
+      );
+
+      NetInfo.fetch().then(
+        ({ type, isConnected, isInternetReachable, isWifiEnabled }) => {
+          if (isConnected && Data.ddp.autoReconnect) {
+            Data.ddp.connect();
+          }
+        }
+      );
+    } catch (e) {
+      console.warn(
+        'Warning: NetInfo not installed, so DDP will not automatically reconnect'
+      );
     }
 
     Data.ddp.on('connected', () => {
       // Clear the collections of any stale data in case this is a reconnect
       if (Data.db && Data.db.collections) {
         for (var collection in Data.db.collections) {
-          if(!localCollections.includes(collection)) { // Dont clear data from local collections
+          if (!localCollections.includes(collection)) {
+            // Dont clear data from local collections
             Data.db[collection].remove({});
           }
         }
       }
 
-      if(isVerbose) {
+      if (isVerbose) {
         console.info('Connected to DDP server.');
       }
       this._loadInitialUser().then(() => {
         this._subscriptionsRestart();
       });
-      this._reactiveDict.set('connected', true)
-      this.connected = true
+      this._reactiveDict.set('connected', true);
+      this.connected = true;
       Data.notify('change');
     });
 
     let lastDisconnect = null;
     Data.ddp.on('disconnected', () => {
-
-      this.connected = false
-      this._reactiveDict.set('connected', false)
+      this.connected = false;
+      this._reactiveDict.set('connected', false);
 
       Data.notify('change');
 
-      if(isVerbose) {
+      if (isVerbose) {
         console.info('Disconnected from DDP server.');
       }
 
@@ -163,16 +178,14 @@ const Meteor = {
       };
 
       Data.db[message.collection].upsert(document);
-      let observers = getObservers("added", message.collection, document)
-      observers.forEach(callback=>{
-        try{
-          callback(document, null)
+      let observers = getObservers('added', message.collection, document);
+      observers.forEach(callback => {
+        try {
+          callback(document, null);
+        } catch (e) {
+          console.error('Error in observe callback', e);
         }
-        catch(e) {
-          console.error("Error in observe callback", e);
-        }
-      })
-
+      });
     });
 
     Data.ddp.on('ready', message => {
@@ -200,42 +213,47 @@ const Meteor = {
         });
       }
 
-      if(Data.db[message.collection]) {
+      if (Data.db[message.collection]) {
         const document = {
           _id: message.id,
           ...message.fields,
           ...unset,
         };
 
-        const oldDocument = Data.db[message.collection].findOne({_id:message.id});
+        const oldDocument = Data.db[message.collection].findOne({
+          _id: message.id,
+        });
 
         Data.db[message.collection].upsert(document);
-        let observers = getObservers("changed", message.collection, document)
-        observers.forEach(callback=>{
-          try{
-            callback(document, oldDocument)
+        let observers = getObservers('changed', message.collection, document);
+        observers.forEach(callback => {
+          try {
+            callback(document, oldDocument);
+          } catch (e) {
+            console.error('Error in observe callback', e);
           }
-          catch(e) {
-            console.error("Error in observe callback", e);
-          }
-        })
+        });
       }
     });
 
     Data.ddp.on('removed', message => {
-      if(Data.db[message.collection]) {
-        const oldDocument = Data.db[message.collection].findOne({_id:message.id});
-        let observers = getObservers("removed", message.collection, oldDocument)
+      if (Data.db[message.collection]) {
+        const oldDocument = Data.db[message.collection].findOne({
+          _id: message.id,
+        });
+        let observers = getObservers(
+          'removed',
+          message.collection,
+          oldDocument
+        );
         Data.db[message.collection].del(message.id);
-        observers.forEach(callback=>{
-          try{
-            callback(null, oldDocument)
+        observers.forEach(callback => {
+          try {
+            callback(null, oldDocument);
+          } catch (e) {
+            console.error('Error in observe callback', e);
           }
-          catch(e) {
-            console.error("Error in observe callback", e);
-          }
-        })
-
+        });
       }
     });
     Data.ddp.on('result', message => {
@@ -254,7 +272,7 @@ const Meteor = {
       }
     });
     Data.ddp.on('error', message => {
-      console.warn(message)
+      console.warn(message);
     });
   },
   subscribe(name) {
@@ -377,8 +395,7 @@ const Meteor = {
           }
         });
       });
-    }
-    else{
+    } else {
       if (Data.subscriptions[id]) {
         Data.subscriptions[id].inactive = true;
       }

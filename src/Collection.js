@@ -10,43 +10,48 @@ import { isPlainObject } from '../lib/utils.js';
 const observers = {};
 const observersByComp = {};
 
-
-export function getObservers(type, collection, newDocument){
-  let observers = []
-  if(observers[collection]) {
-    observers[collection].forEach(({cursor, callbacks}) => {
-      if(callbacks[type]) {
-        if(type === 'removed') {
-          observers.push(callbacks['removed'])
-        }
-        else if(Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]})) {
+export function getObservers(type, collection, newDocument) {
+  let observers = [];
+  if (observers[collection]) {
+    observers[collection].forEach(({ cursor, callbacks }) => {
+      if (callbacks[type]) {
+        if (type === 'removed') {
+          observers.push(callbacks['removed']);
+        } else if (
+          Data.db[collection].findOne({
+            $and: [{ _id: newDocument._id }, cursor._selector],
+          })
+        ) {
           try {
-            observers.push(callbacks[type])
-          }
-          catch(e) {
-            console.error("Error in observe callback old", e);
+            observers.push(callbacks[type]);
+          } catch (e) {
+            console.error('Error in observe callback old', e);
           }
         }
       }
     });
   }
-  if(observersByComp[collection]){
-    let keys = Object.keys(observersByComp[collection])
-    for(let i = 0; i < keys.length; i++){
-      observersByComp[collection][keys[i]].forEach(({cursor, callback})=>{
-         let findRes = Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]})
-        if(findRes) {
-          observers.push(callback);
+  if (observersByComp[collection]) {
+    let keys = Object.keys(observersByComp[collection]);
+    for (let i = 0; i < keys.length; i++) {
+      observersByComp[collection][keys[i]].callbacks.forEach(
+        ({ cursor, callback }) => {
+          let findRes = Data.db[collection].findOne({
+            $and: [{ _id: newDocument?._id }, cursor._selector],
+          });
+          if (findRes) {
+            observers.push(callback);
+          }
         }
-      })
+      );
     }
   }
-  return observers
+  return observers;
 }
 
 const _registerObserver = (collection, cursor, callbacks) => {
   observers[collection] = observers[collection] || [];
-  observers[collection].push({cursor, callbacks});
+  observers[collection].push({ cursor, callbacks });
 };
 
 class Cursor {
@@ -77,7 +82,7 @@ class Cursor {
       ? this._docs.map(this._collection._transform)
       : this._docs;
   }
-  
+
   observe(callbacks) {
     _registerObserver(this._collection._collection.name, this, callbacks);
   }
@@ -87,12 +92,12 @@ export const localCollections = [];
 
 export class Collection {
   constructor(name, options = {}) {
-    if(name === null) {
+    if (name === null) {
       this.localCollection = true;
       name = Random.id();
       localCollections.push(name);
     }
-    
+
     if (!Data.db[name]) Data.db.addCollection(name);
 
     this._collection = Data.db[name];
@@ -115,32 +120,40 @@ export class Collection {
     } else {
       docs = this._collection.find(selector, options);
     }
-    result = new Cursor(this, docs, typeof selector =="string" ? {_id:selector} : selector);
+    result = new Cursor(
+      this,
+      docs,
+      typeof selector == 'string' ? { _id: selector } : selector
+    );
 
-    
-    if(Tracker.active && Tracker.currentComputation){
-      let id = Tracker.currentComputation._id
-      const dep = new Tracker.Dependency()
-      observersByComp[this._name] = observersByComp[this._name] || {}
-      observersByComp[this._name][id] =  observersByComp[this._name][id] || []
-      dep.depend()
-      observersByComp[this._name][id].push({
+    if (Tracker.active && Tracker.currentComputation) {
+      let id = Tracker.currentComputation._id;
+      observersByComp[this._name] = observersByComp[this._name] || {};
+      if (!observersByComp[this._name][id]) {
+        let item = {
+          computation: Tracker.currentComputation,
+          callbacks: [],
+        };
+        observersByComp[this._name][id] = item;
+      }
+      let item = observersByComp[this._name][id];
+
+      item.callbacks.push({
         cursor: result,
-        callback:(newVal, old)=>{
-          if(old && EJSON.equals(newVal, old))
-          {
-            return
+        callback: (newVal, old) => {
+          if (old && EJSON.equals(newVal, old)) {
+            return;
           }
-          dep.changed()
-        }
-      })
 
-      Tracker.onInvalidate(()=>{
-        if(observersByComp[this._name][id])
-        {
-         delete observersByComp[this._name][id]
+          item.computation.invalidate();
+        },
+      });
+
+      Tracker.onInvalidate(() => {
+        if (observersByComp[this._name][id]) {
+          delete observersByComp[this._name][id];
         }
-      })
+      });
     }
 
     return result;
@@ -177,15 +190,15 @@ export class Collection {
       });
 
     this._collection.upsert(item);
-    
-    if(!this.localCollection) {
+
+    if (!this.localCollection) {
       Data.waitDdpConnected(() => {
         call(`/${this._name}/insert`, item, err => {
           if (err) {
             this._collection.del(id);
             return callback(err);
           }
-  
+
           callback(null, id);
         });
       });
@@ -207,14 +220,14 @@ export class Collection {
 
     // change mini mongo for optimize UI changes
     this._collection.upsert({ _id: id, ...modifier.$set });
-    
-    if(!this.localCollection || (options && options.localOnly)) {
+
+    if (!this.localCollection || (options && options.localOnly)) {
       Data.waitDdpConnected(() => {
         call(`/${this._name}/update`, { _id: id }, modifier, err => {
           if (err) {
             return callback(err);
           }
-  
+
           callback(null, id);
         });
       });
@@ -227,7 +240,7 @@ export class Collection {
     if (element) {
       this._collection.del(element._id);
 
-      if(!this.localCollection) {
+      if (!this.localCollection) {
         Data.waitDdpConnected(() => {
           call(`/${this._name}/remove`, { _id: id }, (err, res) => {
             if (err) {
