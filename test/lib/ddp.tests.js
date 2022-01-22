@@ -1,5 +1,6 @@
-'use strict';
 import DDP from '../../lib/ddp';
+import { WebSocket, Server as SocketServer } from 'mock-socket';
+import { expect } from 'chai';
 
 describe('ddp', function() {
   let validOptions;
@@ -18,43 +19,39 @@ describe('ddp', function() {
   });
 
   it('should throw an error if not passed a socketConstructor', function() {
-    (function() {
-      let ddp = new DDP({});
-    }.should.throw(Error));
+    expect(() => new DDP({})).to.throw('this.SocketConstructor is not a constructor');
   });
 
   it('should throw an error given no endpoint', function() {
-    (function() {
-      let ddp = new DDP({
-        SocketConstructor: WebSocket,
-      });
-    }.should.throw(Error));
+    expect(() => new DDP({
+      SocketConstructor: WebSocket,
+    })).to.throw('Failed to construct \'WebSocket\': 1 argument required, but only 0 present');
   });
 
   it('should start in the disconnected state', function() {
     let ddp = new DDP(validOptions);
-    ddp.status.should.equal('disconnected');
+    expect(ddp.status).to.equal('disconnected');
   });
 
   it('should start with autoreconnect true given no autoReconnect parameter', function() {
     let ddp = new DDP(validOptions);
-    ddp.autoReconnect.should.equal(true);
+    expect(ddp.autoReconnect).to.equal(true);
   });
 
   it('should start with autoreconnect false given autoReconnect parameter set to false', function() {
     validOptions.autoReconnect = false;
     let ddp = new DDP(validOptions);
-    ddp.autoReconnect.should.equal(false);
+    expect(ddp.autoReconnect).to.equal(false);
   });
 
   it('should start with autoconnect true given no autoConnect parameter', function() {
     let ddp = new DDP(validOptions);
-    ddp.autoConnect.should.equal(true);
+    expect(ddp.autoConnect).to.equal(true);
   });
 
   it('should start with autoconnect false given autoReconnect parameter set to false', function() {
     validOptions.autoConnect = false;
     let ddp = new DDP(validOptions);
-    ddp.autoConnect.should.equal(false);
+    expect(ddp.autoConnect).to.equal(false);
   });
 });
