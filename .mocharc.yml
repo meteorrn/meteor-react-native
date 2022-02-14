@@ -1,8 +1,0 @@
-recursive: true
-reporter: "spec"
-retries: 1
-slow: 20
-timeout: 2000
-ui: "bdd"
-require: "@babel/register"
-# for more options see here https://github.com/mochajs/mocha/blob/master/example/config/.mocharc.yml
