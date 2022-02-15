@@ -9,7 +9,7 @@
   },
   "scripts": {
     "lint": "prettier --check ./**/*.js",
-    "test:coverage": "nyc --reporter=html --reporter=text ./node_modules/.bin/mocha 'test/lib/**/*.js'"
+    "test:coverage": "nyc --reporter=html --reporter=text ./node_modules/.bin/mocha 'test/**/*.js'"
   },
   "keywords": [
     "react-component",
