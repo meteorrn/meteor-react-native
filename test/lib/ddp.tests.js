@@ -1,16 +1,22 @@
 import DDP from '../../lib/ddp';
-import { WebSocket, Server as SocketServer } from 'mock-socket';
+import { WebSocket } from 'mock-socket';
 import { expect } from 'chai';
+import { server } from '../hooks/mockServer'
 
 describe('ddp', function() {
   let validOptions;
   let ddp;
   const endpoint = 'ws://localhost:3000/websocket';
-  let server;
 
-  before(function() {
-    server = new SocketServer(endpoint);
-  });
+  // instead of manually adding/removing listeners we
+  // add them to this array and remove them all during
+  // afterEach hook so we prevent mem-leaks and false
+  // assertions due to old listeners catching up new messages
+  const listeners = []
+  const listen = (target, event, fn) => {
+    target.on(event, fn)
+    listeners.push({ target, event, fn })
+  }
 
   beforeEach(function() {
     validOptions = {
@@ -22,6 +28,11 @@ describe('ddp', function() {
   afterEach(function () {
     if (ddp) {
       ddp.disconnect();
+    }
+
+    while(listeners.length) {
+      const { target, event, fn } = listeners.pop()
+      target.off(event, fn)
     }
   });
 
@@ -65,14 +76,16 @@ describe('ddp', function() {
   it('opens a socket connection', function (done) {
     validOptions.autoConnect = false;
     ddp = new DDP(validOptions);
-    ddp.socket.on('open', () => done());
+    listen(ddp.socket, 'open', () => {
+      done();
+    });
     ddp.connect();
   });
   it('opens socket only once', function (done) {
     ddp = new DDP(validOptions);
 
     let count = 0
-    ddp.socket.on('open', () => {
+    listen(ddp.socket, 'open', () => {
       count++
     });
 
@@ -94,14 +107,14 @@ describe('ddp', function() {
     ddp = new DDP(validOptions);
     ddp.connect();
 
-    ddp.socket.on('message:out', message => {
+    listen(ddp.socket, 'message:out', message => {
       if (message.msg === 'pong') {
         expect(message.id).to.equal(99);
         done();
       }
     })
 
-    ddp.socket.on('open', () => {
+    listen(ddp.socket, 'open', () => {
       ddp.socket.emit('message:in', { msg: 'connected' });
       ddp.socket.emit('message:in', { msg: 'ping', id: 99 });
     })
@@ -113,10 +126,10 @@ describe('ddp', function() {
     ddp = new DDP(validOptions);
     let expected = false
 
-    ddp.socket.on('open', () => {
+    listen(ddp.socket, 'open', () => {
       ddp.socket.emit('message:in', { msg: 'connected' });
     })
-    ddp.on('connected', () => {
+    listen(ddp, 'connected', () => {
       if (expected) {
         done()
       }
@@ -133,39 +146,39 @@ describe('ddp', function() {
     ddp = new DDP(validOptions);
 
     const validObj = { foo: 'bar' }
-    ddp.socket.on('message:in', obj => {
+    listen(ddp.socket, 'message:in', obj => {
       if (obj.msg) return // ignore the real ones, just check for our foo
       expect(obj).to.deep.equal(validObj);
       done();
     });
 
     // to be ignored
-    server.emit('message', '{"invalid":')
+    server().emit('message', '{"invalid":')
 
     // should be valid
-    server.emit('message', '{"foo":"bar"}')
+    server().emit('message', '{"foo":"bar"}')
   })
 
   describe('events', function () {
     it('emits custom events', function (done) {
       ddp = new DDP(validOptions);
-      ddp.on('foo', () => done());
+      listen(ddp, 'foo', () => done());
       ddp.emit('foo');
     });
     it('re-emits incoming public events', function (done) {
       ddp = new DDP(validOptions);
-      ddp.on('ready', () => {
+      listen(ddp, 'ready', () => {
         done();
       });
 
-      server.emit('message', '{"msg":"ready"}')
+      server().emit('message', '{"msg":"ready"}')
     });
     it('emits connected event', function (done) {
       validOptions.autoConnect = false;
       ddp = new DDP(validOptions);
-      ddp.on('connected', () => done());
+      listen(ddp, 'connected', () => done());
       ddp.connect();
-      ddp.socket.on('open', () => {
+      listen(ddp.socket, 'open', () => {
         ddp.socket.emit('message:in', { msg: 'connected' });
       })
     });
@@ -174,17 +187,17 @@ describe('ddp', function() {
       validOptions.autoReconnect = true;
 
       ddp = new DDP(validOptions);
-      ddp.on('disconnected', () => {
+      listen(ddp, 'disconnected', () => {
         // will be set to false when actively calling disconnect
         expect(ddp.autoReconnect).to.equal(false);
         done()
       });
 
-      ddp.socket.on('open', () => {
+      listen(ddp.socket, 'open', () => {
         ddp.socket.emit('message:in', { msg: 'connected' });
       });
 
-      ddp.on('connected', () => {
+      listen(ddp, 'connected', () => {
         ddp.disconnect();
       })
     });
@@ -201,7 +214,7 @@ describe('ddp', function() {
       // but when connected the queue will run
       ddp.method('foo', { foo: 'bar'})
 
-      ddp.socket.on('message:out', message => {
+      listen(ddp.socket, 'message:out', message => {
         if (message.msg === 'method') {
           expect(message.id).to.equal('0');
           expect(message.method).to.equal('foo');
@@ -213,7 +226,7 @@ describe('ddp', function() {
       })
 
       ddp.connect();
-      ddp.socket.on('open', () => {
+      listen(ddp.socket, 'open', () => {
         ddp.socket.emit('message:in', { msg: 'connected' });
       })
     });
@@ -229,7 +242,7 @@ describe('ddp', function() {
       // but when connected the queue will run
       ddp.sub('foo', { foo: 'bar'})
 
-      ddp.socket.on('message:out', message => {
+      listen(ddp.socket, 'message:out', message => {
         if (message.msg === 'sub') {
           expect(message.id).to.equal('1');
           expect(message.method).to.equal('foo');
@@ -241,7 +254,7 @@ describe('ddp', function() {
       })
 
       ddp.connect();
-      ddp.socket.on('open', () => {
+      listen(ddp.socket, 'open', () => {
         ddp.socket.emit('message:in', { msg: 'connected' });
       })
     });
@@ -255,7 +268,7 @@ describe('ddp', function() {
       // but when connected the queue will run
       ddp.unsub('1')
 
-      ddp.socket.on('message:out', message => {
+      listen(ddp.socket, 'message:out', message => {
         if (message.msg === 'unsub') {
           expect(message.id).to.equal('2');
           expect(message.method).to.equal('foo');
@@ -267,7 +280,7 @@ describe('ddp', function() {
       })
 
       ddp.connect();
-      ddp.socket.on('open', () => {
+      listen(ddp.socket, 'open', () => {
         ddp.socket.emit('message:in', { msg: 'connected' });
       })
     })

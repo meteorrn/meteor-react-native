@@ -21,8 +21,12 @@ export const runObservers = (type, collection, newDocument, oldDocument) => {
             callbacks[type](newDocument, oldDocument);
           }
           catch(e) {
+            // TODO we should optionally allow an onError callback
             console.error("Error in observe callback", e);
           }
+        }
+        else {
+          // TODO what to do here?
         }
       }
     });
@@ -172,6 +176,8 @@ export class Collection {
       Data.waitDdpConnected(() => {
         call(`/${this._name}/update`, { _id: id }, modifier, err => {
           if (err) {
+            // todo in such case the _collection's document should be reverted
+            // unless we remove the auto-update to the server anyways
             return callback(err);
           }
   
