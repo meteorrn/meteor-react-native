@@ -1,11 +1,12 @@
 import minimongo from 'minimongo-cache';
 import Tracker from './Tracker.js';
+import { batchedUpdates, runAfterInteractions } from '../helpers/reactNativeBindings'
 
 const db = new minimongo();
 db.debug = false;
-db.batchedUpdates = require('react-native/Libraries/Renderer/shims/ReactNative').unstable_batchedUpdates;
+db.batchedUpdates = batchedUpdates;
 process.nextTick = setImmediate;
-afterInteractions = require('react-native').InteractionManager.runAfterInteractions;
+afterInteractions = runAfterInteractions;
 
 function runAfterOtherComputations(fn) {
   afterInteractions(() => {
