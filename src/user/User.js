@@ -10,6 +10,7 @@ const Users = new Mongo.Collection('users');
 const User = {
   users: Users,
   _reactiveDict: new ReactiveDict(),
+
   user() {
     let user_id = this._reactiveDict.get('_userIdSaved');
 
@@ -29,6 +30,7 @@ const User = {
     return this._reactiveDict.get('_loggingIn');
   },
   logout(callback) {
+    this._isTokenLogin = false
     Meteor.call('logout', err => {
       User.handleLogout();
       Meteor.connect();
@@ -44,6 +46,7 @@ const User = {
     User._userIdSaved = null;
   },
   loginWithPassword(selector, password, callback) {
+    this._isTokenLogin = false
     if (typeof selector === 'string') {
       if (selector.indexOf('@') === -1) selector = { username: selector };
       else selector = { email: selector };
@@ -104,20 +107,39 @@ const User = {
       this._reactiveDict.set('_userIdSaved', result.id);
       User._userIdSaved = result.id;
       User._endLoggingIn();
+      this._isTokenLogin = false
       Data.notify('onLogin');
     } else {
       Meteor.isVerbose &&
-        console.info('User._handleLoginCallback::: error:', err);
-
-      User.handleLogout();
+      console.info('User._handleLoginCallback::: error:', err);
+      if(this._isTokenLogin){
+        setTimeout(() => {
+          if (User._userIdSaved) {
+            return;
+          }
+          this._timeout *= 2
+          if(Meteor.user()){
+            return
+          }
+          User._loginWithToken(User._userIdSaved);
+        }, this._timeout);
+      }
+      // Signify we aren't logginging in any more after a few seconds
+      if(this._timeout > 2000){
+        User._endLoggingIn();
+      }
       User._endLoggingIn();
       Data.notify('onLoginFailure');
     }
     Data.notify('change');
   },
+
+  _timeout: 50,
+  _isTokenLogin: false,
   _loginWithToken(value) {
     Data._tokenIdSaved = value;
     if (value !== null) {
+      this._isTokenLogin = true
       Meteor.isVerbose && console.info('User._loginWithToken::: token:', value);
       User._startLoggingIn();
       Meteor.call('login', { resume: value }, (err, result) => {
@@ -146,6 +168,8 @@ const User = {
     return Data._tokenIdSaved;
   },
   async _loadInitialUser() {
+   this._timeout = 500
+
     User._startLoggingIn();
     var value = null;
     try {
