@@ -59,6 +59,9 @@ let AppContainer = withTracker(() => {
 export default AppContainer;
 ```
 
+**Unique Scenarios:**
+Running the app on a physical device but want to connect to local development machine? Check out [this issue comment](https://github.com/TheRealNate/meteor-react-native/issues/82#issuecomment-1012867899).
+
 # Companion Packages
 
 The `@meteorrn/core` package has been kept as light as possible. To access more features, you can use companion packages.

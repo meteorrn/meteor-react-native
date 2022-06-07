@@ -1,5 +1,5 @@
 import EJSON from 'ejson';
-
+import MongoID from '../lib/mongo-id';
 import Data from './Data';
 import Tracker from './Tracker';
 
@@ -87,7 +87,7 @@ export default class ReactiveDict {
       typeof value !== 'boolean' &&
       typeof value !== 'undefined' &&
       !(value instanceof Date) &&
-      !(ObjectID && value instanceof ObjectID) &&
+      !(value instanceof MongoID.ObjectID) &&
       value !== null
     )
       throw new Error('ReactiveDict.equals: value must be scalar');
@@ -99,10 +99,9 @@ export default class ReactiveDict {
     return EJSON.equals(oldValue, value);
   }
   _setObject(object) {
-    const keys = Object.keys(object);
-
-    for (let i in keys) {
-      this.set(i, keys[i]);
-    }
+    // XXX: fixed bug, where object was read into array-indices
+    Object.entries(object).forEach(([key, value]) => {
+      this.set(key, value);
+    });
   }
 }
