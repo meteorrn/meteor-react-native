@@ -1,13 +1,11 @@
 import {
   useEffect,
-  useState,
   useRef,
   useReducer,
   useMemo,
   useCallback,
 } from 'react';
 import Tracker from '../Tracker.js';
-import Data from '../Data';
 
 const fur = (x: number): number => x + 1;
 const useForceUpdate = () => useReducer(fur, 0)[1];

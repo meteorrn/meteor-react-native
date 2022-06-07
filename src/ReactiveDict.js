@@ -1,6 +1,5 @@
 import EJSON from 'ejson';
 import MongoID from '../lib/mongo-id';
-import Data from './Data';
 import Tracker from './Tracker';
 
 const stringify = function(value) {
