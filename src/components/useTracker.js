@@ -3,7 +3,6 @@ import {
   useRef,
   useReducer,
   useMemo,
-  useCallback,
 } from 'react';
 import Tracker from '../Tracker.js';
 
