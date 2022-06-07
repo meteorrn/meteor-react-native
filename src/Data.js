@@ -1,6 +1,9 @@
 import minimongo from 'minimongo-cache';
 import Tracker from './Tracker.js';
-import { batchedUpdates, runAfterInteractions } from '../helpers/reactNativeBindings'
+import {
+  batchedUpdates,
+  runAfterInteractions,
+} from '../helpers/reactNativeBindings';
 
 const db = new minimongo();
 db.debug = false;

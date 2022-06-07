@@ -27,8 +27,7 @@ export function getObservers(type, collection, newDocument) {
           } catch (e) {
             console.error('Error in observe callback old', e);
           }
-        }
-        else {
+        } else {
           // TODO what to do here?
         }
       }
@@ -56,7 +55,7 @@ const _registerObserver = (collection, cursor, callbacks) => {
   observers[collection] = observers[collection] || [];
   observers[collection].push({ cursor, callbacks });
 
-  console.log(observers)
+  console.log(observers);
 };
 
 class Cursor {
@@ -208,7 +207,7 @@ export class Collection {
         });
       });
     }
-    let observers = getObservers('added',  this._collection.name, item)
+    let observers = getObservers('added', this._collection.name, item);
     observers.forEach(callback => {
       try {
         callback(item, undefined);
@@ -224,7 +223,7 @@ export class Collection {
     if (typeof options == 'function') {
       callback = options;
     }
-    let old = this._collection.get(id)
+    let old = this._collection.get(id);
     if (!this._collection.get(id))
       return callback({
         error: 409,
@@ -247,9 +246,9 @@ export class Collection {
         });
       });
     }
-    let newItem = this._collection.findOne({_id:id})
+    let newItem = this._collection.findOne({ _id: id });
 
-    let observers = getObservers('changed',  this._collection.name, newItem)
+    let observers = getObservers('changed', this._collection.name, newItem);
     observers.forEach(callback => {
       try {
         callback(newItem, old);
@@ -257,7 +256,6 @@ export class Collection {
         console.error('Error in observe callback', e);
       }
     });
-
   }
 
   remove(id, callback = () => {}) {
@@ -277,16 +275,15 @@ export class Collection {
           });
         });
       }
-      
-      let observers = getObservers('removed',  this._collection.name, element)
+
+      let observers = getObservers('removed', this._collection.name, element);
       observers.forEach(callback => {
         try {
-          callback( element);
+          callback(element);
         } catch (e) {
           console.error('Error in observe callback', e);
         }
       });
-  
     } else {
       callback(`No document with _id : ${id}`);
     }
