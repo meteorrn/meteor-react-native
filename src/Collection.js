@@ -54,8 +54,6 @@ export function getObservers(type, collection, newDocument) {
 const _registerObserver = (collection, cursor, callbacks) => {
   observers[collection] = observers[collection] || [];
   observers[collection].push({ cursor, callbacks });
-
-  console.log(observers);
 };
 
 class Cursor {
