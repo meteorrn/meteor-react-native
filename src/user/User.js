@@ -149,12 +149,13 @@ const User = {
               'User._handleLoginCallback::: too many requests retrying:',
               err
             );
+          let time = err.details?.timeToReset || err.timeToReset
           setTimeout(() => {
             if (User._userIdSaved) {
               return;
             }
             this._loadInitialUser();
-          }, err.timeToReset + 100);
+          }, time + 100);
         } else {
           User._handleLoginCallback(err, result);
         }
