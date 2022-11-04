@@ -8,7 +8,7 @@
     "url": "git+https://github.com/TheRealNate/meteor-react-native.git"
   },
   "scripts": {
-    "lint": "prettier --check ./**/*.js",
+    "lint": "prettier --check .",
     "test:coverage": "nyc --reporter=html --reporter=text ./node_modules/.bin/mocha 'test/**/*tests.js'"
   },
   "keywords": [
@@ -36,22 +36,22 @@
     "wolfy87-eventemitter": "^4.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.10",
-    "@babel/preset-env": "^7.16.11",
-    "@babel/register": "^7.16.9",
-    "@istanbuljs/nyc-config-babel": "^3.0.0",
-    "babel-plugin-istanbul": "^6.1.1",
-    "c8": "^7.11.0",
-    "chai": "^4.3.4",
-    "husky": "^0.14.3",
-    "lint-staged": "^7.1.2",
-    "metro-react-native-babel-preset": "^0.66.2",
-    "mocha": "^9.1.4",
-    "mock-socket": "^2.0.0",
-    "nyc": "^15.1.0",
-    "prettier": "^1.12.1",
-    "rewiremock": "^3.14.3",
-    "sinon": "^12.0.1"
+    "@babel/core": "7.19.6",
+    "@babel/preset-env": "7.19.4",
+    "@babel/register": "7.18.9",
+    "@istanbuljs/nyc-config-babel": "3.0.0",
+    "babel-plugin-istanbul": "6.1.1",
+    "c8": "7.12.0",
+    "chai": "4.3.6",
+    "husky": "0.14.3",
+    "lint-staged": "7.3.0",
+    "metro-react-native-babel-preset": "0.66.2",
+    "mocha": "9.2.2",
+    "mock-socket": "2.0.0",
+    "nyc": "15.1.0",
+    "prettier": "2.7.1",
+    "rewiremock": "3.14.3",
+    "sinon": "12.0.1"
   },
   "optionalDependencies": {
     "@react-native-async-storage/async-storage": ">=1.8.1"
