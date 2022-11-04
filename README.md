@@ -4,6 +4,7 @@ A set of packages allowing you to connect your React Native app to your Meteor s
 [![Node.js CI](https://github.com/meteorrn/meteor-react-native/actions/workflows/node.js.yml/badge.svg)](https://github.com/meteorrn/meteor-react-native/actions/workflows/node.js.yml)
 [![CodeQL](https://github.com/meteorrn/meteor-react-native/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/meteorrn/meteor-react-native/actions/workflows/codeql-analysis.yml)
 ![npm](https://img.shields.io/npm/dm/@meteorrn/core)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 
 Check out [the @meteorrn github org](https://github.com/meteorrn) for more packages, examples, and tutorials.
