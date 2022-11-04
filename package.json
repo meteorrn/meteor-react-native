@@ -9,6 +9,7 @@
   },
   "scripts": {
     "lint": "prettier --check .",
+    "lint:fix": "prettier --write .",
     "test:coverage": "nyc --reporter=html --reporter=text ./node_modules/.bin/mocha 'test/**/*tests.js'"
   },
   "keywords": [
