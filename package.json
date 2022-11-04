@@ -26,10 +26,10 @@
   },
   "homepage": "https://github.com/TheRealNate/meteor-react-native#readme",
   "dependencies": {
+    "@meteorrn/minimongo": "git+ssh://git@github.com/meteorrn/minimongo-cache.git#refactor-to-es6",
     "ejson": "2.2.3",
-    "minimongo-cache": "0.0.48",
     "prop-types": "^15.5.10",
-    "wolfy87-eventemitter": "^4.3.0"
+    "wolfy87-eventemitter": "4.3.0"
   },
   "devDependencies": {
     "@babel/core": "7.19.6",
