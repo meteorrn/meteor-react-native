@@ -27,7 +27,6 @@
   "homepage": "https://github.com/TheRealNate/meteor-react-native#readme",
   "dependencies": {
     "base-64": "^0.1.0",
-    "crypto-js": "^3.1.6",
     "ejson": "^2.1.2",
     "minimongo-cache": "0.0.48",
     "node-require-fallback": "^1.0.0",
