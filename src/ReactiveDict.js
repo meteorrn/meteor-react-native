@@ -2,12 +2,12 @@ import EJSON from 'ejson';
 import MongoID from '../lib/mongo-id';
 import Data from './Data';
 
-const stringify = function(value) {
+const stringify = function (value) {
   if (value === undefined) return 'undefined';
   return EJSON.stringify(value);
 };
 
-const parse = function(serialized) {
+const parse = function (serialized) {
   if (serialized === undefined || serialized === 'undefined') return undefined;
   return EJSON.parse(serialized);
 };

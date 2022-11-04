@@ -1,14 +1,14 @@
 import MongoID from '../../lib/mongo-id';
-import EJSON from 'ejson'
+import EJSON from 'ejson';
 import { expect } from 'chai';
 
-const randomHex = length => {
-  let str = ''
+const randomHex = (length) => {
+  let str = '';
   for (let j = 0; j < length; j++) {
-    str += Math.floor(Math.random()*16).toString(16);
+    str += Math.floor(Math.random() * 16).toString(16);
   }
-  return str
-}
+  return str;
+};
 
 const createObjectId = () => new MongoID.ObjectID(randomHex(24));
 
@@ -28,20 +28,23 @@ describe('mongo-id', function () {
   });
   describe(MongoID.ObjectID.name, function () {
     it('throws if the hex string is not given', function () {
-      expect(() => MongoID.ObjectID())
-        .to.throw('Random.hexString not implemented, please pass a hexString');
+      expect(() => MongoID.ObjectID()).to.throw(
+        'Random.hexString not implemented, please pass a hexString'
+      );
     });
     it('throws if the hex string is not a valid ObjectID-like', function () {
       for (let i = 0; i < 24; i++) {
         const str = randomHex(i) || '1';
-        expect(() => MongoID.ObjectID(str))
-          .to.throw('Invalid hexadecimal string for creating an ObjectI');
+        expect(() => MongoID.ObjectID(str)).to.throw(
+          'Invalid hexadecimal string for creating an ObjectI'
+        );
       }
 
       for (let j = 0; j < 10; j++) {
-        const str = randomHex(23) + 'g'
-        expect(() => MongoID.ObjectID(str))
-          .to.throw('Invalid hexadecimal string for creating an ObjectI');
+        const str = randomHex(23) + 'g';
+        expect(() => MongoID.ObjectID(str)).to.throw(
+          'Invalid hexadecimal string for creating an ObjectI'
+        );
       }
     });
   });
@@ -54,15 +57,16 @@ describe('mongo-id', function () {
       expect(MongoID.idStringify(oid._str)).to.equal('-' + oid._str);
       expect(MongoID.idStringify('foobar')).to.equal('foobar');
 
-      const jsonStr = JSON.stringify({ value: oid._str })
+      const jsonStr = JSON.stringify({ value: oid._str });
       expect(MongoID.idStringify(jsonStr)).to.equal('-' + jsonStr);
 
-      [true, false, 0, 1, -1, null].forEach(val => {
+      [true, false, 0, 1, -1, null].forEach((val) => {
         expect(MongoID.idStringify(val)).to.equal('~' + JSON.stringify(val));
-      })
+      });
 
-      expect(() => MongoID.idStringify(new Date()))
-        .to.throw('Meteor does not currently support objects other than ObjectID as ids')
+      expect(() => MongoID.idStringify(new Date())).to.throw(
+        'Meteor does not currently support objects other than ObjectID as ids'
+      );
     });
   });
 
@@ -73,7 +77,7 @@ describe('mongo-id', function () {
       expect(MongoID.idParse('-')).to.equal(undefined);
       expect(MongoID.idParse('-foo')).to.equal('foo');
       expect(MongoID.idParse('~{"foo":"bar"}')).to.deep.equal({
-        foo: 'bar'
+        foo: 'bar',
       });
       const hex = randomHex(24);
       const oid = MongoID.idParse(hex);
@@ -84,7 +88,7 @@ describe('mongo-id', function () {
   describe('prototype', function () {
     it('implements a toString method', function () {
       const oid = createObjectId();
-      const str = `ObjectID("${oid._str}")`
+      const str = `ObjectID("${oid._str}")`;
       expect(oid.toString()).to.equal(str);
     });
 
@@ -106,8 +110,8 @@ describe('mongo-id', function () {
     });
 
     it('returns the mongo timestamp', function () {
-      const timeStamp = 1234567800
-      const hex = `${timeStamp.toString(16)}${randomHex(16)}`
+      const timeStamp = 1234567800;
+      const hex = `${timeStamp.toString(16)}${randomHex(16)}`;
       const oid = new MongoID.ObjectID(hex);
       expect(oid.getTimestamp()).to.equal(timeStamp);
     });
@@ -117,9 +121,9 @@ describe('mongo-id', function () {
     it('is ejsonable', function () {
       const oid = createObjectId();
       const str = EJSON.stringify(oid);
-      const expected = `{"$type":"oid","$value":"${oid._str}"}`
-      expect(str).to.deep.equal(expected)
+      const expected = `{"$type":"oid","$value":"${oid._str}"}`;
+      expect(str).to.deep.equal(expected);
       expect(EJSON.parse(expected).equals(oid)).to.equal(true);
     });
   });
-})
+});
