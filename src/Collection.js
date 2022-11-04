@@ -1,11 +1,9 @@
 import Tracker from './Tracker.js';
 import EJSON from 'ejson';
-import _ from 'underscore';
-
 import Data from './Data';
 import Random from '../lib/Random';
 import call from './Call';
-import { isPlainObject } from '../lib/utils.js';
+import { hasOwn, isPlainObject } from '../lib/utils.js'
 
 const observers = {};
 
@@ -216,7 +214,7 @@ export class Collection {
 
     if (!this._helpers) {
       this._helpers = function Document(doc) {
-        return _.extend(this, doc);
+        return Object.assign(this, doc);
       };
       this._transform = doc => {
         if (_transform) {
@@ -226,7 +224,7 @@ export class Collection {
       };
     }
 
-    _.each(helpers, (helper, key) => {
+    Object.entries(helpers).forEach(([key, helper]) => {
       this._helpers.prototype[key] = helper;
     });
   }
@@ -250,7 +248,7 @@ function wrapTransform(transform) {
   if (transform.__wrappedTransform__) return transform;
 
   var wrapped = function(doc) {
-    if (!_.has(doc, '_id')) {
+    if (!hasOwn(doc, '_id')) {
       // XXX do we ever have a transform on the oplog's collection? because that
       // collection has no _id.
       throw new Error('can only transform documents with _id');
@@ -266,7 +264,7 @@ function wrapTransform(transform) {
       throw new Error('transform must return object');
     }
 
-    if (_.has(transformed, '_id')) {
+    if (hasOwn(transformed, '_id')) {
       if (!EJSON.equals(transformed._id, id)) {
         throw new Error("transformed document can't have different _id");
       }
