@@ -28,7 +28,7 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - run: npm ci --force
+      - run: npm ci --omit peer
       - run: npm run lint
 
   unittest:
@@ -54,7 +54,7 @@ jobs:
           key: ${{ runner.os }}-node-${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-${{ matrix.node }}
-      - run: npm ci --force
+      - run: npm ci --omit peer
       - run: npm run test:coverage
 
       # with the following action we enforce PRs to have a high coverage
