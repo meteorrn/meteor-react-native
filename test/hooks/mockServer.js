@@ -10,6 +10,27 @@ module.exports = {
   mochaGlobalSetup() {
     console.debug('Open mockserver on', endpoint);
     server = new Server(endpoint);
+
+    // we need with never mock-socket versions to
+    // handle the way it responds from within a connected callback
+    // thus we create some ioc pattern here to allow
+    // test clients to implement test-specific behaviour
+    const messageFn = (data) => server.emit('message', data);
+    let currentMessageFn = messageFn;
+
+    server.message = (fn) => {
+      if (typeof fn === 'function') {
+        currentMessageFn = fn;
+      } else {
+        currentMessageFn = messageFn;
+      }
+    };
+
+    server.on('connection', (socket) => {
+      socket.on('message', (data) => {
+        currentMessageFn(data, server, socket);
+      });
+    });
   },
   mochaGlobalTeardown() {
     console.debug('Closing mockserver');
