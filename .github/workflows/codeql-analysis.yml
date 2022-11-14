@@ -3,9 +3,7 @@ name: 'CodeQL'
 on:
   push:
     branches: [master]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [master]
+  pull_request: # check code ql on every PR!
   schedule:
     - cron: '0 22 * * 3'
 
