@@ -57,16 +57,6 @@ jobs:
       - run: npm ci --legacy-peer-deps
       - run: npm run test:coverage
 
-      # with the following action we enforce PRs to have a high coverage
-      # and ensure, changes are tested well enough so that coverage won't fail
-      - name: check coverage
-        uses: devmasx/coverage-check-action@v1.2.0
-        with:
-          type: lcov
-          result_path: coverage/lcov.info
-          min_coverage: 80
-          token: ${{github.token}}
-
   build:
     name: Build
     runs-on: ubuntu-latest
