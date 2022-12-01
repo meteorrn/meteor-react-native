@@ -1,6 +1,8 @@
 # Meteor React Native
 A set of packages allowing you to connect your React Native app to your Meteor server, and take advantage of Meteor-specific features like accounts, reactive data trackers, etc. Compatible with the latest version of React Native.
 
+Check out [the @meteorrn github org](https://github.com/meteorrn) for more packages, examples, and tutorials.
+
 [Full API Documentation](/docs/api.md)
 
 If you're new to React Native, you can view a guide to using React Native with Meteor on the [Official Meteor Guide](https://guide.meteor.com/react-native.html)
@@ -57,22 +59,18 @@ let AppContainer = withTracker(() => {
 export default AppContainer;
 ```
 
+**Unique Scenarios:**
+Running the app on a physical device but want to connect to local development machine? Check out [this issue comment](https://github.com/TheRealNate/meteor-react-native/issues/82#issuecomment-1012867899).
+
 # Companion Packages
 
 The `@meteorrn/core` package has been kept as light as possible. To access more features, you can use companion packages.
 
-Companion packages are NPM packages that are made specifically to extend MeteorRN. And since Atmosphere isn't available in React Native, MeteorRN uses companion packages that contain the client-side/relevant code from a Meteor package to allow your MeteorRN app to use the same package API as your Meteor app.
+Here are some examples:
+- `@meteorrn/oauth-google`: Allows you to let users login to your app with Google
+- `@meteorrn/oauth-facebook`: Allows you to let users login to your app with Facebook
 
-Native Feature Packages:
-- [`@meteorrn/local`](/companion-packages/meteorrn-local)(Beta): Package for storing of data locally that works seamlessly with MeteorRN by injecting data into a local minimongo collection
-
-Atmosphere Packages:
-- [`@meteorrn/ndev-mfa`](/companion-packages/meteorrn-ndev-mfa)(Beta): Package that allows your RN app to work with `meteor/ndev:mfa`
-
-Planned/Upcoming Packages:
-- `@meteorrn/queued-calls`: Package that allows you to queue Meteor calls that will be performed when internet/server is available
-
-If you have an idea for a companion package, please open an issue. If you would like to publish your own companion package, we recommend a package name with the prefix `mrn-`. 
+For the full list of officially recognized packages, check out [the @meteorrn github org](https://github.com/meteorrn).
 
 # Compatibility
 This package is compatible with React Native versions from 0.60.0 to latest (0.63.2)
@@ -122,10 +120,10 @@ const {AsyncStorage} = Meteor.packageInterface();
 
 # Showcase
 
-| Whazzup.co |
-| --- |
-| <img src="https://user-images.githubusercontent.com/16267331/120551863-84907c80-c3c4-11eb-8e32-39b950b67875.png" height="250" align="center"> |
-| [Whazzup.co](https://whazzup.co/) uses Meteor React Native in their native app |
+| Whazzup.co | StarlingRealtime |
+| --- | --- |
+| <img src="https://user-images.githubusercontent.com/16267331/120551863-84907c80-c3c4-11eb-8e32-39b950b67875.png" height="250" align="center"> | <img src="https://uploads-ssl.webflow.com/5f112aac57df16c9ac9c21e0/5f11b8a2e5a66ea03a1a9835_android-chrome-512x512%20copy.png" height="250" align="center"> |
+| [Whazzup.co](https://whazzup.co/) uses Meteor React Native in their native app | [StarlingRealtime](https://www.starlingrealtime.com/) uses Meteor React Native in their production app |
 
 <hr/>
 
