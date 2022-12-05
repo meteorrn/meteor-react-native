@@ -44,10 +44,12 @@
     "chai": "^4.3.4",
     "husky": "^0.14.3",
     "lint-staged": "^12.1.4",
+    "prettier": "1.12.1",
+    "metro-react-native-babel-preset": "^0.66.2",
     "mocha": "^9.1.4",
-    "mock-socket": "^9.0.8",
-    "prettier": "^1.12.1",
+    "mock-socket": "^2.0.0",
     "nyc": "^15.1.0",
+    "rewiremock": "^3.14.3",
     "sinon": "^12.0.1"
   },
   "optionalDependencies": {
@@ -59,7 +61,6 @@
     "react-native": ">= 0.60.0"
   },
   "engines": {
-    "node": ">= 10.x",
-    "react-native": ">= 0.66.0"
+    "node": ">= 10.x"
   }
 }

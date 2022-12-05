@@ -6,21 +6,22 @@ import Meteor from '../Meteor.js';
 
 class AccountsPassword {
   _hashPassword = hashPassword;
-  
+
   createUser = (options, callback = () => {}) => {
     // Replace password with the hashed password.
     options.password = hashPassword(options.password);
 
     User._startLoggingIn();
     call('createUser', options, (err, result) => {
-      Meteor.isVerbose && console.info("Accounts.createUser::: err:", err, "result:", result);
-      
+      Meteor.isVerbose &&
+        console.info('Accounts.createUser::: err:', err, 'result:', result);
+
       User._endLoggingIn();
       User._handleLoginCallback(err, result);
       callback(err);
     });
   };
-  
+
   changePassword = (oldPassword, newPassword, callback = () => {}) => {
     //TODO check Meteor.user() to prevent if not logged
 
@@ -36,8 +37,8 @@ class AccountsPassword {
         callback(err);
       }
     );
-  }
-  
+  };
+
   forgotPassword = (options, callback = () => {}) => {
     if (!options.email) {
       return callback('Must pass options.email');
@@ -47,14 +48,15 @@ class AccountsPassword {
       callback(err);
     });
   };
-  
+
   resetPassword = (token, newPassword, callback = () => {}) => {
     if (!newPassword) {
       return callback('Must pass a new password');
     }
 
     call('resetPassword', token, hashPassword(newPassword), (err, result) => {
-      Meteor.isVerbose && console.info("Accounts.resetPassword::: err:", err, "result:", result);
+      Meteor.isVerbose &&
+        console.info('Accounts.resetPassword::: err:', err, 'result:', result);
 
       if (!err) {
         User._loginWithToken(result.token);
@@ -63,17 +65,18 @@ class AccountsPassword {
       callback(err);
     });
   };
-  
-  onLogin = (cb) => {
-    if(Data._tokenIdSaved) { // Execute callback immediately if already logged in
+
+  onLogin = cb => {
+    if (Data._tokenIdSaved) {
+      // Execute callback immediately if already logged in
       return cb();
     }
     Data.on('onLogin', cb);
   };
-  
-  onLoginFailure = (cb) => {
+
+  onLoginFailure = cb => {
     Data.on('onLoginFailure', cb);
-  }
+  };
 }
 
 export default new AccountsPassword();

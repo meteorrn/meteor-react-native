@@ -51,47 +51,9 @@ export function getObservers(type, collection, newDocument) {
   return observersRet;
 }
 
-export function getObservers(type, collection, newDocument, oldDocument){
-  let observers = []
-  if(observers[collection]) {
-    observers[collection].forEach(({cursor, callbacks}) => {
-      if(callbacks[type]) {
-        if(type === 'removed') {
-          observers.push(callbacks['removed'])
-        }
-        else if(Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]})) {
-          try {
-            observersRet.push(callbacks[type]);
-          } catch (e) {
-            console.error('Error in observe callback old', e);
-          }
-        }
-      }
-    });
-  }
-  if (observersByComp[collection]) {
-    let keys = Object.keys(observersByComp[collection]);
-    for (let i = 0; i < keys.length; i++) {
-      observersByComp[collection][keys[i]].callbacks.forEach(
-        ({ cursor, callback }) => {
-          let findRes = Data.db[collection].findOne({
-            $and: [{ _id: newDocument?._id }, cursor._selector],
-          });
-          if (findRes) {
-            observersRet.push(callback);
-          }
-        }
-      );
-    }
-  }
-  return observersRet;
-}
-
 const _registerObserver = (collection, cursor, callbacks) => {
   observers[collection] = observers[collection] || [];
   observers[collection].push({ cursor, callbacks });
-
-  console.log(observers);
 };
 
 class Cursor {

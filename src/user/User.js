@@ -183,6 +183,4 @@ const User = {
   },
 };
 
-User.loginWithToken = User._loginWithToken;
-
 export default User;
