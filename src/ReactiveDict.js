@@ -1,6 +1,6 @@
 import EJSON from 'ejson';
 import MongoID from '../lib/mongo-id';
-import Data from './Data';
+import Tracker from './Tracker';
 
 const stringify = function(value) {
   if (value === undefined) return 'undefined';
@@ -20,6 +20,9 @@ export default class ReactiveDict {
         this.keys[i] = stringify(dictName[i]);
       }
     }
+
+    this.keyDeps = {};
+    this.keyValueDeps = {};
   }
   set(keyOrObject, value) {
     if (typeof keyOrObject === 'object' && value === undefined) {
@@ -39,8 +42,11 @@ export default class ReactiveDict {
     if (value === oldSerializedValue) return;
 
     this.keys[key] = value;
+    if (this.keyDeps[key]) {
+      this.keyDeps[key].changed();
+    }
 
-    Data.notify('change');
+    //Data.notify('change');
   }
   setDefault(key, value) {
     // for now, explicitly check for undefined, since there is no
@@ -51,7 +57,16 @@ export default class ReactiveDict {
     }
   }
   get(key) {
+    this._ensureKey(key);
+    this.keyDeps[key].depend();
     return parse(this.keys[key]);
+  }
+
+  _ensureKey(key) {
+    if (!this.keyDeps[key]) {
+      this.keyDeps[key] = new Tracker.Dependency();
+      this.keyValueDeps[key] = {};
+    }
   }
   equals(key, value) {
     // We don't allow objects (or arrays that might include objects) for
@@ -63,6 +78,8 @@ export default class ReactiveDict {
     //
     // XXX we could allow arrays as long as we recursively check that there
     // are no objects
+    this._ensureKey(key);
+    this.keyDeps[key].depend();
     if (
       typeof value !== 'string' &&
       typeof value !== 'number' &&
