@@ -58,9 +58,9 @@
   "peerDependencies": {
     "@react-native-community/netinfo": "*",
     "react": "*",
-    "react-native": ">= 0.60.0"
+    "react-native": "*"
   },
   "engines": {
-    "node": ">= 10.x"
+    "node": ">= 14.x"
   }
 }
