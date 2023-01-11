@@ -56,7 +56,7 @@ const Meteor = {
     for (var i in Data.subscriptions) {
       const sub = Data.subscriptions[i];
       Data.ddp.unsub(sub.subIdRemember);
-      removing[sub.subIdRemember] = true;
+      this.removing[sub.subIdRemember] = true;
       sub.subIdRemember = Data.ddp.sub(sub.name, sub.params);
     }
     // If we get a double restart, make sure we keep track and
