@@ -1,15 +1,14 @@
-import Tracker from '../../src/Tracker'
-import { expect } from 'chai'
+import Tracker from '../../src/Tracker';
+import { expect } from 'chai';
 
-const eql = (a, b, deep) => deep
-  ? expect(a).to.deep.equal(b)
-  : expect(a).to.equal(b);
+const eql = (a, b, deep) =>
+  deep ? expect(a).to.deep.equal(b) : expect(a).to.equal(b);
 
-describe('Tracker', function () {
-  it('run', function () {
-    const t = new Tracker.Dependency;
+describe('Tracker', function() {
+  it('run', function() {
+    const t = new Tracker.Dependency();
     let x = 0;
-    const handle = Tracker.autorun(function (/* handle */) {
+    const handle = Tracker.autorun(function(/* handle */) {
       t.depend();
       ++x;
     });
@@ -30,7 +29,6 @@ describe('Tracker', function () {
     Tracker.flush();
     expect(x).to.equal(3);
 
-
     t.changed();
     // Prevent the function from running further.
     handle.stop();
@@ -41,8 +39,7 @@ describe('Tracker', function () {
     Tracker.flush();
     expect(x).to.equal(3);
 
-
-    Tracker.autorun(function (internalHandle) {
+    Tracker.autorun(function(internalHandle) {
       t.depend();
       ++x;
       if (x === 6) internalHandle.stop();
@@ -64,81 +61,91 @@ describe('Tracker', function () {
     expect(x).to.equal(6);
 
     // throw tests
-    expect(() => Tracker.autorun())
-      .to.throw('Tracker.autorun requires a function argument')
-    expect(() => Tracker.autorun({}))
-      .to.throw('Tracker.autorun requires a function argument')
-  })
-  it('#run',function () {
-    let i = 0, d = new Tracker.Dependency, d2 = new Tracker.Dependency;
-    const computation = Tracker.autorun(function (c) {
+    expect(() => Tracker.autorun()).to.throw(
+      'Tracker.autorun requires a function argument'
+    );
+    expect(() => Tracker.autorun({})).to.throw(
+      'Tracker.autorun requires a function argument'
+    );
+  });
+  it('#run', function() {
+    let i = 0,
+      d = new Tracker.Dependency(),
+      d2 = new Tracker.Dependency();
+    const computation = Tracker.autorun(function(c) {
       d.depend();
       i = i + 1;
       //when #run() is called, this dependency should be picked up
-      if (i>=2 && i<4) { d2.depend(); }
+      if (i >= 2 && i < 4) {
+        d2.depend();
+      }
     });
     expect(i).to.equal(1);
     computation.run();
     expect(i).to.equal(2);
 
-    d.changed(); Tracker.flush();
+    d.changed();
+    Tracker.flush();
     expect(i).to.equal(3);
 
     //we expect to depend on d2 at this point
-    d2.changed(); Tracker.flush();
+    d2.changed();
+    Tracker.flush();
     expect(i).to.equal(4);
 
     //we no longer depend on d2, only d
-    d2.changed(); Tracker.flush();
+    d2.changed();
+    Tracker.flush();
     expect(i).to.equal(4);
-    d.changed(); Tracker.flush();
+    d.changed();
+    Tracker.flush();
     expect(i).to.equal(5);
-  })
-  it('nested run', function () {
-    const a = new Tracker.Dependency;
-    const b = new Tracker.Dependency;
-    const c = new Tracker.Dependency;
-    const d = new Tracker.Dependency;
-    const e = new Tracker.Dependency;
-    const f = new Tracker.Dependency;
+  });
+  it('nested run', function() {
+    const a = new Tracker.Dependency();
+    const b = new Tracker.Dependency();
+    const c = new Tracker.Dependency();
+    const d = new Tracker.Dependency();
+    const e = new Tracker.Dependency();
+    const f = new Tracker.Dependency();
 
-    let buf = "";
+    let buf = '';
 
-    const c1 = Tracker.autorun(function () {
+    const c1 = Tracker.autorun(function() {
       a.depend();
       buf += 'a';
-      Tracker.autorun(function () {
+      Tracker.autorun(function() {
         b.depend();
         buf += 'b';
-        Tracker.autorun(function () {
+        Tracker.autorun(function() {
           c.depend();
           buf += 'c';
-          const c2 = Tracker.autorun(function () {
+          const c2 = Tracker.autorun(function() {
             d.depend();
             buf += 'd';
-            Tracker.autorun(function () {
+            Tracker.autorun(function() {
               e.depend();
               buf += 'e';
-              Tracker.autorun(function () {
+              Tracker.autorun(function() {
                 f.depend();
                 buf += 'f';
               });
             });
-            Tracker.onInvalidate(function () {
+            Tracker.onInvalidate(function() {
               // only run once
               c2.stop();
             });
           });
         });
       });
-      Tracker.onInvalidate(function (c1) {
+      Tracker.onInvalidate(function(c1) {
         c1.stop();
       });
     });
 
-    const check = function (str) {
+    const check = function(str) {
       expect(buf).to.equal(str);
-      buf = "";
+      buf = '';
     };
 
     check('abcdef');
@@ -159,7 +166,7 @@ describe('Tracker', function () {
     Tracker.flush();
     check('cdef');
 
-    const changeAndCheck = function (v, str) {
+    const changeAndCheck = function(v, str) {
       v.changed();
       Tracker.flush();
       check(str);
@@ -213,10 +220,10 @@ describe('Tracker', function () {
     expect(e.hasDependents()).to.equal(false);
     expect(f.hasDependents()).to.equal(false);
   });
-  it('flush', function () {
-    let buf = "";
+  it('flush', function() {
+    let buf = '';
 
-    const c1 = Tracker.autorun(function (c) {
+    const c1 = Tracker.autorun(function(c) {
       buf += 'a';
       // invalidate first time
       if (c.firstRun) c.invalidate();
@@ -233,16 +240,15 @@ describe('Tracker', function () {
 
     //////
 
-    buf = "";
+    buf = '';
 
-    const c2 = Tracker.autorun(function (c) {
+    const c2 = Tracker.autorun(function(c) {
       buf += 'a';
       // invalidate first time
-      if (c.firstRun)
-        c.invalidate();
+      if (c.firstRun) c.invalidate();
 
-      Tracker.onInvalidate(function () {
-        buf += "*";
+      Tracker.onInvalidate(function() {
+        buf += '*';
       });
     });
 
@@ -258,23 +264,22 @@ describe('Tracker', function () {
     // Can flush a different run from a run;
     // no current computation in afterFlush
 
-    buf = "";
+    buf = '';
 
-    const c3 = Tracker.autorun(function (c) {
+    const c3 = Tracker.autorun(function(c) {
       buf += 'a';
       // invalidate first time
-      if (c.firstRun)
-        c.invalidate();
-      Tracker.afterFlush(function () {
-        buf += (Tracker.active ? "1" : "0");
+      if (c.firstRun) c.invalidate();
+      Tracker.afterFlush(function() {
+        buf += Tracker.active ? '1' : '0';
       });
     });
 
-    Tracker.afterFlush(function () {
+    Tracker.afterFlush(function() {
       buf += 'c';
     });
 
-    let c4 = Tracker.autorun(function (c) {
+    let c4 = Tracker.autorun(function(c) {
       c4 = c;
       buf += 'b';
     });
@@ -288,42 +293,44 @@ describe('Tracker', function () {
     // cases where flush throws
 
     let ran = false;
-    Tracker.afterFlush(function (arg) {
+    Tracker.afterFlush(function(arg) {
       ran = true;
       eql(typeof arg, 'undefined');
       expect(() => {
         Tracker.flush();
-      }).to.throw('Can\'t call Tracker.flush while flushing');
+      }).to.throw("Can't call Tracker.flush while flushing");
     });
 
     Tracker.flush();
     expect(ran).to.equal(true);
 
     expect(() => {
-      Tracker.autorun(function () {
+      Tracker.autorun(function() {
         Tracker.flush();
       });
-    }).to.throw('Can\'t flush inside Tracker.autorun');
+    }).to.throw("Can't flush inside Tracker.autorun");
 
     expect(() => {
-      Tracker.autorun(function () {
-        Tracker.autorun(function () {});
+      Tracker.autorun(function() {
+        Tracker.autorun(function() {});
         Tracker.flush();
       });
-    }).to.throw('Can\'t flush inside Tracker.autorun');
+    }).to.throw("Can't flush inside Tracker.autorun");
   });
-  it('#flush', function () {
-    let i = 0, j = 0, d = new Tracker.Dependency;
-    const c1 = Tracker.autorun(function () {
+  it('#flush', function() {
+    let i = 0,
+      j = 0,
+      d = new Tracker.Dependency();
+    const c1 = Tracker.autorun(function() {
       d.depend();
       i = i + 1;
     });
-    const c2 = Tracker.autorun(function () {
+    const c2 = Tracker.autorun(function() {
       d.depend();
       j = j + 1;
     });
-    eql(i,1);
-    eql(j,1);
+    eql(i, 1);
+    eql(j, 1);
 
     d.changed();
     c1.flush();
@@ -333,8 +340,8 @@ describe('Tracker', function () {
     Tracker.flush();
     eql(i, 2);
     eql(j, 2);
-  })
-  it('lifecycle', function () {
+  });
+  it('lifecycle', function() {
     expect(Tracker.active).to.equal(false);
     eql(null, Tracker.currentComputation);
 
@@ -342,16 +349,16 @@ describe('Tracker', function () {
     let firstRun = true;
     const buf = [];
     let cbId = 1;
-    const makeCb = function () {
+    const makeCb = function() {
       let id = cbId++;
-      return function () {
+      return function() {
         buf.push(id);
       };
     };
 
     let shouldStop = false;
 
-    const c1 = Tracker.autorun(function (c) {
+    const c1 = Tracker.autorun(function(c) {
       expect(Tracker.active).to.equal(true);
       eql(c, Tracker.currentComputation);
       eql(c.stopped, false);
@@ -361,7 +368,7 @@ describe('Tracker', function () {
       Tracker.onInvalidate(makeCb()); // 1, 6, ...
       Tracker.afterFlush(makeCb()); // 2, 7, ...
 
-      Tracker.autorun(function (x) {
+      Tracker.autorun(function(x) {
         x.stop();
         c.onInvalidate(makeCb()); // 3, 8, ...
 
@@ -370,8 +377,7 @@ describe('Tracker', function () {
       });
       runCount++;
 
-      if (shouldStop)
-        c.stop();
+      if (shouldStop) c.stop();
     });
 
     firstRun = false;
@@ -398,17 +404,16 @@ describe('Tracker', function () {
     eql(buf, [6, 8], true);
     Tracker.flush();
     eql(buf, [6, 8, 14, 11, 13, 12, 15], true);
-
   });
-  it('onInvalidate', function () {
-    let buf = "";
+  it('onInvalidate', function() {
+    let buf = '';
 
-    const c1 = Tracker.autorun(function () {
-      buf += "*";
+    const c1 = Tracker.autorun(function() {
+      buf += '*';
     });
 
-    const append = function (x, expectedComputation) {
-      return function (givenComputation) {
+    const append = function(x, expectedComputation) {
+      return function(givenComputation) {
         expect(Tracker.active).to.equal(false);
         eql(givenComputation, expectedComputation || c1);
         buf += x;
@@ -420,7 +425,7 @@ describe('Tracker', function () {
     c1.onInvalidate(append('a'));
     c1.onInvalidate(append('b'));
     eql(buf, '*');
-    Tracker.autorun(function (me) {
+    Tracker.autorun(function(me) {
       Tracker.onInvalidate(append('z', me));
       me.stop();
       eql(buf, '*z');
@@ -437,17 +442,17 @@ describe('Tracker', function () {
     buf = '';
     c1.onInvalidate(append('a'));
     c1.onInvalidate(append('b'));
-    Tracker.afterFlush(function () {
+    Tracker.afterFlush(function() {
       append('x')(c1);
       c1.onInvalidate(append('c'));
       c1.invalidate();
-      Tracker.afterFlush(function () {
+      Tracker.afterFlush(function() {
         append('y')(c1);
         c1.onInvalidate(append('d'));
         c1.invalidate();
       });
     });
-    Tracker.afterFlush(function () {
+    Tracker.afterFlush(function() {
       append('z')(c1);
       c1.onInvalidate(append('e'));
       c1.invalidate();
@@ -457,39 +462,39 @@ describe('Tracker', function () {
     Tracker.flush();
     eql(buf, 'xabc*ze*yd*');
 
-    buf = "";
+    buf = '';
     c1.onInvalidate(append('m'));
     Tracker.flush();
     eql(buf, '');
     c1.stop();
-    eql(buf, 'ms');  // s is from onStop
+    eql(buf, 'ms'); // s is from onStop
     Tracker.flush();
     eql(buf, 'ms');
     c1.onStop(append('S'));
     eql(buf, 'msS');
   });
-  it('invalidate at flush time', function () {
+  it('invalidate at flush time', function() {
     // Test this sentence of the docs: Functions are guaranteed to be
     // called at a time when there are no invalidated computations that
     // need rerunning.
 
     const buf = [];
 
-    Tracker.afterFlush(function () {
+    Tracker.afterFlush(function() {
       buf.push('C');
     });
 
     // When c1 is invalidated, it invalidates c2, then stops.
-    const c1 = Tracker.autorun(function (c) {
-      if (! c.firstRun) {
+    const c1 = Tracker.autorun(function(c) {
+      if (!c.firstRun) {
         buf.push('A');
         c2.invalidate();
         c.stop();
       }
     });
 
-    const c2 = Tracker.autorun(function (c) {
-      if (! c.firstRun) {
+    const c2 = Tracker.autorun(function(c) {
+      if (!c.firstRun) {
         buf.push('B');
         c.stop();
       }
@@ -502,46 +507,48 @@ describe('Tracker', function () {
 
     eql(buf.join(''), 'ABC', true);
   });
-  it('throwFirstError', function () {
-    const d = new Tracker.Dependency;
-    Tracker.autorun(function (c) {
+  it('throwFirstError', function() {
+    const d = new Tracker.Dependency();
+    Tracker.autorun(function(c) {
       d.depend();
 
-      if (!c.firstRun) throw new Error("expected error foo");
+      console.log("RUN", c.firstRun)
+      if (!c.firstRun) throw new Error('expected error foo');
     });
 
     d.changed();
     // doesn't throw; logs instead.
+    console.log("HERE")
     Tracker.flush();
 
     d.changed();
     expect(() => {
-      Tracker.flush({_throwFirstError: true});
+      Tracker.flush({ _throwFirstError: true });
     }).to.throw(/expected error foo/);
   });
-  it('no infinite recomputation - async', function (done) {
+  it('no infinite recomputation - async', function(done) {
     let reran = false;
-    const c = Tracker.autorun(function (c) {
-      if (! c.firstRun) reran = true;
+    const c = Tracker.autorun(function(c) {
+      if (!c.firstRun) reran = true;
       c.invalidate();
     });
     expect(reran).to.equal(false);
-    setTimeout(function () {
+    setTimeout(function() {
       c.stop();
-      Tracker.afterFlush(function () {
+      Tracker.afterFlush(function() {
         expect(reran).to.equal(true);
         expect(c.stopped).to.equal(true);
         done();
       });
     }, 100);
   });
-  it('Tracker.flush finishes', function () {
+  it('Tracker.flush finishes', function() {
     // Currently, _runFlush will "yield" every 1000 computations... unless run in
     // Tracker.flush. So this test validates that Tracker.flush is capable of
     // running 2000 computations. Which isn't quite the same as infinity, but it's
     // getting there.
     let n = 0;
-    const c = Tracker.autorun(function (c) {
+    const c = Tracker.autorun(function(c) {
       if (++n < 2000) {
         c.invalidate();
       }
@@ -550,21 +557,23 @@ describe('Tracker', function () {
     Tracker.flush();
     eql(n, 2000);
   });
-  it('Tracker.autorun, onError option - async', function (done) {
-    const d = new Tracker.Dependency;
-    const c = Tracker.autorun(function (c) {
-      d.depend();
+  it('Tracker.autorun, onError option - async', function(done) {
+    const d = new Tracker.Dependency();
+    const c = Tracker.autorun(
+      function(c) {
+        d.depend();
 
-      if (! c.firstRun) throw new Error("expected error foo");
-    }, {
-      onError: function (err) {
-        eql(err.message, "expected error foo")
-        done()
+        if (!c.firstRun) throw new Error('expected error foo');
+      },
+      {
+        onError: function(err) {
+          eql(err.message, 'expected error foo');
+          done();
+        },
       }
-    });
+    );
 
     d.changed();
     Tracker.flush();
   });
-
-})
+});

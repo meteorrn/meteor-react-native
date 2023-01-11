@@ -1,9 +1,4 @@
-import {
-  useEffect,
-  useRef,
-  useReducer,
-  useMemo,
-} from 'react';
+import { useEffect, useRef, useReducer, useMemo } from 'react';
 import Tracker from '../Tracker.js';
 
 const fur = (x: number): number => x + 1;
@@ -27,12 +22,11 @@ export default (trackerFn, deps = []) => {
     Tracker.nonreactive(() => {
       Tracker.autorun(currentComputation => {
         if (refs.isMounted) {
-          refs.computation = currentComputation
+          refs.computation = currentComputation;
           refs.data = trackerFn();
           forceUpdate();
-        }
-        else{
-            refs.computation?.stop();
+        } else {
+          refs.computation?.stop();
         }
       });
     });

@@ -30,7 +30,7 @@ const User = {
     return this._reactiveDict.get('_loggingIn');
   },
   logout(callback) {
-    this._isTokenLogin = false
+    this._isTokenLogin = false;
     Meteor.call('logout', err => {
       User.handleLogout();
       Meteor.connect();
@@ -46,7 +46,7 @@ const User = {
     User._userIdSaved = null;
   },
   loginWithPassword(selector, password, callback) {
-    this._isTokenLogin = false
+    this._isTokenLogin = false;
     if (typeof selector === 'string') {
       if (selector.indexOf('@') === -1) selector = { username: selector };
       else selector = { email: selector };
@@ -107,25 +107,25 @@ const User = {
       this._reactiveDict.set('_userIdSaved', result.id);
       User._userIdSaved = result.id;
       User._endLoggingIn();
-      this._isTokenLogin = false
+      this._isTokenLogin = false;
       Data.notify('onLogin');
     } else {
       Meteor.isVerbose &&
-      console.info('User._handleLoginCallback::: error:', err);
-      if(this._isTokenLogin){
+        console.info('User._handleLoginCallback::: error:', err);
+      if (this._isTokenLogin) {
         setTimeout(() => {
           if (User._userIdSaved) {
             return;
           }
-          this._timeout *= 2
-          if(Meteor.user()){
-            return
+          this._timeout *= 2;
+          if (Meteor.user()) {
+            return;
           }
           User._loginWithToken(User._userIdSaved);
         }, this._timeout);
       }
       // Signify we aren't logginging in any more after a few seconds
-      if(this._timeout > 2000){
+      if (this._timeout > 2000) {
         User._endLoggingIn();
       }
       User._endLoggingIn();
@@ -136,20 +136,26 @@ const User = {
 
   _timeout: 50,
   _isTokenLogin: false,
+  _isCallingLogin: false,
   _loginWithToken(value) {
     Data._tokenIdSaved = value;
     if (value !== null) {
-      this._isTokenLogin = true
+      this._isTokenLogin = true;
       Meteor.isVerbose && console.info('User._loginWithToken::: token:', value);
+      if (this._isCallingLogin) {
+        return;
+      }
+      this._isCallingLogin = true;
       User._startLoggingIn();
       Meteor.call('login', { resume: value }, (err, result) => {
+        this._isCallingLogin = false;
         if (err?.error == 'too-many-requests') {
           Meteor.isVerbose &&
             console.info(
               'User._handleLoginCallback::: too many requests retrying:',
               err
             );
-          let time = err.details?.timeToReset || err.timeToReset
+          let time = err.details?.timeToReset || err.timeToReset;
           setTimeout(() => {
             if (User._userIdSaved) {
               return;
@@ -169,7 +175,7 @@ const User = {
     return Data._tokenIdSaved;
   },
   async _loadInitialUser() {
-   this._timeout = 500
+    this._timeout = 500;
 
     User._startLoggingIn();
     var value = null;

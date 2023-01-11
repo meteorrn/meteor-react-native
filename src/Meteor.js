@@ -44,6 +44,8 @@ const Meteor = {
       //reason:
     };
   },
+
+  removing: {},
   call: call,
   disconnect() {
     if (Data.ddp) {
@@ -54,8 +56,14 @@ const Meteor = {
     for (var i in Data.subscriptions) {
       const sub = Data.subscriptions[i];
       Data.ddp.unsub(sub.subIdRemember);
+      removing[sub.subIdRemember] = true;
       sub.subIdRemember = Data.ddp.sub(sub.name, sub.params);
     }
+    // If we get a double restart, make sure we keep track and
+    // remove it later
+    Object.keys(this.removing).forEach(item => {
+      Data.ddp.unsub(item);
+    });
   },
   waitDdpConnected: Data.waitDdpConnected.bind(Data),
   reconnect() {
@@ -264,6 +272,9 @@ const Meteor = {
     });
 
     Data.ddp.on('nosub', message => {
+      if (this.removing[message.id]) {
+        delete this.removing[message.id];
+      }
       for (var i in Data.subscriptions) {
         const sub = Data.subscriptions[i];
         if (sub.subIdRemember == message.id) {

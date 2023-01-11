@@ -5,10 +5,10 @@ babelRegister();
 // for more options see here https://github.com/mochajs/mocha/blob/master/example/config/.mocharc.yml
 module.exports = {
   recursive: true,
-  reporter: "spec",
+  reporter: 'spec',
   retries: 0,
   slow: 20,
   timeout: 2000,
-  ui: "bdd",
-  require: ['test/hooks/mockServer.js']
-}
+  ui: 'bdd',
+  require: ['test/hooks/mockServer.js'],
+};

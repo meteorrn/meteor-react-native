@@ -1,4 +1,4 @@
-const bindings = {}
+const bindings = {};
 
 // TODO:
 // we should consider implementing an injection-based pattern for
@@ -10,15 +10,15 @@ const bindings = {}
 //   when devs inject their favourable behaviour
 
 try {
-  require.resolve('react-native')
+  require.resolve('react-native');
   bindings.batchedUpdates = require('react-native/Libraries/Renderer/shims/ReactNative').unstable_batchedUpdates;
   bindings.runAfterInteractions = require('react-native').InteractionManager.runAfterInteractions;
 } catch (e) {
   // if the module is not installed (for example when running tests)
   // we fall back to some defaults that seem to be close to what
   // the original functions implement
-  bindings.batchedUpdates = cb => cb()
-  bindings.runAfterInteractions = fn => setTimeout(() => fn(), 50)
+  bindings.batchedUpdates = cb => cb();
+  bindings.runAfterInteractions = fn => setTimeout(() => fn(), 50);
 }
 
-module.exports = bindings
+module.exports = bindings;
