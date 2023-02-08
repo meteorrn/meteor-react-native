@@ -20,10 +20,15 @@ const User = {
     return user && user._id;
   },
   _isLoggingIn: true,
+  _isLoggingOut: false,
   loggingIn() {
     return User._isLoggingIn;
   },
+  loggingOut() {
+    return User._isLoggingOut;
+  },
   logout(callback) {
+    User._startLoggingOut();
     Meteor.call('logout', err => {
       User.handleLogout();
       Meteor.connect();
@@ -35,6 +40,7 @@ const User = {
     Data._options.AsyncStorage.removeItem(TOKEN_KEY);
     Data._tokenIdSaved = null;
     User._userIdSaved = null;
+    User._endLoggingOut();
   },
   loginWithPassword(selector, password, callback) {
     if (typeof selector === 'string') {
@@ -83,9 +89,17 @@ const User = {
     User._isLoggingIn = true;
     Data.notify('loggingIn');
   },
+  _startLoggingOut() {
+    User._isLoggingOut = true;
+    Data.notify('loggingOut');
+  },
   _endLoggingIn() {
     User._isLoggingIn = false;
     Data.notify('loggingIn');
+  },
+  _endLoggingOut() {
+    User._isLoggingOut = false;
+    Data.notify('loggingOut');
   },
   _handleLoginCallback(err, result) {
     if (!err) {

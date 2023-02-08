@@ -19,7 +19,7 @@ To test on a Real iOS Device, you must build a release archive.
 
 All code-level PRs must be tested on a real device, simulators/emulators are not sufficient.
 
-Ondce you have your testing app installed on a device, use the following test cases depending on what features your update interacts with:
+Once you have your testing app installed on a device, use the following test cases depending on what features your update interacts with:
 
 **All Updates:**
 - Device with Internet Connection
