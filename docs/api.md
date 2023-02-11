@@ -50,6 +50,9 @@ Gets the current connection status. Returns an object with the following propert
 ### `Meteor.loggingIn()`
 Returns true if attempting to login
 
+### `Meteor.loggingOut()`
+Returns true if attempting to logout
+
 ### `Meteor.loginWithPassword`
 
 ### `Meteor.logout`
