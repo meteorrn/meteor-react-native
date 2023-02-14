@@ -1,31 +1,30 @@
 import Tracker from './Tracker.js';
 import EJSON from 'ejson';
-import _ from 'underscore';
-
 import Data from './Data';
 import Random from '../lib/Random';
 import call from './Call';
-import { isPlainObject } from '../lib/utils.js';
+import { hasOwn, isPlainObject } from '../lib/utils.js';
 
 const observers = {};
 
 export const runObservers = (type, collection, newDocument, oldDocument) => {
-  if(observers[collection]) {
-    observers[collection].forEach(({cursor, callbacks}) => {
-      if(callbacks[type]) {
-        if(type === 'removed') {
+  if (observers[collection]) {
+    observers[collection].forEach(({ cursor, callbacks }) => {
+      if (callbacks[type]) {
+        if (type === 'removed') {
           callbacks['removed'](newDocument);
-        }
-        else if(Data.db[collection].findOne({$and:[{_id:newDocument._id}, cursor._selector]})) {
+        } else if (
+          Data.db[collection].findOne({
+            $and: [{ _id: newDocument._id }, cursor._selector],
+          })
+        ) {
           try {
             callbacks[type](newDocument, oldDocument);
-          }
-          catch(e) {
+          } catch (e) {
             // TODO we should optionally allow an onError callback
-            console.error("Error in observe callback", e);
+            console.error('Error in observe callback', e);
           }
-        }
-        else {
+        } else {
           // TODO what to do here?
         }
       }
@@ -35,7 +34,7 @@ export const runObservers = (type, collection, newDocument, oldDocument) => {
 
 const _registerObserver = (collection, cursor, callbacks) => {
   observers[collection] = observers[collection] || [];
-  observers[collection].push({cursor, callbacks});
+  observers[collection].push({ cursor, callbacks });
 };
 
 class Cursor {
@@ -66,7 +65,7 @@ class Cursor {
       ? this._docs.map(this._collection._transform)
       : this._docs;
   }
-  
+
   observe(callbacks) {
     _registerObserver(this._collection._collection.name, this, callbacks);
   }
@@ -76,12 +75,12 @@ export const localCollections = [];
 
 export class Collection {
   constructor(name, options = {}) {
-    if(name === null) {
+    if (name === null) {
       this.localCollection = true;
       name = Random.id();
       localCollections.push(name);
     }
-    
+
     if (!Data.db[name]) Data.db.addCollection(name);
 
     this._collection = Data.db[name];
@@ -141,15 +140,15 @@ export class Collection {
       });
 
     this._collection.upsert(item);
-    
-    if(!this.localCollection) {
+
+    if (!this.localCollection) {
       Data.waitDdpConnected(() => {
-        call(`/${this._name}/insert`, item, err => {
+        call(`/${this._name}/insert`, item, (err) => {
           if (err) {
             this._collection.del(id);
             return callback(err);
           }
-  
+
           callback(null, id);
         });
       });
@@ -171,16 +170,16 @@ export class Collection {
 
     // change mini mongo for optimize UI changes
     this._collection.upsert({ _id: id, ...modifier.$set });
-    
-    if(!this.localCollection || (options && options.localOnly)) {
+
+    if (!this.localCollection || (options && options.localOnly)) {
       Data.waitDdpConnected(() => {
-        call(`/${this._name}/update`, { _id: id }, modifier, err => {
+        call(`/${this._name}/update`, { _id: id }, modifier, (err) => {
           if (err) {
             // todo in such case the _collection's document should be reverted
             // unless we remove the auto-update to the server anyways
             return callback(err);
           }
-  
+
           callback(null, id);
         });
       });
@@ -193,7 +192,7 @@ export class Collection {
     if (element) {
       this._collection.del(element._id);
 
-      if(!this.localCollection) {
+      if (!this.localCollection) {
         Data.waitDdpConnected(() => {
           call(`/${this._name}/remove`, { _id: id }, (err, res) => {
             if (err) {
@@ -216,9 +215,9 @@ export class Collection {
 
     if (!this._helpers) {
       this._helpers = function Document(doc) {
-        return _.extend(this, doc);
+        return Object.assign(this, doc);
       };
-      this._transform = doc => {
+      this._transform = (doc) => {
         if (_transform) {
           doc = _transform(doc);
         }
@@ -226,7 +225,7 @@ export class Collection {
       };
     }
 
-    _.each(helpers, (helper, key) => {
+    Object.entries(helpers).forEach(([key, helper]) => {
       this._helpers.prototype[key] = helper;
     });
   }
@@ -249,8 +248,8 @@ function wrapTransform(transform) {
   // No need to doubly-wrap transforms.
   if (transform.__wrappedTransform__) return transform;
 
-  var wrapped = function(doc) {
-    if (!_.has(doc, '_id')) {
+  var wrapped = function (doc) {
+    if (!hasOwn(doc, '_id')) {
       // XXX do we ever have a transform on the oplog's collection? because that
       // collection has no _id.
       throw new Error('can only transform documents with _id');
@@ -258,7 +257,7 @@ function wrapTransform(transform) {
 
     var id = doc._id;
     // XXX consider making tracker a weak dependency and checking Package.tracker here
-    var transformed = Tracker.nonreactive(function() {
+    var transformed = Tracker.nonreactive(function () {
       return transform(doc);
     });
 
@@ -266,7 +265,7 @@ function wrapTransform(transform) {
       throw new Error('transform must return object');
     }
 
-    if (_.has(transformed, '_id')) {
+    if (hasOwn(transformed, '_id')) {
       if (!EJSON.equals(transformed._id, id)) {
         throw new Error("transformed document can't have different _id");
       }

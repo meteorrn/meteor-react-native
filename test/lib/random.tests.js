@@ -11,11 +11,12 @@ describe('Random', function () {
     }
   });
   it('generates ids with unmistakable chars', function () {
-    const regex = /^[23456789ABCDEFGHJKLMNPQRSTWXYZabcdefghijkmnopqrstuvwxyz]*$/
+    const regex =
+      /^[23456789ABCDEFGHJKLMNPQRSTWXYZabcdefghijkmnopqrstuvwxyz]*$/;
 
     for (let i = 0; i < 128; i++) {
       const id = Random.id();
       expect(regex.test(id)).to.equal(true);
     }
-  })
+  });
 });
