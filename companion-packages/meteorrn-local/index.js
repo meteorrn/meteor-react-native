@@ -3,7 +3,7 @@ import { Mongo, packageInterface } from '@meteorrn/core';
 const stringifiedDateRegExp = new RegExp(
   /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z/
 );
-let fixDates = function(k, v) {
+let fixDates = function (k, v) {
   if (stringifiedDateRegExp.test(v)) {
     return new Date(v);
   }
