@@ -2,7 +2,7 @@ import MongoID from '../../lib/mongo-id';
 import EJSON from 'ejson';
 import { expect } from 'chai';
 
-const randomHex = length => {
+const randomHex = (length) => {
   let str = '';
   for (let j = 0; j < length; j++) {
     str += Math.floor(Math.random() * 16).toString(16);
@@ -12,9 +12,9 @@ const randomHex = length => {
 
 const createObjectId = () => new MongoID.ObjectID(randomHex(24));
 
-describe('mongo-id', function() {
-  describe(MongoID._looksLikeObjectID.name, function() {
-    it('determines, if a string looks like an ObjectID', function() {
+describe('mongo-id', function () {
+  describe(MongoID._looksLikeObjectID.name, function () {
+    it('determines, if a string looks like an ObjectID', function () {
       for (let i = 0; i < 24; i++) {
         const str = randomHex(i);
         expect(!!MongoID._looksLikeObjectID(str)).to.equal(false);
@@ -26,13 +26,13 @@ describe('mongo-id', function() {
       }
     });
   });
-  describe(MongoID.ObjectID.name, function() {
-    it('throws if the hex string is not given', function() {
+  describe(MongoID.ObjectID.name, function () {
+    it('throws if the hex string is not given', function () {
       expect(() => MongoID.ObjectID()).to.throw(
         'Random.hexString not implemented, please pass a hexString'
       );
     });
-    it('throws if the hex string is not a valid ObjectID-like', function() {
+    it('throws if the hex string is not a valid ObjectID-like', function () {
       for (let i = 0; i < 24; i++) {
         const str = randomHex(i) || '1';
         expect(() => MongoID.ObjectID(str)).to.throw(
@@ -48,8 +48,8 @@ describe('mongo-id', function() {
       }
     });
   });
-  describe(MongoID.idStringify.name, function() {
-    it('strinigifies to EJSON compatible type', function() {
+  describe(MongoID.idStringify.name, function () {
+    it('strinigifies to EJSON compatible type', function () {
       const oid = createObjectId();
       expect(MongoID.idStringify('')).to.equal('');
       expect(MongoID.idStringify()).to.equal('-');
@@ -70,8 +70,8 @@ describe('mongo-id', function() {
     });
   });
 
-  describe(MongoID.idParse.name, function() {
-    it('parses valid id strings', function() {
+  describe(MongoID.idParse.name, function () {
+    it('parses valid id strings', function () {
       expect(MongoID.idParse('foo')).to.equal('foo');
       expect(MongoID.idParse('')).to.equal('');
       expect(MongoID.idParse('-')).to.equal(undefined);
@@ -85,14 +85,14 @@ describe('mongo-id', function() {
     });
   });
 
-  describe('prototype', function() {
-    it('implements a toString method', function() {
+  describe('prototype', function () {
+    it('implements a toString method', function () {
       const oid = createObjectId();
       const str = `ObjectID("${oid._str}")`;
       expect(oid.toString()).to.equal(str);
     });
 
-    it('implements an equals method', function() {
+    it('implements an equals method', function () {
       const hex = randomHex(24);
       const oid1 = new MongoID.ObjectID(hex);
       const oid2 = new MongoID.ObjectID(hex);
@@ -109,7 +109,7 @@ describe('mongo-id', function() {
       expect(oid2.equals(oid3)).to.equal(false);
     });
 
-    it('returns the mongo timestamp', function() {
+    it('returns the mongo timestamp', function () {
       const timeStamp = 1234567800;
       const hex = `${timeStamp.toString(16)}${randomHex(16)}`;
       const oid = new MongoID.ObjectID(hex);
@@ -117,8 +117,8 @@ describe('mongo-id', function() {
     });
   });
 
-  describe('EJSON', function() {
-    it('is ejsonable', function() {
+  describe('EJSON', function () {
+    it('is ejsonable', function () {
       const oid = createObjectId();
       const str = EJSON.stringify(oid);
       const expected = `{"$type":"oid","$value":"${oid._str}"}`;

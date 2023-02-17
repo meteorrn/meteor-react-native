@@ -20,7 +20,7 @@ export default (trackerFn, deps = []) => {
       refs.computation = null;
     }
     Tracker.nonreactive(() => {
-      Tracker.autorun(currentComputation => {
+      Tracker.autorun((currentComputation) => {
         if (refs.isMounted) {
           refs.computation = currentComputation;
           refs.data = trackerFn();

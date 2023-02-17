@@ -2,7 +2,7 @@ import React, { forwardRef, memo } from 'react';
 import useTracker from './useTracker';
 
 export default function withTracker(options) {
-  return Component => {
+  return (Component) => {
     const expandedOptions =
       typeof options === 'function' ? { getMeteorData: options } : options;
     const { getMeteorData, pure = true } = expandedOptions;

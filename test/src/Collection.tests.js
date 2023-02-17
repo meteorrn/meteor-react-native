@@ -10,12 +10,12 @@ import DDP from '../../lib/ddp';
 import Random from '../../lib/Random';
 import { server } from '../hooks/mockServer';
 
-describe('Collection', function() {
+describe('Collection', function () {
   const endpoint = 'ws://localhost:3000/websocket';
 
   // for proper collection tests we need the server to be active
 
-  before(function() {
+  before(function () {
     if (!Data.ddp) {
       Data.ddp = new DDP({
         SocketConstructor: WebSocket,
@@ -28,39 +28,39 @@ describe('Collection', function() {
 
       // we simulate similar behaviour as in Meteor.call
       // but without relying on Meteor here
-      Data.ddp.socket.on('message:in', message => {
+      Data.ddp.socket.on('message:in', (message) => {
         if (!message.id) return;
 
-        const call = Data.calls.find(call => call.id === message.id);
+        const call = Data.calls.find((call) => call.id === message.id);
         if (!call) return;
 
         if (typeof call.callback === 'function') {
           call.callback(message.error, message.result);
         }
         Data.calls.splice(
-          Data.calls.findIndex(call => call.id === message.id),
+          Data.calls.findIndex((call) => call.id === message.id),
           1
         );
       });
     }
   });
 
-  describe('constructor', function() {
-    it('creates a new collection and one in Minimongo', function() {
+  describe('constructor', function () {
+    it('creates a new collection and one in Minimongo', function () {
       const name = Random.id(6);
       const c = new Collection(name);
       expect(c._name).to.equal(name);
       expect(c._transform).to.equal(null);
       expect(Data.db.collections[name]).to.equal(c._collection);
     });
-    it('creates a local collection and a random counterpart in minimongo', function() {
+    it('creates a local collection and a random counterpart in minimongo', function () {
       const c = new Collection(null);
       expect(c._name).to.not.equal(null);
       expect(c.localCollection).to.equal(true);
       expect(c._transform).to.equal(null);
       expect(Data.db.collections[c._name]).to.equal(c._collection);
     });
-    it('creates a collection with transform options', function() {
+    it('creates a collection with transform options', function () {
       let transform = () => null;
       let c;
 
@@ -87,22 +87,22 @@ describe('Collection', function() {
     });
   });
 
-  describe('insert', function() {
-    it('throws on wrong _id value', function(done) {
+  describe('insert', function () {
+    it('throws on wrong _id value', function (done) {
       const c = new Collection(Random.id());
-      c.insert({ _id: () => {} }, err => {
+      c.insert({ _id: () => {} }, (err) => {
         expect(err).to.equal(
           'Meteor requires document _id fields to be non-empty strings'
         );
         done();
       });
     });
-    it('inserts docs', function(done) {
+    it('inserts docs', function (done) {
       const c = new Collection(Random.id());
       expect(c.find().count()).to.equal(0);
 
       const methodName = `/${c._name}/insert`;
-      const listener = server().on('message', messageStr => {
+      const listener = server().on('message', (messageStr) => {
         const message = JSON.parse(messageStr);
 
         if (message.msg === 'method' && message.method === methodName) {
@@ -127,13 +127,13 @@ describe('Collection', function() {
         done();
       });
     });
-    it('does not insert if server responded with error', function(done) {
+    it('does not insert if server responded with error', function (done) {
       const c = new Collection(Random.id());
       expect(c.find().count()).to.equal(0);
       const methodName = `/${c._name}/insert`;
 
       const methodName = `/${c._name}/insert`;
-      const listener = server().on('message', messageStr => {
+      const listener = server().on('message', (messageStr) => {
         const message = JSON.parse(messageStr);
 
         if (message.msg === 'method' && message.method === methodName) {
@@ -155,7 +155,7 @@ describe('Collection', function() {
         done();
       });
     });
-    it('inserts sync on a local collection', function(done) {
+    it('inserts sync on a local collection', function (done) {
       const c = new Collection(null);
       expect(c.find().count()).to.equal(0);
       const docId = c.insert({ foo: 'bar' });
@@ -177,14 +177,14 @@ describe('Collection', function() {
     });
   });
 
-  describe('update', function() {
-    it('updates a doc', function(done) {
+  describe('update', function () {
+    it('updates a doc', function (done) {
       const c = new Collection(Random.id());
       expect(c.find().count()).to.equal(0);
 
       const insertMethod = `/${c._name}/insert`;
       const updateMethod = `/${c._name}/update`;
-      const listener = server().on('message', messageStr => {
+      const listener = server().on('message', (messageStr) => {
         const message = JSON.parse(messageStr);
 
         if (
@@ -215,13 +215,13 @@ describe('Collection', function() {
         });
       });
     });
-    it('resolves to error if the server responds with error', function(done) {
+    it('resolves to error if the server responds with error', function (done) {
       const c = new Collection(Random.id());
       expect(c.find().count()).to.equal(0);
 
       const insertMethod = `/${c._name}/insert`;
       const updateMethod = `/${c._name}/update`;
-      const listener = server().on('message', messageStr => {
+      const listener = server().on('message', (messageStr) => {
         const message = JSON.parse(messageStr);
 
         if (
@@ -259,7 +259,7 @@ describe('Collection', function() {
         });
       });
     });
-    it('updates a doc on a local collection', function() {
+    it('updates a doc on a local collection', function () {
       const c = new Collection(null);
       const docId = c.insert({});
       c.update(docId, { $set: { foo: 'bar' } });
@@ -267,10 +267,10 @@ describe('Collection', function() {
       const doc2 = c.findOne(docId);
       expect(doc2).to.deep.equal({ _id: docId, _version: 3, foo: 'baz' });
     });
-    it('returns with an error if the doc is not found', function(done) {
+    it('returns with an error if the doc is not found', function (done) {
       const c = new Collection(null);
       const id = Random.id();
-      c.update(id, { $set: {} }, err => {
+      c.update(id, { $set: {} }, (err) => {
         expect(err).to.deep.equal({
           error: 409,
           reason: `Item not found in collection ${c._name} with id ${id}`,
@@ -280,14 +280,14 @@ describe('Collection', function() {
     });
   });
 
-  describe('remove', function() {
-    it('removes a doc', function(done) {
+  describe('remove', function () {
+    it('removes a doc', function (done) {
       const c = new Collection(Random.id());
       expect(c.find().count()).to.equal(0);
 
       const insertMethod = `/${c._name}/insert`;
       const removeMethod = `/${c._name}/remove`;
-      const listener = server().on('message', messageStr => {
+      const listener = server().on('message', (messageStr) => {
         const message = JSON.parse(messageStr);
 
         if (
@@ -314,13 +314,13 @@ describe('Collection', function() {
         });
       });
     });
-    it('does not remove if server responds with error', function(done) {
+    it('does not remove if server responds with error', function (done) {
       const c = new Collection(Random.id());
       expect(c.find().count()).to.equal(0);
 
       const insertMethod = `/${c._name}/insert`;
       const removeMethod = `/${c._name}/remove`;
-      const listener = server().on('message', messageStr => {
+      const listener = server().on('message', (messageStr) => {
         const message = JSON.parse(messageStr);
 
         if (
@@ -342,7 +342,7 @@ describe('Collection', function() {
       });
 
       c.insert({ foo: 'bar' }, (err, docId) => {
-        c.remove(docId, err => {
+        c.remove(docId, (err) => {
           expect(err).to.equal('expect this remove err');
           expect(c.find().count()).to.equal(1);
           expect(c.findOne(docId)).to.deep.equal({
@@ -355,7 +355,7 @@ describe('Collection', function() {
         });
       });
     });
-    it('removes a doc on a local collection', function() {
+    it('removes a doc on a local collection', function () {
       const c = new Collection(null);
       expect(c.find().count()).to.equal(0);
       const docId = c.insert({});
@@ -369,9 +369,9 @@ describe('Collection', function() {
       c.remove({ foo: 'bar' });
       expect(c.find().count()).to.equal(1);
     });
-    it('returns with an error if the doc is not found', function(done) {
+    it('returns with an error if the doc is not found', function (done) {
       const c = new Collection(null);
-      c.remove({}, err => {
+      c.remove({}, (err) => {
         expect(err).to.equal('No document with _id : [object Object]');
         done();
       });
@@ -379,14 +379,14 @@ describe('Collection', function() {
   });
 });
 
-describe('Cursor', function() {
+describe('Cursor', function () {
   let c;
 
-  beforeEach(function() {
+  beforeEach(function () {
     c = new Collection(null);
   });
 
-  it('count', function() {
+  it('count', function () {
     c.insert({ foo: Random.id() });
     c.insert({ foo: Random.id() });
     c.insert({ foo: Random.id() });
@@ -395,13 +395,13 @@ describe('Cursor', function() {
     });
     expect(cursor.count()).to.equal(3);
   });
-  it('fetch', function() {
+  it('fetch', function () {
     const docs = [
       { foo: Random.id(8) },
       { foo: Random.id(8) },
       { foo: Random.id(8) },
       { foo: Random.id(8) },
-    ].map(doc => {
+    ].map((doc) => {
       const docId = c.insert(doc);
       return c.findOne(docId);
     });
@@ -411,13 +411,13 @@ describe('Cursor', function() {
 
     expect(cursor.fetch()).to.deep.equal(docs);
   });
-  it('forEach', function() {
+  it('forEach', function () {
     const docs = [
       { foo: Random.id(8) },
       { foo: Random.id(8) },
       { foo: Random.id(8) },
       { foo: Random.id(8) },
-    ].map(doc => {
+    ].map((doc) => {
       const docId = c.insert(doc);
       return c.findOne(docId);
     });
@@ -429,9 +429,9 @@ describe('Cursor', function() {
       expect(docs[index]).to.deep.equal(doc);
     });
   });
-  it('_transformedDocs', function() {
+  it('_transformedDocs', function () {
     c = new Collection(null, {
-      transform: doc => {
+      transform: (doc) => {
         doc.bar = 'baz';
         return doc;
       },
@@ -446,13 +446,13 @@ describe('Cursor', function() {
       _version: 1,
     });
   });
-  it('map', function() {
+  it('map', function () {
     const docs = [
       { foo: Random.id(8) },
       { foo: Random.id(8) },
       { foo: Random.id(8) },
       { foo: Random.id(8) },
-    ].map(doc => {
+    ].map((doc) => {
       const docId = c.insert(doc);
       return c.findOne(docId);
     });
@@ -470,8 +470,8 @@ describe('Cursor', function() {
   // observer see runObservers
 });
 
-describe('runObservers', function() {
-  it('runs observers for registered added callback', function(done) {
+describe('runObservers', function () {
+  it('runs observers for registered added callback', function (done) {
     const c = new Collection(null);
     let foo = Random.id();
     c.find().observe({
@@ -485,7 +485,7 @@ describe('runObservers', function() {
     const docId = c.insert({ foo: foo });
     const doc = c.findOne(docId);
   });
-  it('runs observers for registered changed callback', function(done) {
+  it('runs observers for registered changed callback', function (done) {
     const c = new Collection(null);
     c.find().observe({
       changed(newDoc, oldDoc) {
@@ -500,7 +500,7 @@ describe('runObservers', function() {
     c.update(docId, { $set: { foo: 'bar' } });
     const doc2 = c.findOne(docId);
   });
-  it('runs observers for registered remove callback', function(done) {
+  it('runs observers for registered remove callback', function (done) {
     const c = new Collection(null);
     const expectDocId = c.insert({ foo: Random.id() });
     const expectDoc = c.findOne();
@@ -514,7 +514,7 @@ describe('runObservers', function() {
 
     c.remove(expectDocId);
   });
-  it('catches overseve callback errors', function() {
+  it('catches overseve callback errors', function () {
     const c = new Collection(null);
     c.find().observe({
       added() {

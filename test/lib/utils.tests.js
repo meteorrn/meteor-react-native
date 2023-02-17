@@ -1,13 +1,13 @@
 import { hashPassword, isPlainObject, uniqueId } from '../../lib/utils';
 import { expect } from 'chai';
 
-describe('utils', function() {
-  describe(isPlainObject.name, function() {
-    it('returns true for plain objects', function() {
+describe('utils', function () {
+  describe(isPlainObject.name, function () {
+    it('returns true for plain objects', function () {
       expect(isPlainObject({})).to.equal(true);
       expect(isPlainObject(Object.create(null))).to.equal(true);
     });
-    it('returns false for non-plain objects', function() {
+    it('returns false for non-plain objects', function () {
       class CustomClass {}
       const a = [];
       a.prototype = {};
@@ -24,14 +24,14 @@ describe('utils', function() {
         undefined,
         new CustomClass(),
         a,
-      ].forEach(obj => {
+      ].forEach((obj) => {
         expect(isPlainObject(obj)).to.equal(false);
       });
     });
   });
 
-  describe(uniqueId.name, function() {
-    it('always returns a unique value', function() {
+  describe(uniqueId.name, function () {
+    it('always returns a unique value', function () {
       const ids = new Set();
 
       for (let i = 0; i < 1000; i++) {
@@ -46,8 +46,8 @@ describe('utils', function() {
     });
   });
 
-  describe(hashPassword.name, function() {
-    it('creates a sha256 password hash', function() {
+  describe(hashPassword.name, function () {
+    it('creates a sha256 password hash', function () {
       const value = 'foo';
       const hashed = hashPassword(value);
       expect(hashed.digest).to.equal(

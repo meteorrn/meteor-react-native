@@ -2,26 +2,26 @@ import { expect } from 'chai';
 import ReactiveDict from '../../src/ReactiveDict';
 import MongoID from '../../lib/mongo-id';
 
-describe('ReactiveDict', function() {
-  it('sets to undefined', function() {
+describe('ReactiveDict', function () {
+  it('sets to undefined', function () {
     const dict = new ReactiveDict();
     dict.set('foo', undefined);
     expect(dict.get('foo')).to.equal(undefined);
   });
-  it('sets from objects', function() {
+  it('sets from objects', function () {
     const dict = new ReactiveDict();
     dict.set({ foo: 'bar', bar: undefined });
     expect(dict.get('foo')).to.equal('bar');
     expect(dict.get('bar')).to.equal(undefined);
   });
-  it('initialize with data', function() {
+  it('initialize with data', function () {
     const now = new Date();
     const dict = new ReactiveDict({ now: now });
 
     const nowFromDict = dict.get('now');
     expect(nowFromDict.getTime()).to.equal(now.getTime());
   });
-  it('has setDefault', function() {
+  it('has setDefault', function () {
     let dict = new ReactiveDict();
     dict.set('A', 'blah');
     dict.set('B', undefined);
@@ -47,7 +47,7 @@ describe('ReactiveDict', function() {
     expect(dict.get('A')).to.equal('default');
     expect(dict.get('B')).to.equal('blah');
   });
-  it('has equals implemented', function() {
+  it('has equals implemented', function () {
     const dict = new ReactiveDict();
     [
       null,
@@ -56,7 +56,7 @@ describe('ReactiveDict', function() {
       true,
       new Date(),
       new MongoID.ObjectID('ffffffffffffffffffffffff'),
-    ].forEach(value => {
+    ].forEach((value) => {
       expect(dict.equals('foo', value)).to.equal(false);
       dict.set('foo', value);
       expect(dict.equals('foo', value)).to.equal(true);
