@@ -60,7 +60,7 @@ describe('mongo-id', function() {
       const jsonStr = JSON.stringify({ value: oid._str });
       expect(MongoID.idStringify(jsonStr)).to.equal('-' + jsonStr);
 
-      [true, false, 0, 1, -1, null].forEach(val => {
+      [true, false, 0, 1, -1, null].forEach((val) => {
         expect(MongoID.idStringify(val)).to.equal('~' + JSON.stringify(val));
       });
 

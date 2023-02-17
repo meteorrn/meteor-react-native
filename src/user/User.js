@@ -72,7 +72,7 @@ const User = {
 
       User._handleLoginCallback(err, res);
 
-      Meteor.call('removeOtherTokens', err => {
+      Meteor.call('removeOtherTokens', (err) => {
         callback(err);
       });
     });

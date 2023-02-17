@@ -1,4 +1,4 @@
-import minimongo from 'minimongo-cache';
+import minimongo from '@meteorrn/minimongo';
 import Tracker from './Tracker.js';
 import {
   batchedUpdates,

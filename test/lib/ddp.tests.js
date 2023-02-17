@@ -3,7 +3,7 @@ import { WebSocket } from 'mock-socket';
 import { expect } from 'chai';
 import { server } from '../hooks/mockServer';
 
-describe('ddp', function() {
+describe('ddp', function () {
   let validOptions;
   let ddp;
   const endpoint = 'ws://localhost:3000/websocket';
@@ -18,7 +18,7 @@ describe('ddp', function() {
     listeners.push({ target, event, fn });
   };
 
-  beforeEach(function() {
+  beforeEach(function () {
     validOptions = {
       SocketConstructor: WebSocket,
       endpoint,
@@ -53,28 +53,28 @@ describe('ddp', function() {
     );
   });
 
-  it('should start in the disconnected state', function() {
+  it('should start in the disconnected state', function () {
     ddp = new DDP(validOptions);
     expect(ddp.status).to.equal('disconnected');
   });
 
-  it('should start with autoreconnect true given no autoReconnect parameter', function() {
+  it('should start with autoreconnect true given no autoReconnect parameter', function () {
     ddp = new DDP(validOptions);
     expect(ddp.autoReconnect).to.equal(true);
   });
 
-  it('should start with autoreconnect false given autoReconnect parameter set to false', function() {
+  it('should start with autoreconnect false given autoReconnect parameter set to false', function () {
     validOptions.autoReconnect = false;
     ddp = new DDP(validOptions);
     expect(ddp.autoReconnect).to.equal(false);
   });
 
-  it('should start with autoconnect true given no autoConnect parameter', function() {
+  it('should start with autoconnect true given no autoConnect parameter', function () {
     ddp = new DDP(validOptions);
     expect(ddp.autoConnect).to.equal(true);
   });
 
-  it('should start with autoconnect false given autoReconnect parameter set to false', function() {
+  it('should start with autoconnect false given autoReconnect parameter set to false', function () {
     validOptions.autoConnect = false;
     ddp = new DDP(validOptions);
     expect(ddp.autoConnect).to.equal(false);
@@ -114,7 +114,7 @@ describe('ddp', function() {
     ddp = new DDP(validOptions);
     ddp.connect();
 
-    listen(ddp.socket, 'message:out', message => {
+    listen(ddp.socket, 'message:out', (message) => {
       if (message.msg === 'pong') {
         expect(message.id).to.equal(99);
         done();
@@ -221,7 +221,7 @@ describe('ddp', function() {
       // but when connected the queue will run
       ddp.method('foo', { foo: 'bar' });
 
-      listen(ddp.socket, 'message:out', message => {
+      listen(ddp.socket, 'message:out', (message) => {
         if (message.msg === 'method') {
           expect(message.id).to.equal('0');
           expect(message.method).to.equal('foo');
@@ -249,7 +249,7 @@ describe('ddp', function() {
       // but when connected the queue will run
       ddp.sub('foo', { foo: 'bar' });
 
-      listen(ddp.socket, 'message:out', message => {
+      listen(ddp.socket, 'message:out', (message) => {
         if (message.msg === 'sub') {
           expect(message.id).to.equal('1');
           expect(message.method).to.equal('foo');
@@ -275,7 +275,7 @@ describe('ddp', function() {
       // but when connected the queue will run
       ddp.unsub('1');
 
-      listen(ddp.socket, 'message:out', message => {
+      listen(ddp.socket, 'message:out', (message) => {
         if (message.msg === 'unsub') {
           expect(message.id).to.equal('2');
           expect(message.method).to.equal('foo');

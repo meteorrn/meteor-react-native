@@ -8,7 +8,8 @@
     "url": "git+https://github.com/TheRealNate/meteor-react-native.git"
   },
   "scripts": {
-    "lint": "prettier --check ./**/*.js",
+    "lint": "prettier --check .",
+    "lint:fix": "prettier --write .",
     "test:coverage": "nyc --reporter=html --reporter=text ./node_modules/.bin/mocha 'test/**/*tests.js'"
   },
   "keywords": [

@@ -130,6 +130,7 @@ describe('Collection', function() {
     it('does not insert if server responded with error', function(done) {
       const c = new Collection(Random.id());
       expect(c.find().count()).to.equal(0);
+      const methodName = `/${c._name}/insert`;
 
       const methodName = `/${c._name}/insert`;
       const listener = server().on('message', messageStr => {
@@ -166,7 +167,7 @@ describe('Collection', function() {
       });
 
       // throws on reinsert
-      c.insert({ _id: docId }, err => {
+      c.insert({ _id: docId }, (err) => {
         expect(err).to.deep.equal({
           error: 409,
           reason: `Duplicate key _id with value ${docId}`,

@@ -44,7 +44,7 @@ class AccountsPassword {
       return callback('Must pass options.email');
     }
 
-    call('forgotPassword', options, err => {
+    call('forgotPassword', options, (err) => {
       callback(err);
     });
   };
