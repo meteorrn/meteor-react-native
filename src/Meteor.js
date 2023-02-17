@@ -61,7 +61,7 @@ const Meteor = {
     }
     // If we get a double restart, make sure we keep track and
     // remove it later
-    Object.keys(this.removing).forEach(item => {
+    Object.keys(this.removing).forEach((item) => {
       Data.ddp.unsub(item);
     });
   },
@@ -90,8 +90,8 @@ const Meteor = {
     }
 
     if (!options.AsyncStorage) {
-      const AsyncStorage = require('@react-native-community/async-storage')
-        .default;
+      const AsyncStorage =
+        require('@react-native-community/async-storage').default;
 
       if (AsyncStorage) {
         options.AsyncStorage = AsyncStorage;
@@ -176,7 +176,7 @@ const Meteor = {
       lastDisconnect = new Date();
     });
 
-    Data.ddp.on('added', message => {
+    Data.ddp.on('added', (message) => {
       if (!Data.db[message.collection]) {
         Data.db.addCollection(message.collection);
       }
@@ -187,7 +187,7 @@ const Meteor = {
 
       Data.db[message.collection].upsert(document);
       let observers = getObservers('added', message.collection, document);
-      observers.forEach(callback => {
+      observers.forEach((callback) => {
         try {
           callback(document, null);
         } catch (e) {
@@ -196,7 +196,7 @@ const Meteor = {
       });
     });
 
-    Data.ddp.on('ready', message => {
+    Data.ddp.on('ready', (message) => {
       const idsMap = new Map();
       for (var i in Data.subscriptions) {
         const sub = Data.subscriptions[i];
@@ -213,10 +213,10 @@ const Meteor = {
       }
     });
 
-    Data.ddp.on('changed', message => {
+    Data.ddp.on('changed', (message) => {
       const unset = {};
       if (message.cleared) {
-        message.cleared.forEach(field => {
+        message.cleared.forEach((field) => {
           unset[field] = null;
         });
       }
@@ -234,7 +234,7 @@ const Meteor = {
 
         Data.db[message.collection].upsert(document);
         let observers = getObservers('changed', message.collection, document);
-        observers.forEach(callback => {
+        observers.forEach((callback) => {
           try {
             callback(document, oldDocument);
           } catch (e) {
@@ -244,7 +244,7 @@ const Meteor = {
       }
     });
 
-    Data.ddp.on('removed', message => {
+    Data.ddp.on('removed', (message) => {
       if (Data.db[message.collection]) {
         const oldDocument = Data.db[message.collection].findOne({
           _id: message.id,
@@ -255,7 +255,7 @@ const Meteor = {
           oldDocument
         );
         Data.db[message.collection].del(message.id);
-        observers.forEach(callback => {
+        observers.forEach((callback) => {
           try {
             callback(null, oldDocument);
           } catch (e) {
@@ -264,14 +264,17 @@ const Meteor = {
         });
       }
     });
-    Data.ddp.on('result', message => {
-      const call = Data.calls.find(call => call.id == message.id);
+    Data.ddp.on('result', (message) => {
+      const call = Data.calls.find((call) => call.id == message.id);
       if (typeof call.callback == 'function')
         call.callback(message.error, message.result);
-      Data.calls.splice(Data.calls.findIndex(call => call.id == message.id), 1);
+      Data.calls.splice(
+        Data.calls.findIndex((call) => call.id == message.id),
+        1
+      );
     });
 
-    Data.ddp.on('nosub', message => {
+    Data.ddp.on('nosub', (message) => {
       if (this.removing[message.id]) {
         delete this.removing[message.id];
       }
@@ -282,7 +285,7 @@ const Meteor = {
         }
       }
     });
-    Data.ddp.on('error', message => {
+    Data.ddp.on('error', (message) => {
       console.warn(message);
     });
   },
@@ -361,7 +364,7 @@ const Meteor = {
         readyDeps: new Tracker.Dependency(),
         readyCallback: callbacks.onReady,
         stopCallback: callbacks.onStop,
-        stop: function() {
+        stop: function () {
           Data.ddp.unsub(this.subIdRemember);
           delete Data.subscriptions[this.id];
           this.ready && this.readyDeps.changed();
@@ -375,10 +378,10 @@ const Meteor = {
 
     // return a handle to the application.
     var handle = {
-      stop: function() {
+      stop: function () {
         if (Data.subscriptions[id]) Data.subscriptions[id].stop();
       },
-      ready: function() {
+      ready: function () {
         if (!Data.subscriptions[id]) return false;
 
         let record = Data.subscriptions[id];
@@ -395,12 +398,12 @@ const Meteor = {
       // as a change to mark the subscription "inactive" so that it can
       // be reused from the rerun.  If it isn't reused, it's killed from
       // an afterFlush.
-      Tracker.onInvalidate(function(c) {
+      Tracker.onInvalidate(function (c) {
         if (Data.subscriptions[id]) {
           Data.subscriptions[id].inactive = true;
         }
 
-        Tracker.afterFlush(function() {
+        Tracker.afterFlush(function () {
           if (Data.subscriptions[id] && Data.subscriptions[id].inactive) {
             handle.stop();
           }

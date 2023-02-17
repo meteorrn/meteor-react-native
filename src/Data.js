@@ -65,14 +65,14 @@ export default {
   off(eventName, cb) {
     this._cbs.splice(
       this._cbs.findIndex(
-        _cb => _cb.callback == cb && _cb.eventName == eventName
+        (_cb) => _cb.callback == cb && _cb.eventName == eventName
       ),
       1
     );
   },
   notify(eventName) {
     setTimeout(() => {
-      this._cbs.map(cb => {
+      this._cbs.map((cb) => {
         if (cb.eventName == eventName && typeof cb.callback == 'function') {
           cb.callback();
         }

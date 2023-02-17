@@ -193,7 +193,7 @@ export class Collection {
 
     if (!this.localCollection) {
       Data.waitDdpConnected(() => {
-        call(`/${this._name}/insert`, item, err => {
+        call(`/${this._name}/insert`, item, (err) => {
           if (err) {
             this._collection.del(id);
             return callback(err);
@@ -204,7 +204,7 @@ export class Collection {
       });
     }
     let observers = getObservers('added', this._collection.name, item);
-    observers.forEach(callback => {
+    observers.forEach((callback) => {
       try {
         callback(item, undefined);
       } catch (e) {
@@ -231,7 +231,7 @@ export class Collection {
 
     if (!this.localCollection || (options && options.localOnly)) {
       Data.waitDdpConnected(() => {
-        call(`/${this._name}/update`, { _id: id }, modifier, err => {
+        call(`/${this._name}/update`, { _id: id }, modifier, (err) => {
           if (err) {
             // todo in such case the _collection's document should be reverted
             // unless we remove the auto-update to the server anyways
@@ -245,7 +245,7 @@ export class Collection {
     let newItem = this._collection.findOne({ _id: id });
 
     let observers = getObservers('changed', this._collection.name, newItem);
-    observers.forEach(callback => {
+    observers.forEach((callback) => {
       try {
         callback(newItem, old);
       } catch (e) {
@@ -273,7 +273,7 @@ export class Collection {
       }
 
       let observers = getObservers('removed', this._collection.name, element);
-      observers.forEach(callback => {
+      observers.forEach((callback) => {
         try {
           callback(element);
         } catch (e) {
@@ -294,7 +294,7 @@ export class Collection {
       this._helpers = function Document(doc) {
         return Object.assign(this, doc);
       };
-      this._transform = doc => {
+      this._transform = (doc) => {
         if (_transform) {
           doc = _transform(doc);
         }
@@ -325,7 +325,7 @@ function wrapTransform(transform) {
   // No need to doubly-wrap transforms.
   if (transform.__wrappedTransform__) return transform;
 
-  var wrapped = function(doc) {
+  var wrapped = function (doc) {
     if (!hasOwn(doc, '_id')) {
       // XXX do we ever have a transform on the oplog's collection? because that
       // collection has no _id.
@@ -334,7 +334,7 @@ function wrapTransform(transform) {
 
     var id = doc._id;
     // XXX consider making tracker a weak dependency and checking Package.tracker here
-    var transformed = Tracker.nonreactive(function() {
+    var transformed = Tracker.nonreactive(function () {
       return transform(doc);
     });
 
