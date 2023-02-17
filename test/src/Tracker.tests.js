@@ -512,13 +512,11 @@ describe('Tracker', function () {
     Tracker.autorun(function (c) {
       d.depend();
 
-      console.log('RUN', c.firstRun);
       if (!c.firstRun) throw new Error('expected error foo');
     });
 
     d.changed();
     // doesn't throw; logs instead.
-    console.log('HERE');
     Tracker.flush();
 
     d.changed();

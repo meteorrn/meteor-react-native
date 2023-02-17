@@ -49,6 +49,7 @@ describe('ReactiveDict', function () {
   });
   it('has equals implemented', function () {
     const dict = new ReactiveDict();
+
     [
       null,
       'bar',

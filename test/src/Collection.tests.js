@@ -102,7 +102,7 @@ describe('Collection', function () {
       expect(c.find().count()).to.equal(0);
 
       const methodName = `/${c._name}/insert`;
-      const listener = server().on('message', (messageStr) => {
+      server().message((messageStr) => {
         const message = JSON.parse(messageStr);
 
         if (message.msg === 'method' && message.method === methodName) {
@@ -123,7 +123,7 @@ describe('Collection', function () {
           foo: 'bar',
           _version: 1,
         });
-        server().removeEventListener('message', listener);
+        server().message(null);
         done();
       });
     });
@@ -131,9 +131,7 @@ describe('Collection', function () {
       const c = new Collection(Random.id());
       expect(c.find().count()).to.equal(0);
       const methodName = `/${c._name}/insert`;
-
-      const methodName = `/${c._name}/insert`;
-      const listener = server().on('message', (messageStr) => {
+      server().message((messageStr) => {
         const message = JSON.parse(messageStr);
 
         if (message.msg === 'method' && message.method === methodName) {
@@ -151,7 +149,7 @@ describe('Collection', function () {
         expect(c.find().count()).to.equal(0);
         expect(c.findOne(docId)).to.deep.equal(undefined);
         expect(err).to.equal('expect this err');
-        server().removeEventListener('message', listener);
+        server().message(null);
         done();
       });
     });
@@ -184,7 +182,7 @@ describe('Collection', function () {
 
       const insertMethod = `/${c._name}/insert`;
       const updateMethod = `/${c._name}/update`;
-      const listener = server().on('message', (messageStr) => {
+      server().message((messageStr) => {
         const message = JSON.parse(messageStr);
 
         if (
@@ -210,7 +208,7 @@ describe('Collection', function () {
             foo: 'baz',
             _version: 2,
           });
-          server().removeEventListener('message', listener);
+          server().message(null);
           done();
         });
       });
@@ -221,7 +219,7 @@ describe('Collection', function () {
 
       const insertMethod = `/${c._name}/insert`;
       const updateMethod = `/${c._name}/update`;
-      const listener = server().on('message', (messageStr) => {
+      server().message((messageStr) => {
         const message = JSON.parse(messageStr);
 
         if (
@@ -254,7 +252,7 @@ describe('Collection', function () {
             foo: 'baz',
             _version: 2,
           });
-          server().removeEventListener('message', listener);
+          server().message(null);
           done();
         });
       });
@@ -287,7 +285,7 @@ describe('Collection', function () {
 
       const insertMethod = `/${c._name}/insert`;
       const removeMethod = `/${c._name}/remove`;
-      const listener = server().on('message', (messageStr) => {
+      server().message((messageStr) => {
         const message = JSON.parse(messageStr);
 
         if (
@@ -309,7 +307,7 @@ describe('Collection', function () {
           expect(docId2).to.equal(undefined);
           expect(c.find().count()).to.equal(0);
           expect(c.findOne(docId)).to.deep.equal(undefined);
-          server().removeEventListener('message', listener);
+          server().message(null);
           done();
         });
       });
@@ -320,7 +318,7 @@ describe('Collection', function () {
 
       const insertMethod = `/${c._name}/insert`;
       const removeMethod = `/${c._name}/remove`;
-      const listener = server().on('message', (messageStr) => {
+      server().message((messageStr) => {
         const message = JSON.parse(messageStr);
 
         if (
@@ -350,7 +348,7 @@ describe('Collection', function () {
             foo: 'bar',
             _version: 3, // because it got upserted again
           });
-          server().removeEventListener('message', listener);
+          server().message(null);
           done();
         });
       });
