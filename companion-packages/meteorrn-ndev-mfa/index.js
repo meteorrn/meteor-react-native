@@ -2,7 +2,7 @@ import Meteor, { Accounts } from '@meteorrn/core';
 
 import { loginChallengeHandler, loginCompletionHandler } from './method-names';
 
-let useU2FAuthorizationCode = function(code) {
+let useU2FAuthorizationCode = function (code) {
   if (typeof code !== 'string' || code.length !== 6) {
     throw new Error('Invalid Code');
   }
@@ -10,7 +10,7 @@ let useU2FAuthorizationCode = function(code) {
   return { U2FAuthorizationCode: code };
 };
 
-let assembleChallengeCompletionArguments = async function(
+let assembleChallengeCompletionArguments = async function (
   finishLoginParams,
   code
 ) {
@@ -91,7 +91,7 @@ let loginWithMFA = (username, password) =>
 
 let login = (username, password) =>
   new Promise((resolve, reject) => {
-    Meteor.loginWithPassword(username, password, err => {
+    Meteor.loginWithPassword(username, password, (err) => {
       if (err) {
         if (err.error === 'mfa-required') {
           loginWithMFA(username, password)

@@ -24,14 +24,14 @@ Ondce you have your testing app installed on a device, use the following test ca
 
 **All Updates:**
 
-* Device with Internet Connection
-* Device that is Offline
+- Device with Internet Connection
+- Device that is Offline
 
 **Updates that interact with `AsyncStorage`, `NetInfo`, or `trackr`:**
 
-* Opening from background (device put in sleep mode for at least 60 seconds, then reopened)
+- Opening from background (device put in sleep mode for at least 60 seconds, then reopened)
 
 **Updates that interact with `NetInfo`:**
 
-* Device is on WiFi
-* Device is on Cellular
+- Device is on WiFi
+- Device is on Cellular

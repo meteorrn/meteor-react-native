@@ -8,7 +8,7 @@ class Login extends React.Component {
   onLogin = () => {
     let { email, password } = this.state;
 
-    Meteor.loginWithPassword(email, password, err => {
+    Meteor.loginWithPassword(email, password, (err) => {
       if (err) {
         Alert.alert('Error', err.reason);
       } else {
@@ -26,12 +26,12 @@ class Login extends React.Component {
 
         <TextInput
           value={this.state.email}
-          onChangeText={email => this.setState({ email })}
+          onChangeText={(email) => this.setState({ email })}
         />
 
         <TextInput
           value={this.state.password}
-          onChangeText={password => this.setState({ password })}
+          onChangeText={(password) => this.setState({ password })}
         />
 
         {loggingIn ? (

@@ -15,9 +15,9 @@ If you're new to React Native, you can view a guide to using React Native with M
 
 # Installation
 
-1.  `npm install --save @meteorrn/core`
-2.  Confirm you have peer dependencty `@react-native-community/netinfo` installed
-3.  Confirm you have `@react-native-async-storage/async-storage@>=1.8.1` installed. If you are using Expo, or otherwise cannot use `@react-native-async-storage/async-storage`, see _Custom Storage Adapter_ below.
+1. `npm install --save @meteorrn/core`
+2. Confirm you have peer dependencty `@react-native-community/netinfo` installed
+3. Confirm you have `@react-native-async-storage/async-storage@>=1.8.1` installed. If you are using Expo, or otherwise cannot use `@react-native-async-storage/async-storage`, see _Custom Storage Adapter_ below.
 
 <h3 id="custom-storage-adapter">A note on AsyncStorage</h3>
 This package uses `@react-native-async-storage/async-storage` by default. This may cause issues if you are using certain React Native versions, or if you are using Expo. To use a custom AsyncStorage implementation, pass it as an option in `Meteor.connect`:
@@ -75,8 +75,8 @@ The `@meteorrn/core` package has been kept as light as possible. To access more 
 
 Here are some examples:
 
-* `@meteorrn/oauth-google`: Allows you to let users login to your app with Google
-* `@meteorrn/oauth-facebook`: Allows you to let users login to your app with Facebook
+- `@meteorrn/oauth-google`: Allows you to let users login to your app with Google
+- `@meteorrn/oauth-facebook`: Allows you to let users login to your app with Facebook
 
 For the full list of officially recognized packages, check out [the @meteorrn github org](https://github.com/meteorrn).
 
@@ -88,12 +88,12 @@ For React Native <0.60.0 use [react-native-meteor](https://github.com/inProgress
 
 **Migrating from `react-native-meteor`:**
 
-* cursoredFind is no longer an option. All .find() calls will return cursors (to match Meteor)
-* `MeteorListView` & `MeteorComplexListView` have been removed
-* `CollectionFS` has been removed
-* `createContainer` has been removed
-* Mixins (`connectMeteor`) have been removed
-* `composeWithTracker` has been removed
+- cursoredFind is no longer an option. All .find() calls will return cursors (to match Meteor)
+- `MeteorListView` & `MeteorComplexListView` have been removed
+- `CollectionFS` has been removed
+- `createContainer` has been removed
+- Mixins (`connectMeteor`) have been removed
+- `composeWithTracker` has been removed
 
 # Using on Web
 
@@ -107,6 +107,7 @@ const AsyncStorage = {
 }
 
 Meteor.connect("wss://.../websock", {AsyncStorage});
+
 ```
 
 # Changelog
@@ -117,7 +118,7 @@ The [GitHub Releases Tab](https://github.com/TheRealNate/meteor-react-native/rel
 
 To ensure that MeteorRN companion packages use the same versions of external packages like AsyncStorage as the core, `@meteorrn/core` provides a package interface, where companion packages can access certain packages. Currently package interface returns an object with the following properties:
 
-* AsyncStorage
+- AsyncStorage
 
 ### Usage
 
@@ -129,7 +130,7 @@ const {AsyncStorage} = Meteor.packageInterface();
 
 ### Differences from Meteor Core to Note:
 
-* This API does not implement `observeChanges` (but it does implement `observe`)
+- This API does not implement `observeChanges` (but it does implement `observe`)
 
 # Showcase
 

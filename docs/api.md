@@ -2,10 +2,10 @@
 
 Table of Contents
 
-* [Meteor](#meteor)
-* [Tracker](#tracker)
-* [Mongo](#mongo)
-* [Accounts](#accounts)
+- [Meteor](#meteor)
+- [Tracker](#tracker)
+- [Mongo](#mongo)
+- [Accounts](#accounts)
 
 <h2 id="meteor">Meteor</h2>
 
@@ -19,10 +19,10 @@ Connect to the Meteor Server
 
 **options**:
 
-* autoConnect **boolean** [true] whether to establish the connection to the server upon instantiation. When false, one can manually establish the connection with the Meteor.ddp.connect method.
-* autoReconnect **boolean** [true] whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.
-* reconnectInterval **number** [10000] the interval in ms between reconnection attempts.
-* AsyncStorage **object** your preferred AsyncStorage. Defaults to `'@react-native-async-storage/async-storage'` as a peer dependency.
+- autoConnect **boolean** [true] whether to establish the connection to the server upon instantiation. When false, one can manually establish the connection with the Meteor.ddp.connect method.
+- autoReconnect **boolean** [true] whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.
+- reconnectInterval **number** [10000] the interval in ms between reconnection attempts.
+- AsyncStorage **object** your preferred AsyncStorage. Defaults to `'@react-native-async-storage/async-storage'` as a peer dependency.
 
 ### `Meteor.disconnect()`
 
@@ -76,8 +76,8 @@ Creates a new Tracker
 
 **Arguments:**
 
-* trackerFunc - Function which will be re-run reactively when it's dependencies are updated. Must return an object that is passed as properties to `Component`
-* Component - React Component which will receive properties from trackerFunc
+- trackerFunc - Function which will be re-run reactively when it's dependencies are updated. Must return an object that is passed as properties to `Component`
+- Component - React Component which will receive properties from trackerFunc
 
 #### `useTracker(trackerFunc)` => `React Hook`
 
@@ -85,7 +85,7 @@ Creates a new Tracker React Hook. Can only be used inside a function component. 
 
 **Arguments:**
 
-* trackerFunc - Function which will be re-run reactively when it's dependencies are updated.
+- trackerFunc - Function which will be re-run reactively when it's dependencies are updated.
 
 ## ReactiveDict
 
@@ -99,8 +99,8 @@ Creates a new reactive dictionary
 
 **_ReactiveDict_ Methods:**
 
-* .get(key) - Gets value of key (Reactive)
-* .set(key, value) - Sets value of key
+- .get(key) - Gets value of key (Reactive)
+- .set(key, value) - Sets value of key
 
 <h2 id="mongo">Mongo</h2>
 
@@ -112,24 +112,24 @@ Creates and returns a _Collection_
 
 **Arguments**
 
-* collectionName - Name of the remote collection, or pass `null` for a client-side collection
+- collectionName - Name of the remote collection, or pass `null` for a client-side collection
 
 #### _`Collection`_
 
 **_Collection_ Methods:**
 
-* .insert(document) - Inserts document into collection
-* .update(query, modifications) - Updates document in collection
-* .remove(query) - Removes document from collection
-* .find(query) => _`Cursor`_ - Returns a Cursor
-* .findOne(query) => Document - Retrieves first matching Document
+- .insert(document) - Inserts document into collection
+- .update(query, modifications) - Updates document in collection
+- .remove(query) - Removes document from collection
+- .find(query) => _`Cursor`_ - Returns a Cursor
+- .findOne(query) => Document - Retrieves first matching Document
 
 #### _`Cursor`_
 
 **_Cursor_ Methods:**
 
-* .obsrve() - Mirrors Meteor's observe behavior. Accepts object with the properties `added`, `changed`, and `removed`.
-* .fetch() => `[Document]` - Retrieves an array of matching documents
+- .obsrve() - Mirrors Meteor's observe behavior. Accepts object with the properties `added`, `changed`, and `removed`.
+- .fetch() => `[Document]` - Retrieves an array of matching documents
 
 <h2 id="accounts">Accounts</h2>
 
@@ -141,8 +141,8 @@ Creates a user
 
 **Arguments**
 
-* user - The user object
-* callback - Called with a single error object or null on success
+- user - The user object
+- callback - Called with a single error object or null on success
 
 #### `Accounts.changePassword(oldPassword, newPassword)`
 
@@ -150,8 +150,8 @@ Changes a user's password
 
 **Arguments**
 
-* oldPassword - The user's current password
-* newPassword - The user's new password
+- oldPassword - The user's current password
+- newPassword - The user's new password
 
 #### `Accounts.onLogin(callback)`
 
@@ -159,7 +159,7 @@ Registers a callback to be called when user is logged in
 
 **Arguments**
 
-* callback
+- callback
 
 #### `Accounts.onLoginFailure(callback)`
 
@@ -167,7 +167,7 @@ Registers a callback to be called when login fails
 
 **Arguments**
 
-* callback
+- callback
 
 #### `Accounts._hashPassword(plaintext)` => `{algorithm:"sha-256", digest:"..."}`
 
@@ -175,18 +175,18 @@ Hashes a password using the sha-256 algorithm. Returns an object formatted for u
 
 **Arguments**
 
-* plaintext - The plaintext string you want to hash
+- plaintext - The plaintext string you want to hash
 
 Other:
 
-* [Accounts.forgotPassword](http://docs.meteor.com/#/full/accounts_changepassword)
-* [Accounts.resetPassword](http://docs.meteor.com/#/full/accounts_resetpassword)
+- [Accounts.forgotPassword](http://docs.meteor.com/#/full/accounts_changepassword)
+- [Accounts.resetPassword](http://docs.meteor.com/#/full/accounts_resetpassword)
 
 ## Verbosity
 
 `import { enableVerbose } from '@meteorrn/core';`
 
-Verbose Mode logs detailed information from various places around MeteorRN. **Note:** this will expose login tokens and other private information to the console.
+Verbose Mode logs detailed information from various places around MeteorRN. **Note:*- this will expose login tokens and other private information to the console.
 
 #### `enableVerbose()`
 

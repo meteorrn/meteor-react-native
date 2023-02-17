@@ -11,14 +11,16 @@ const bindings = {};
 
 try {
   require.resolve('react-native');
-  bindings.batchedUpdates = require('react-native/Libraries/Renderer/shims/ReactNative').unstable_batchedUpdates;
-  bindings.runAfterInteractions = require('react-native').InteractionManager.runAfterInteractions;
+  bindings.batchedUpdates = 
+    require('react-native/Libraries/Renderer/shims/ReactNative').unstable_batchedUpdates;
+  bindings.runAfterInteractions = 
+    require('react-native').InteractionManager.runAfterInteractions;
 } catch (e) {
   // if the module is not installed (for example when running tests)
   // we fall back to some defaults that seem to be close to what
   // the original functions implement
-  bindings.batchedUpdates = cb => cb();
-  bindings.runAfterInteractions = fn => setTimeout(() => fn(), 50);
+  bindings.batchedUpdates = (cb) => cb();
+  bindings.runAfterInteractions = (fn) => setTimeout(() => fn(), 50);
 }
 
 module.exports = bindings;

@@ -12,7 +12,7 @@ let fixDates = function(k, v) {
 
 const defaultOptions = { disableDateParser: false, batchUpdates: false };
 const Local = {
-  Collection: function(name, _options = {}) {
+  Collection: function (name, _options = {}) {
     const { AsyncStorage } = packageInterface();
     const options = Object.assign({}, defaultOptions, _options);
 
@@ -74,9 +74,9 @@ const Local = {
           if (storedData) {
             const documents = JSON.parse(
               storedData,
-              options.disableDateParser ? v => v : fixDates
+              options.disableDateParser ? (v) => v : fixDates
             );
-            documents.forEach(doc => {
+            documents.forEach((doc) => {
               LocalCol._collection.upsert(doc);
             });
           }
@@ -86,20 +86,20 @@ const Local = {
         if (storedData) {
           const documents = JSON.parse(
             storedData,
-            options.disableDateParser ? v => v : fixDates
+            options.disableDateParser ? (v) => v : fixDates
           );
-          documents.forEach(doc => {
+          documents.forEach((doc) => {
             LocalCol._collection.upsert(doc);
           });
         }
       }
 
       LiveCol.find({}).observe({
-        added: async doc => {
+        added: async (doc) => {
           LocalCol._collection.upsert(doc);
           storeLocalCol();
         },
-        changed: async doc => {
+        changed: async (doc) => {
           LocalCol._collection.upsert(doc);
           storeLocalCol();
         },
