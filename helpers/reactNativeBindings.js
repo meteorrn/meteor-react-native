@@ -11,9 +11,9 @@ const bindings = {};
 
 try {
   require.resolve('react-native');
-  bindings.batchedUpdates = 
+  bindings.batchedUpdates =
     require('react-native/Libraries/Renderer/shims/ReactNative').unstable_batchedUpdates;
-  bindings.runAfterInteractions = 
+  bindings.runAfterInteractions =
     require('react-native').InteractionManager.runAfterInteractions;
 } catch (e) {
   // if the module is not installed (for example when running tests)

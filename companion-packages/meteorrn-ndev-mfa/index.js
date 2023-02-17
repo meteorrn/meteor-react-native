@@ -94,9 +94,7 @@ let login = (username, password) =>
     Meteor.loginWithPassword(username, password, (err) => {
       if (err) {
         if (err.error === 'mfa-required') {
-          loginWithMFA(username, password)
-            .then(resolve)
-            .catch(reject);
+          loginWithMFA(username, password).then(resolve).catch(reject);
         } else {
           reject(err);
         }

@@ -186,7 +186,7 @@ Other:
 
 `import { enableVerbose } from '@meteorrn/core';`
 
-Verbose Mode logs detailed information from various places around MeteorRN. **Note:*- this will expose login tokens and other private information to the console.
+Verbose Mode logs detailed information from various places around MeteorRN. **Note:** this will expose login tokens and other private information to the console.
 
 #### `enableVerbose()`
 
