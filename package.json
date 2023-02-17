@@ -29,7 +29,6 @@
   "dependencies": {
     "@meteorrn/minimongo": "1.0.1",
     "ejson": "2.2.3",
-    "prop-types": "^15.5.10",
     "wolfy87-eventemitter": "4.3.0"
   },
   "devDependencies": {
