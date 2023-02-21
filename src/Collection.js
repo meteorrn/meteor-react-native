@@ -7,7 +7,12 @@ import { hasOwn, isPlainObject } from '../lib/utils.js';
 
 const observers = {};
 const observersByComp = {};
-
+/**
+ * Get the list of callbacks for changes on a collection
+ * @param {string} type - Type of change happening.
+ * @param {string} collection - Collection it has happened on
+ * @param {string} newDocument - New value of item in the colleciton
+ */
 export function getObservers(type, collection, newDocument) {
   let observersRet = [];
   if (observers[collection]) {
@@ -31,6 +36,7 @@ export function getObservers(type, collection, newDocument) {
       }
     });
   }
+  // Find the observers related to the specific query
   if (observersByComp[collection]) {
     let keys = Object.keys(observersByComp[collection]);
     for (let i = 0; i < keys.length; i++) {
@@ -126,6 +132,9 @@ export class Collection {
       typeof selector == 'string' ? { _id: selector } : selector
     );
 
+    // If this is being called within a use tracker
+    // make the tracker computation to say if this 
+    // collection is changed it needs to be re-run
     if (Tracker.active && Tracker.currentComputation) {
       let id = Tracker.currentComputation._id;
       observersByComp[this._name] = observersByComp[this._name] || {};
@@ -203,6 +212,7 @@ export class Collection {
         });
       });
     }
+    // Notify relevant observers that the item has been updated with its new value
     let observers = getObservers('added', this._collection.name, item);
     observers.forEach((callback) => {
       try {
@@ -243,7 +253,7 @@ export class Collection {
       });
     }
     let newItem = this._collection.findOne({ _id: id });
-
+    // Notify relevant observers that the item has been updated with its new value
     let observers = getObservers('changed', this._collection.name, newItem);
     observers.forEach((callback) => {
       try {
@@ -272,6 +282,7 @@ export class Collection {
         });
       }
 
+      // Load the observers for removing the element
       let observers = getObservers('removed', this._collection.name, element);
       observers.forEach((callback) => {
         try {

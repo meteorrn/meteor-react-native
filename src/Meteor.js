@@ -113,15 +113,8 @@ const Meteor = {
 
     try {
       const NetInfo = require('@react-native-community/netinfo').default;
+      // Reconnect if we lose internet
       NetInfo.addEventListener(
-        ({ type, isConnected, isInternetReachable, isWifiEnabled }) => {
-          if (isConnected && Data.ddp.autoReconnect) {
-            Data.ddp.connect();
-          }
-        }
-      );
-
-      NetInfo.fetch().then(
         ({ type, isConnected, isInternetReachable, isWifiEnabled }) => {
           if (isConnected && Data.ddp.autoReconnect) {
             Data.ddp.connect();

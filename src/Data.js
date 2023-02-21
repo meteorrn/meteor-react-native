@@ -71,6 +71,8 @@ export default {
     );
   },
   notify(eventName) {
+    // Notifify that changes have been made
+    // Put in timeout so it doesn't block main thread
     setTimeout(() => {
       this._cbs.map((cb) => {
         if (cb.eventName == eventName && typeof cb.callback == 'function') {
