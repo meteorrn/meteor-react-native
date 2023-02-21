@@ -133,7 +133,7 @@ export class Collection {
     );
 
     // If this is being called within a use tracker
-    // make the tracker computation to say if this 
+    // make the tracker computation to say if this
     // collection is changed it needs to be re-run
     if (Tracker.active && Tracker.currentComputation) {
       let id = Tracker.currentComputation._id;
