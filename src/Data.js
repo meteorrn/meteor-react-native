@@ -47,6 +47,7 @@ export default {
     this.ddp.on('connected', cb);
     this.ddp.on('disconnected', cb);
     this.on('loggingIn', cb);
+    this.on('loggingOut', cb);
     this.on('change', cb);
   },
   offChange(cb) {
@@ -54,6 +55,7 @@ export default {
     this.ddp.off('connected', cb);
     this.ddp.off('disconnected', cb);
     this.off('loggingIn', cb);
+    this.off('loggingOut', cb);
     this.off('change', cb);
   },
   on(eventName, cb) {

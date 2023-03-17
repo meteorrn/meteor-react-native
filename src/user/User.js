@@ -26,12 +26,18 @@ const User = {
     const user = Users.findOne(user_id);
     return user && user._id;
   },
+  _isLoggingIn: true,
+  _isLoggingOut: false,
   loggingIn() {
     return this._reactiveDict.get('_loggingIn');
   },
+  loggingOut() {
+    return User._isLoggingOut;
+  },
   logout(callback) {
     this._isTokenLogin = false;
-    Meteor.call('logout', (err) => {
+    User._startLoggingOut();
+    Meteor.call('logout', err => {
       User.handleLogout();
       Meteor.connect();
 
@@ -44,6 +50,7 @@ const User = {
     this._reactiveDict.set('_userIdSaved', null);
 
     User._userIdSaved = null;
+    User._endLoggingOut();
   },
   loginWithPassword(selector, password, callback) {
     this._isTokenLogin = false;
@@ -89,9 +96,17 @@ const User = {
     this._reactiveDict.set('_loggingIn', true);
     Data.notify('loggingIn');
   },
+  _startLoggingOut() {
+    User._isLoggingOut = true;
+    Data.notify('loggingOut');
+  },
   _endLoggingIn() {
     this._reactiveDict.set('_loggingIn', false);
     Data.notify('loggingIn');
+  },
+  _endLoggingOut() {
+    User._isLoggingOut = false;
+    Data.notify('loggingOut');
   },
   _handleLoginCallback(err, result) {
     if (!err) {
