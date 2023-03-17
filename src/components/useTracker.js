@@ -1,33 +1,44 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useReducer, useMemo } from 'react';
 import Tracker from '../Tracker.js';
-import Data from '../Data';
 
+const fur = (x: number): number => x + 1;
+const useForceUpdate = () => useReducer(fur, 0)[1];
 export default (trackerFn, deps = []) => {
-  const [response, setResponse] = useState(trackerFn());
-  const meteorDataDep = new Tracker.Dependency();
-  let computation = null;
-  const dataChangedCallback = () => {
-    meteorDataDep.changed();
-  };
+  const { current: refs } = useRef({
+    data: null,
+    meteorDataDep: new Tracker.Dependency(),
+    trackerFn: trackerFn,
+    computation: null,
+    isMounted: true,
+  });
+  const forceUpdate = useForceUpdate();
+  refs.trackerFn = trackerFn;
 
-  const stopComputation = () => {
-    computation && computation.stop();
-    computation = null;
-  };
-
-  Data.onChange(dataChangedCallback);
+  useMemo(() => {
+    if (refs.computation) {
+      refs.computation.stop();
+      refs.computation = null;
+    }
+    Tracker.nonreactive(() => {
+      Tracker.autorun((currentComputation) => {
+        if (refs.isMounted) {
+          refs.computation = currentComputation;
+          refs.data = trackerFn();
+          forceUpdate();
+        } else {
+          refs.computation?.stop();
+        }
+      });
+    });
+  }, deps);
 
   useEffect(() => {
-    stopComputation();
-    Tracker.autorun((currentComputation) => {
-      meteorDataDep.depend();
-      computation = currentComputation;
-      setResponse(trackerFn());
-    });
     return () => {
-      stopComputation();
-      Data.offChange(dataChangedCallback);
+      refs.isMounted = false;
+      refs.computation?.stop();
+      refs.computation = null;
     };
-  }, deps);
-  return response;
+  }, []);
+
+  return refs.data;
 };

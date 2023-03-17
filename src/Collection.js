@@ -6,23 +6,29 @@ import call from './Call';
 import { hasOwn, isPlainObject } from '../lib/utils.js';
 
 const observers = {};
-
-export const runObservers = (type, collection, newDocument, oldDocument) => {
+const observersByComp = {};
+/**
+ * Get the list of callbacks for changes on a collection
+ * @param {string} type - Type of change happening.
+ * @param {string} collection - Collection it has happened on
+ * @param {string} newDocument - New value of item in the colleciton
+ */
+export function getObservers(type, collection, newDocument) {
+  let observersRet = [];
   if (observers[collection]) {
     observers[collection].forEach(({ cursor, callbacks }) => {
       if (callbacks[type]) {
         if (type === 'removed') {
-          callbacks['removed'](newDocument);
+          observersRet.push(callbacks['removed']);
         } else if (
           Data.db[collection].findOne({
             $and: [{ _id: newDocument._id }, cursor._selector],
           })
         ) {
           try {
-            callbacks[type](newDocument, oldDocument);
+            observersRet.push(callbacks[type]);
           } catch (e) {
-            // TODO we should optionally allow an onError callback
-            console.error('Error in observe callback', e);
+            console.error('Error in observe callback old', e);
           }
         } else {
           // TODO what to do here?
@@ -30,7 +36,24 @@ export const runObservers = (type, collection, newDocument, oldDocument) => {
       }
     });
   }
-};
+  // Find the observers related to the specific query
+  if (observersByComp[collection]) {
+    let keys = Object.keys(observersByComp[collection]);
+    for (let i = 0; i < keys.length; i++) {
+      observersByComp[collection][keys[i]].callbacks.forEach(
+        ({ cursor, callback }) => {
+          let findRes = Data.db[collection].findOne({
+            $and: [{ _id: newDocument?._id }, cursor._selector],
+          });
+          if (findRes) {
+            observersRet.push(callback);
+          }
+        }
+      );
+    }
+  }
+  return observersRet;
+}
 
 const _registerObserver = (collection, cursor, callbacks) => {
   observers[collection] = observers[collection] || [];
@@ -103,8 +126,44 @@ export class Collection {
     } else {
       docs = this._collection.find(selector, options);
     }
+    result = new Cursor(
+      this,
+      docs,
+      typeof selector == 'string' ? { _id: selector } : selector
+    );
 
-    result = new Cursor(this, docs, selector);
+    // If this is being called within a use tracker
+    // make the tracker computation to say if this
+    // collection is changed it needs to be re-run
+    if (Tracker.active && Tracker.currentComputation) {
+      let id = Tracker.currentComputation._id;
+      observersByComp[this._name] = observersByComp[this._name] || {};
+      if (!observersByComp[this._name][id]) {
+        let item = {
+          computation: Tracker.currentComputation,
+          callbacks: [],
+        };
+        observersByComp[this._name][id] = item;
+      }
+      let item = observersByComp[this._name][id];
+
+      item.callbacks.push({
+        cursor: result,
+        callback: (newVal, old) => {
+          if (old && EJSON.equals(newVal, old)) {
+            return;
+          }
+
+          item.computation.invalidate();
+        },
+      });
+
+      Tracker.onInvalidate(() => {
+        if (observersByComp[this._name][id]) {
+          delete observersByComp[this._name][id];
+        }
+      });
+    }
 
     return result;
   }
@@ -153,6 +212,15 @@ export class Collection {
         });
       });
     }
+    // Notify relevant observers that the item has been updated with its new value
+    let observers = getObservers('added', this._collection.name, item);
+    observers.forEach((callback) => {
+      try {
+        callback(item, undefined);
+      } catch (e) {
+        console.error('Error in observe callback', e);
+      }
+    });
 
     return id;
   }
@@ -161,7 +229,7 @@ export class Collection {
     if (typeof options == 'function') {
       callback = options;
     }
-
+    let old = this._collection.get(id);
     if (!this._collection.get(id))
       return callback({
         error: 409,
@@ -184,6 +252,16 @@ export class Collection {
         });
       });
     }
+    let newItem = this._collection.findOne({ _id: id });
+    // Notify relevant observers that the item has been updated with its new value
+    let observers = getObservers('changed', this._collection.name, newItem);
+    observers.forEach((callback) => {
+      try {
+        callback(newItem, old);
+      } catch (e) {
+        console.error('Error in observe callback', e);
+      }
+    });
   }
 
   remove(id, callback = () => {}) {
@@ -203,6 +281,16 @@ export class Collection {
           });
         });
       }
+
+      // Load the observers for removing the element
+      let observers = getObservers('removed', this._collection.name, element);
+      observers.forEach((callback) => {
+        try {
+          callback(element);
+        } catch (e) {
+          console.error('Error in observe callback', e);
+        }
+      });
     } else {
       callback(`No document with _id : ${id}`);
     }

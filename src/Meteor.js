@@ -5,7 +5,7 @@ import Random from '../lib/Random';
 
 import Data from './Data';
 import Mongo from './Mongo';
-import { Collection, runObservers, localCollections } from './Collection';
+import { Collection, getObservers, localCollections } from './Collection';
 import call from './Call';
 
 import withTracker from './components/withTracker';
@@ -20,6 +20,7 @@ const Meteor = {
   enableVerbose() {
     isVerbose = true;
   },
+  _reactiveDict: new ReactiveDict(),
   Random,
   Mongo,
   Tracker,
@@ -36,13 +37,15 @@ const Meteor = {
   },
   status() {
     return {
-      connected: Data.ddp ? Data.ddp.status == 'connected' : false,
+      connected: !!this._reactiveDict.get('connected'),
       status: Data.ddp ? Data.ddp.status : 'disconnected',
       //retryCount: 0
       //retryTime:
       //reason:
     };
   },
+
+  removing: {},
   call: call,
   disconnect() {
     if (Data.ddp) {
@@ -53,8 +56,14 @@ const Meteor = {
     for (var i in Data.subscriptions) {
       const sub = Data.subscriptions[i];
       Data.ddp.unsub(sub.subIdRemember);
+      this.removing[sub.subIdRemember] = true;
       sub.subIdRemember = Data.ddp.sub(sub.name, sub.params);
     }
+    // If we get a double restart, make sure we keep track and
+    // remove it later
+    Object.keys(this.removing).forEach((item) => {
+      Data.ddp.unsub(item);
+    });
   },
   waitDdpConnected: Data.waitDdpConnected.bind(Data),
   reconnect() {
@@ -64,7 +73,7 @@ const Meteor = {
     return {
       AsyncStorage:
         Data._options.AsyncStorage ||
-        require('@react-native-async-storage/async-storage').default,
+        require('@react-native-community/async-storage').default,
     };
   },
   connect(endpoint, options) {
@@ -82,7 +91,7 @@ const Meteor = {
 
     if (!options.AsyncStorage) {
       const AsyncStorage =
-        require('@react-native-async-storage/async-storage').default;
+        require('@react-native-community/async-storage').default;
 
       if (AsyncStorage) {
         options.AsyncStorage = AsyncStorage;
@@ -104,6 +113,7 @@ const Meteor = {
 
     try {
       const NetInfo = require('@react-native-community/netinfo').default;
+      // Reconnect if we lose internet
       NetInfo.addEventListener(
         ({ type, isConnected, isInternetReachable, isWifiEnabled }) => {
           if (isConnected && Data.ddp.autoReconnect) {
@@ -128,18 +138,22 @@ const Meteor = {
         }
       }
 
-      Data.notify('change');
-
       if (isVerbose) {
         console.info('Connected to DDP server.');
       }
       this._loadInitialUser().then(() => {
         this._subscriptionsRestart();
       });
+      this._reactiveDict.set('connected', true);
+      this.connected = true;
+      Data.notify('change');
     });
 
     let lastDisconnect = null;
     Data.ddp.on('disconnected', () => {
+      this.connected = false;
+      this._reactiveDict.set('connected', false);
+
       Data.notify('change');
 
       if (isVerbose) {
@@ -165,8 +179,14 @@ const Meteor = {
       };
 
       Data.db[message.collection].upsert(document);
-
-      runObservers('added', message.collection, document);
+      let observers = getObservers('added', message.collection, document);
+      observers.forEach((callback) => {
+        try {
+          callback(document, null);
+        } catch (e) {
+          console.error('Error in observe callback', e);
+        }
+      });
     });
 
     Data.ddp.on('ready', (message) => {
@@ -206,8 +226,14 @@ const Meteor = {
         });
 
         Data.db[message.collection].upsert(document);
-
-        runObservers('changed', message.collection, document, oldDocument);
+        let observers = getObservers('changed', message.collection, document);
+        observers.forEach((callback) => {
+          try {
+            callback(document, oldDocument);
+          } catch (e) {
+            console.error('Error in observe callback', e);
+          }
+        });
       }
     });
 
@@ -216,8 +242,19 @@ const Meteor = {
         const oldDocument = Data.db[message.collection].findOne({
           _id: message.id,
         });
+        let observers = getObservers(
+          'removed',
+          message.collection,
+          oldDocument
+        );
         Data.db[message.collection].del(message.id);
-        runObservers('removed', message.collection, oldDocument);
+        observers.forEach((callback) => {
+          try {
+            callback(null, oldDocument);
+          } catch (e) {
+            console.error('Error in observe callback', e);
+          }
+        });
       }
     });
     Data.ddp.on('result', (message) => {
@@ -231,12 +268,18 @@ const Meteor = {
     });
 
     Data.ddp.on('nosub', (message) => {
+      if (this.removing[message.id]) {
+        delete this.removing[message.id];
+      }
       for (var i in Data.subscriptions) {
         const sub = Data.subscriptions[i];
         if (sub.subIdRemember == message.id) {
           console.warn('No subscription existing for', sub.name);
         }
       }
+    });
+    Data.ddp.on('error', (message) => {
+      console.warn(message);
     });
   },
   subscribe(name) {
@@ -359,6 +402,10 @@ const Meteor = {
           }
         });
       });
+    } else {
+      if (Data.subscriptions[id]) {
+        Data.subscriptions[id].inactive = true;
+      }
     }
 
     return handle;

@@ -102,8 +102,7 @@ describe('Collection', function () {
       expect(c.find().count()).to.equal(0);
 
       const methodName = `/${c._name}/insert`;
-
-      server().on((messageStr) => {
+      server().message((messageStr) => {
         const message = JSON.parse(messageStr);
 
         if (message.msg === 'method' && message.method === methodName) {
@@ -132,7 +131,6 @@ describe('Collection', function () {
       const c = new Collection(Random.id());
       expect(c.find().count()).to.equal(0);
       const methodName = `/${c._name}/insert`;
-
       server().message((messageStr) => {
         const message = JSON.parse(messageStr);
 
@@ -184,8 +182,7 @@ describe('Collection', function () {
 
       const insertMethod = `/${c._name}/insert`;
       const updateMethod = `/${c._name}/update`;
-
-      server().on((messageStr) => {
+      server().message((messageStr) => {
         const message = JSON.parse(messageStr);
 
         if (
@@ -255,7 +252,7 @@ describe('Collection', function () {
             foo: 'baz',
             _version: 2,
           });
-          server().message(null); // reset to default
+          server().message(null);
           done();
         });
       });
@@ -321,7 +318,6 @@ describe('Collection', function () {
 
       const insertMethod = `/${c._name}/insert`;
       const removeMethod = `/${c._name}/remove`;
-
       server().message((messageStr) => {
         const message = JSON.parse(messageStr);
 
@@ -475,17 +471,17 @@ describe('Cursor', function () {
 describe('runObservers', function () {
   it('runs observers for registered added callback', function (done) {
     const c = new Collection(null);
+    let foo = Random.id();
     c.find().observe({
       added(newDoc, oldDoc) {
         expect(oldDoc).to.equal(undefined);
-        expect(newDoc).to.equal(doc);
+        expect(newDoc.foo).to.equal(foo);
         done();
       },
     });
 
-    const docId = c.insert({ foo: Random.id() });
+    const docId = c.insert({ foo: foo });
     const doc = c.findOne(docId);
-    runObservers('added', c._name, doc);
   });
   it('runs observers for registered changed callback', function (done) {
     const c = new Collection(null);
@@ -501,10 +497,12 @@ describe('runObservers', function () {
     const doc = c.findOne(docId);
     c.update(docId, { $set: { foo: 'bar' } });
     const doc2 = c.findOne(docId);
-    runObservers('changed', c._name, doc2, doc);
   });
   it('runs observers for registered remove callback', function (done) {
     const c = new Collection(null);
+    const expectDocId = c.insert({ foo: Random.id() });
+    const expectDoc = c.findOne();
+
     c.find().observe({
       removed(doc) {
         expect(doc).to.deep.equal(expectDoc);
@@ -512,8 +510,7 @@ describe('runObservers', function () {
       },
     });
 
-    const expectDoc = { foo: 'bar' };
-    runObservers('removed', c._name, expectDoc);
+    c.remove(expectDocId);
   });
   it('catches overseve callback errors', function () {
     const c = new Collection(null);
@@ -525,6 +522,6 @@ describe('runObservers', function () {
 
     const docId = c.insert({ foo: Random.id() });
     const doc = c.findOne(docId);
-    runObservers('added', c._name, doc);
+    //   runObservers('added', c._name, doc);
   });
 });

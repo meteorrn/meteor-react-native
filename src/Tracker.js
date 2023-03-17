@@ -259,7 +259,9 @@ Tracker.Computation = class Computation {
     if (!this.invalidated) {
       // if we're currently in _recompute(), don't enqueue
       // ourselves, since we'll rerun immediately anyway.
-      if (!this._recomputing && !this.stopped) {
+
+      if (!this._recomputing && !this.stopped && !this._isPending) {
+        this._isPending = true;
         requireFlush();
         pendingComputations.push(this);
       }
@@ -316,6 +318,7 @@ Tracker.Computation = class Computation {
   }
 
   _recompute() {
+    this._isPending = false;
     this._recomputing = true;
     try {
       if (this._needsRecompute()) {
@@ -415,7 +418,9 @@ Tracker.Dependency = class Dependency {
    * @locus Client
    */
   changed() {
-    for (var id in this._dependentsById) this._dependentsById[id].invalidate();
+    for (var id in this._dependentsById) {
+      this._dependentsById[id].invalidate();
+    }
   }
 
   // http://docs.meteor.com/#dependency_hasdependents
