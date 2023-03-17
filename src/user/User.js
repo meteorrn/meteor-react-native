@@ -37,7 +37,7 @@ const User = {
   logout(callback) {
     this._isTokenLogin = false;
     User._startLoggingOut();
-    Meteor.call('logout', err => {
+    Meteor.call('logout', (err) => {
       User.handleLogout();
       Meteor.connect();
 

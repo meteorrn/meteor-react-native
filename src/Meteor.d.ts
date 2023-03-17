@@ -3,7 +3,12 @@ declare module '@meteorrn/core' {
   function disconnect(): void;
   function reconnect(): void;
 
-  type Status = 'change' | 'connected' | 'disconnected' | 'loggingIn' | 'loggingOut';
+  type Status =
+    | 'change'
+    | 'connected'
+    | 'disconnected'
+    | 'loggingIn'
+    | 'loggingOut';
 
   function call(...args: any[]): void;
   function status(): {
