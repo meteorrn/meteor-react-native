@@ -1,6 +1,9 @@
-import minimongo from 'minimongo-cache';
+import minimongo from '@meteorrn/minimongo';
 import Tracker from './Tracker.js';
-import { batchedUpdates, runAfterInteractions } from '../helpers/reactNativeBindings'
+import {
+  batchedUpdates,
+  runAfterInteractions,
+} from '../helpers/reactNativeBindings';
 
 const db = new minimongo();
 db.debug = false;
@@ -64,17 +67,21 @@ export default {
   off(eventName, cb) {
     this._cbs.splice(
       this._cbs.findIndex(
-        _cb => _cb.callback == cb && _cb.eventName == eventName
+        (_cb) => _cb.callback == cb && _cb.eventName == eventName
       ),
       1
     );
   },
   notify(eventName) {
-    this._cbs.map(cb => {
-      if (cb.eventName == eventName && typeof cb.callback == 'function') {
-        cb.callback();
-      }
-    });
+    // Notifify that changes have been made
+    // Put in timeout so it doesn't block main thread
+    setTimeout(() => {
+      this._cbs.map((cb) => {
+        if (cb.eventName == eventName && typeof cb.callback == 'function') {
+          cb.callback();
+        }
+      });
+    }, 1);
   },
   waitDdpConnected(cb) {
     if (this.ddp && this.ddp.status == 'connected') {

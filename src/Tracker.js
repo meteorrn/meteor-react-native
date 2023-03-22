@@ -34,7 +34,7 @@ Tracker.currentComputation = null;
 
 function setCurrentComputation(c) {
   Tracker.currentComputation = c;
-  Tracker.active = !! c;
+  Tracker.active = !!c;
 }
 
 function _debugFunc() {
@@ -43,10 +43,13 @@ function _debugFunc() {
   // on some browser we come across, like it was on IE 7).
   //
   // Lazy evaluation because `Meteor` does not exist right away.(??)
-  return (typeof Meteor !== "undefined" ? Meteor._debug :
-          ((typeof console !== "undefined") && console.error ?
-           function () { console.error.apply(console, arguments); } :
-           function () {}));
+  return typeof Meteor !== 'undefined'
+    ? Meteor._debug
+    : typeof console !== 'undefined' && console.error
+    ? function () {
+        console.error.apply(console, arguments);
+      }
+    : function () {};
 }
 
 function _maybeSuppressMoreLogs(messagesLength) {
@@ -54,7 +57,7 @@ function _maybeSuppressMoreLogs(messagesLength) {
   // printed errors. Since the current implementation of _throwOrLog can log
   // multiple separate log messages, suppress all of them if at least one suppress
   // is expected as we still want them to count as one.
-  if (typeof Meteor !== "undefined") {
+  if (typeof Meteor !== 'undefined') {
     if (Meteor._suppressed_log_expected()) {
       Meteor._suppress_log(messagesLength - 1);
     }
@@ -65,12 +68,13 @@ function _throwOrLog(from, e) {
   if (throwFirstError) {
     throw e;
   } else {
-    var printArgs = ["Exception from Tracker " + from + " function:"];
+    var printArgs = ['Exception from Tracker ' + from + ' function:'];
     if (e.stack && e.message && e.name) {
       var idx = e.stack.indexOf(e.message);
-      if (idx < 0 || idx > e.name.length + 2) { // check for "Error: "
+      if (idx < 0 || idx > e.name.length + 2) {
+        // check for "Error: "
         // message is not part of the stack
-        var message = e.name + ": " + e.message;
+        var message = e.name + ': ' + e.message;
         printArgs.push(message);
       }
     }
@@ -89,7 +93,7 @@ function _throwOrLog(from, e) {
 // no-op). This has the benefit of not adding an unnecessary stack
 // frame on the client.
 function withNoYieldsAllowed(f) {
-  if ((typeof Meteor === 'undefined') || Meteor.isClient) {
+  if (typeof Meteor === 'undefined' || Meteor.isClient) {
     return f;
   } else {
     return function () {
@@ -121,12 +125,10 @@ var throwFirstError = false;
 var afterFlushCallbacks = [];
 
 function requireFlush() {
-  if (! willFlush) {
+  if (!willFlush) {
     // We want this code to work without Meteor, see debugFunc above
-    if (typeof Meteor !== "undefined")
-      setTimeout(Tracker._runFlush);
-    else
-      setTimeout(Tracker._runFlush, 0);
+    if (typeof Meteor !== 'undefined') setTimeout(Tracker._runFlush);
+    else setTimeout(Tracker._runFlush, 0);
     willFlush = true;
   }
 }
@@ -149,9 +151,10 @@ var constructingComputation = false;
  */
 Tracker.Computation = class Computation {
   constructor(f, parent, onError) {
-    if (! constructingComputation)
+    if (!constructingComputation)
       throw new Error(
-        "Tracker.Computation constructor is private; use Tracker.autorun");
+        'Tracker.Computation constructor is private; use Tracker.autorun'
+      );
     constructingComputation = false;
 
     // http://docs.meteor.com/#computation_stopped
@@ -205,8 +208,7 @@ Tracker.Computation = class Computation {
       errored = false;
     } finally {
       this.firstRun = false;
-      if (errored)
-        this.stop();
+      if (errored) this.stop();
     }
   }
 
@@ -219,7 +221,7 @@ Tracker.Computation = class Computation {
    */
   onInvalidate(f) {
     if (typeof f !== 'function')
-      throw new Error("onInvalidate requires a function");
+      throw new Error('onInvalidate requires a function');
 
     if (this.invalidated) {
       Tracker.nonreactive(() => {
@@ -236,8 +238,7 @@ Tracker.Computation = class Computation {
    * @param {Function} callback Function to be called on stop. Receives one argument, the computation that was stopped.
    */
   onStop(f) {
-    if (typeof f !== 'function')
-      throw new Error("onStop requires a function");
+    if (typeof f !== 'function') throw new Error('onStop requires a function');
 
     if (this.stopped) {
       Tracker.nonreactive(() => {
@@ -255,10 +256,12 @@ Tracker.Computation = class Computation {
    * @locus Client
    */
   invalidate() {
-    if (! this.invalidated) {
+    if (!this.invalidated) {
       // if we're currently in _recompute(), don't enqueue
       // ourselves, since we'll rerun immediately anyway.
-      if (! this._recomputing && ! this.stopped) {
+
+      if (!this._recomputing && !this.stopped && !this._isPending) {
+        this._isPending = true;
         requireFlush();
         pendingComputations.push(this);
       }
@@ -267,7 +270,7 @@ Tracker.Computation = class Computation {
 
       // callbacks can't add callbacks, because
       // this.invalidated === true.
-      for(var i = 0, f; f = this._onInvalidateCallbacks[i]; i++) {
+      for (var i = 0, f; (f = this._onInvalidateCallbacks[i]); i++) {
         Tracker.nonreactive(() => {
           withNoYieldsAllowed(f)(this);
         });
@@ -283,10 +286,10 @@ Tracker.Computation = class Computation {
    * @locus Client
    */
   stop() {
-    if (! this.stopped) {
+    if (!this.stopped) {
       this.stopped = true;
       this.invalidate();
-      for(var i = 0, f; f = this._onStopCallbacks[i]; i++) {
+      for (var i = 0, f; (f = this._onStopCallbacks[i]); i++) {
         Tracker.nonreactive(() => {
           withNoYieldsAllowed(f)(this);
         });
@@ -311,10 +314,11 @@ Tracker.Computation = class Computation {
   }
 
   _needsRecompute() {
-    return this.invalidated && ! this.stopped;
+    return this.invalidated && !this.stopped;
   }
 
   _recompute() {
+    this._isPending = false;
     this._recomputing = true;
     try {
       if (this._needsRecompute()) {
@@ -324,7 +328,7 @@ Tracker.Computation = class Computation {
           if (this._onError) {
             this._onError(e);
           } else {
-            _throwOrLog("recompute", e);
+            _throwOrLog('recompute', e);
           }
         }
       }
@@ -340,8 +344,7 @@ Tracker.Computation = class Computation {
    * @locus Client
    */
   flush() {
-    if (this._recomputing)
-      return;
+    if (this._recomputing) return;
 
     this._recompute();
   }
@@ -392,14 +395,13 @@ Tracker.Dependency = class Dependency {
    * @returns {Boolean}
    */
   depend(computation) {
-    if (! computation) {
-      if (! Tracker.active)
-        return false;
+    if (!computation) {
+      if (!Tracker.active) return false;
 
       computation = Tracker.currentComputation;
     }
     var id = computation._id;
-    if (! (id in this._dependentsById)) {
+    if (!(id in this._dependentsById)) {
       this._dependentsById[id] = computation;
       computation.onInvalidate(() => {
         delete this._dependentsById[id];
@@ -416,8 +418,9 @@ Tracker.Dependency = class Dependency {
    * @locus Client
    */
   changed() {
-    for (var id in this._dependentsById)
+    for (var id in this._dependentsById) {
       this._dependentsById[id].invalidate();
+    }
   }
 
   // http://docs.meteor.com/#dependency_hasdependents
@@ -428,8 +431,7 @@ Tracker.Dependency = class Dependency {
    * @returns {Boolean}
    */
   hasDependents() {
-    for (var id in this._dependentsById)
-      return true;
+    for (var id in this._dependentsById) return true;
     return false;
   }
 };
@@ -441,8 +443,10 @@ Tracker.Dependency = class Dependency {
  * @locus Client
  */
 Tracker.flush = function (options) {
-  Tracker._runFlush({ finishSynchronously: true,
-                      throwFirstError: options && options._throwFirstError });
+  Tracker._runFlush({
+    finishSynchronously: true,
+    throwFirstError: options && options._throwFirstError,
+  });
 };
 
 /**
@@ -452,7 +456,7 @@ Tracker.flush = function (options) {
  */
 Tracker.inFlush = function () {
   return inFlush;
-}
+};
 
 // Run all pending computations and afterFlush callbacks.  If we were not called
 // directly via Tracker.flush, this may return before they're all done to allow
@@ -472,21 +476,18 @@ Tracker._runFlush = function (options) {
   if (Tracker.inFlush())
     throw new Error("Can't call Tracker.flush while flushing");
 
-  if (inCompute)
-    throw new Error("Can't flush inside Tracker.autorun");
+  if (inCompute) throw new Error("Can't flush inside Tracker.autorun");
 
   options = options || {};
 
   inFlush = true;
   willFlush = true;
-  throwFirstError = !! options.throwFirstError;
+  throwFirstError = !!options.throwFirstError;
 
   var recomputedCount = 0;
   var finishedTry = false;
   try {
-    while (pendingComputations.length ||
-           afterFlushCallbacks.length) {
-
+    while (pendingComputations.length || afterFlushCallbacks.length) {
       // recompute all pending computations
       while (pendingComputations.length) {
         var comp = pendingComputations.shift();
@@ -495,7 +496,7 @@ Tracker._runFlush = function (options) {
           pendingComputations.unshift(comp);
         }
 
-        if (! options.finishSynchronously && ++recomputedCount > 1000) {
+        if (!options.finishSynchronously && ++recomputedCount > 1000) {
           finishedTry = true;
           return;
         }
@@ -508,19 +509,19 @@ Tracker._runFlush = function (options) {
         try {
           func();
         } catch (e) {
-          _throwOrLog("afterFlush", e);
+          _throwOrLog('afterFlush', e);
         }
       }
     }
     finishedTry = true;
   } finally {
-    if (! finishedTry) {
+    if (!finishedTry) {
       // we're erroring due to throwFirstError being true.
       inFlush = false; // needed before calling `Tracker.flush()` again
       // finish flushing
       Tracker._runFlush({
         finishSynchronously: options.finishSynchronously,
-        throwFirstError: false
+        throwFirstError: false,
       });
     }
     willFlush = false;
@@ -530,7 +531,7 @@ Tracker._runFlush = function (options) {
       // required to finish synchronously, so we'd like to give the event loop a
       // chance. We should flush again soon.
       if (options.finishSynchronously) {
-        throw new Error("still have more to do?");  // shouldn't happen
+        throw new Error('still have more to do?'); // shouldn't happen
       }
       setTimeout(requireFlush, 10);
     }
@@ -572,7 +573,10 @@ Tracker.autorun = function (f, options) {
 
   constructingComputation = true;
   var c = new Tracker.Computation(
-    f, Tracker.currentComputation, options.onError);
+    f,
+    Tracker.currentComputation,
+    options.onError
+  );
 
   if (Tracker.active)
     Tracker.onInvalidate(function () {
@@ -612,8 +616,8 @@ Tracker.nonreactive = function (f) {
  * @param {Function} callback A callback function that will be invoked as `func(c)`, where `c` is the computation on which the callback is registered.
  */
 Tracker.onInvalidate = function (f) {
-  if (! Tracker.active)
-    throw new Error("Tracker.onInvalidate requires a currentComputation");
+  if (!Tracker.active)
+    throw new Error('Tracker.onInvalidate requires a currentComputation');
 
   Tracker.currentComputation.onInvalidate(f);
 };
