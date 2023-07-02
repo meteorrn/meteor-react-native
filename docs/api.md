@@ -23,7 +23,7 @@ Connect to the Meteor Server
 - autoReconnect **boolean** [true] whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.
 - reconnectInterval **number** [10000] the interval in ms between reconnection attempts.
 - AsyncStorage **object** your preferred AsyncStorage. Defaults to `'@react-native-async-storage/async-storage'` as a peer dependency.
-- reachabilityUrl **string** ["https://clients3.google.com/generate_204"] server to check internet reachability, used by NetInfo. If not provided, NetInfos default url will be uses, which currently is `'https://clients3.google.com/generate_204'`
+- reachabilityUrl **string** ["https://clients3.google.com/generate_204"] server to check internet reachability, used by NetInfo. If not provided, NetInfos default url will be used, which currently is `'https://clients3.google.com/generate_204'`
 
 ### `Meteor.disconnect()`
 
