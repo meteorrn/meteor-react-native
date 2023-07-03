@@ -114,11 +114,12 @@ const Meteor = {
     try {
       const NetInfo = require('@react-native-community/netinfo').default;
       
-      if (options.reachabilityUrl) 
+      if (options.reachabilityUrl) {
         NetInfo.configure({
           reachabilityUrl: options.reachabilityUrl,
           useNativeReachability: true
         })
+      }
         
       // Reconnect if we lose internet
 
