@@ -1,4 +1,4 @@
-import { Mongo, packageInterface, Tracker } from '@meteorrn/core';
+import { Mongo, packageInterface } from '@meteorrn/core';
 
 const stringifiedDateRegExp = new RegExp(
   /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z/
