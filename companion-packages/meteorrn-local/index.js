@@ -1,4 +1,4 @@
-import { Mongo, packageInterface } from '@meteorrn/core';
+import { Mongo, packageInterface, Tracker } from '@meteorrn/core';
 
 const stringifiedDateRegExp = new RegExp(
   /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z/
@@ -96,11 +96,12 @@ const Local = {
 
       LiveCol.find({}).observe({
         added: async (doc) => {
-          LocalCol._collection.upsert(doc);
+          LocalCol.insert(doc);
           storeLocalCol();
         },
-        changed: async (doc) => {
-          LocalCol._collection.upsert(doc);
+        changed: async (changes, oldDoc) => {
+          delete changes._id;
+          LocalCol.update(oldDoc._id, { $set: changes });
           storeLocalCol();
         },
       });
