@@ -166,8 +166,9 @@ const Meteor = {
               }
             }
           }
+          Data.notify('change');
         }
-      }, 15000);
+      }, 8000);
     });
 
     let lastDisconnect = null;
