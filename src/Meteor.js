@@ -139,6 +139,17 @@ const Meteor = {
     Data.ddp.on('connected', () => {
       // Don't clear out all the date; instead, after a brief timeout, remove all docs that are still marked as stale
       // ddp add ond change events will set the _stale flag to false
+
+      if (isVerbose) {
+        console.info('Connected to DDP server.');
+      }
+      this._loadInitialUser().then(() => {
+        this._subscriptionsRestart();
+      });
+      this._reactiveDict.set('connected', true);
+      this.connected = true;
+      Data.notify('change');
+
       setTimeout(() => {
         if (Data.db && Data.db.collections) {
           for (var collection in Data.db.collections) {
@@ -152,23 +163,11 @@ const Meteor = {
 
               if (isVerbose) {
                 console.info('Removed stale entries of ' + collection);
-                //console.info(Data.db[collection].findOne({}))
               }
-              //Data.db[collection].remove({});
             }
           }
         }
-      }, 8000);
-
-      if (isVerbose) {
-        console.info('Connected to DDP server.');
-      }
-      this._loadInitialUser().then(() => {
-        this._subscriptionsRestart();
-      });
-      this._reactiveDict.set('connected', true);
-      this.connected = true;
-      Data.notify('change');
+      }, 15000);
     });
 
     let lastDisconnect = null;
