@@ -1,4 +1,4 @@
-import { useEffect, useRef, useReducer, useMemo } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import Tracker from '../Tracker.js';
 
 function useForceUpdate() {
@@ -32,21 +32,22 @@ export default (trackerFn, deps = [], skipUpdate) => {
       refs.computation = null;
     }
     Tracker.nonreactive(() => {
-      Tracker.autorun((currentComputation) => {
-        if (refs.isMounted) {
-          refs.computation = currentComputation;
-          refs.data = trackerFn();
-          if (
-            !(
-              skipUpdate &&
-              typeof skipUpdate === 'function' &&
-              skipUpdate(prev, data)
-            )
-          ) {
+      Tracker.autorun((currentComputation) => {         
+        const data = trackerFn()
+        const prev = refs.data
+        if (currentComputation.firstRun){
+          refs.data = data;
+        } else if (refs.isMounted) {
+          refs.computation = currentComputation
+
+          if (!(skipUpdate && typeof skipUpdate === "function" && skipUpdate(prev, data))) {
+            refs.data = data
             forceUpdate();
+          } else {
+            refs.data = data
           }
         } else {
-          refs.computation?.stop();
+            refs.computation?.stop();
         }
       });
     });
