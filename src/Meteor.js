@@ -158,7 +158,7 @@ const Meteor = {
             }
           }
         }
-      }, 4000);
+      }, 8000);
 
       if (isVerbose) {
         console.info('Connected to DDP server.');
