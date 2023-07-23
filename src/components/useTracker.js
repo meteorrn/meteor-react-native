@@ -32,22 +32,28 @@ export default (trackerFn, deps = [], skipUpdate) => {
       refs.computation = null;
     }
     Tracker.nonreactive(() => {
-      Tracker.autorun((currentComputation) => {         
-        const data = trackerFn()
-        const prev = refs.data
-        if (currentComputation.firstRun){
+      Tracker.autorun((currentComputation) => {
+        const data = trackerFn();
+        const prev = refs.data;
+        if (currentComputation.firstRun) {
           refs.data = data;
         } else if (refs.isMounted) {
-          refs.computation = currentComputation
+          refs.computation = currentComputation;
 
-          if (!(skipUpdate && typeof skipUpdate === "function" && skipUpdate(prev, data))) {
-            refs.data = data
+          if (
+            !(
+              skipUpdate &&
+              typeof skipUpdate === 'function' &&
+              skipUpdate(prev, data)
+            )
+          ) {
+            refs.data = data;
             forceUpdate();
           } else {
-            refs.data = data
+            refs.data = data;
           }
         } else {
-            refs.computation?.stop();
+          refs.computation?.stop();
         }
       });
     });
