@@ -137,15 +137,28 @@ const Meteor = {
     }
 
     Data.ddp.on('connected', () => {
-      // Clear the collections of any stale data in case this is a reconnect
-      if (Data.db && Data.db.collections) {
-        for (var collection in Data.db.collections) {
-          if (!localCollections.includes(collection)) {
-            // Dont clear data from local collections
-            Data.db[collection].remove({});
+      // Don't clear out all the date; instead, after a brief timeout, remove all docs that are still marked as stale
+      // ddp add ond change events will set the _stale flag to false
+      setTimeout(() => {
+        if (Data.db && Data.db.collections) {
+          for (var collection in Data.db.collections) {
+            if (
+              !localCollections.includes(collection) &&
+              collection != 'users'
+            ) {
+              // Dont clear data from local collections
+
+              Data.db[collection].remove({ _stale: true });
+
+              if (isVerbose) {
+                console.info('Removed stale entries of ' + collection);
+                //console.info(Data.db[collection].findOne({}))
+              }
+              //Data.db[collection].remove({});
+            }
           }
         }
-      }
+      }, 4000);
 
       if (isVerbose) {
         console.info('Connected to DDP server.');
@@ -160,6 +173,19 @@ const Meteor = {
 
     let lastDisconnect = null;
     Data.ddp.on('disconnected', () => {
+      // Mark old data as _stale
+      if (Data.db && Data.db.collections) {
+        for (var collection in Data.db.collections) {
+          if (!localCollections.includes(collection)) {
+            // Dont flag data from local collections
+
+            const entries = Data.db[collection].find({});
+            entries.forEach((entry) => {
+              Data.db[collection].upsert({ ...entry, _stale: true });
+            });
+          }
+        }
+      }
       this.connected = false;
       this._reactiveDict.set('connected', false);
 
@@ -185,6 +211,7 @@ const Meteor = {
       const document = {
         _id: message.id,
         ...message.fields,
+        _stale: false,
       };
 
       Data.db[message.collection].upsert(document);
@@ -227,6 +254,7 @@ const Meteor = {
         const document = {
           _id: message.id,
           ...message.fields,
+          _stale: false,
           ...unset,
         };
 
