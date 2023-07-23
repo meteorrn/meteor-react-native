@@ -5,11 +5,17 @@ function useForceUpdate() {
   const [, forceUpdate] = useState(0);
 
   return useCallback(() => {
-    forceUpdate(s => s+1);
+    forceUpdate((s) => s + 1);
   }, []);
 }
 
-export default (trackerFn, deps = []) => {
+export default (trackerFn, deps = [], skipUpdate) => {
+  if (skipUpdate && !typeof skipUpdate === 'function') {
+    console.warn(
+      'skipUpdate must be a function. Usage: (prev, next) => {return true; to skip} '
+    );
+  }
+
   const { current: refs } = useRef({
     data: null,
     meteorDataDep: new Tracker.Dependency(),
@@ -30,7 +36,15 @@ export default (trackerFn, deps = []) => {
         if (refs.isMounted) {
           refs.computation = currentComputation;
           refs.data = trackerFn();
-          forceUpdate();
+          if (
+            !(
+              skipUpdate &&
+              typeof skipUpdate === 'function' &&
+              skipUpdate(prev, data)
+            )
+          ) {
+            forceUpdate();
+          }
         } else {
           refs.computation?.stop();
         }
