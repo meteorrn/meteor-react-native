@@ -1,8 +1,14 @@
 import { useEffect, useRef, useReducer, useMemo } from 'react';
 import Tracker from '../Tracker.js';
 
-const fur = (x: number): number => x + 1;
-const useForceUpdate = () => useReducer(fur, 0)[1];
+function useForceUpdate() {
+  const [, forceUpdate] = useState(0);
+
+  return useCallback(() => {
+    forceUpdate(s => s+1);
+  }, []);
+}
+
 export default (trackerFn, deps = []) => {
   const { current: refs } = useRef({
     data: null,
