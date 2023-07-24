@@ -153,10 +153,7 @@ const Meteor = {
       setTimeout(() => {
         if (Data.db && Data.db.collections) {
           for (var collection in Data.db.collections) {
-            if (
-              !localCollections.includes(collection) &&
-              collection != 'users'
-            ) {
+            if (!localCollections.includes(collection)) {
               // Dont clear data from local collections
 
               Data.db[collection].remove({ _stale: true });
@@ -168,7 +165,7 @@ const Meteor = {
           }
           Data.notify('change');
         }
-      }, 8000);
+      }, 5000);
     });
 
     let lastDisconnect = null;
