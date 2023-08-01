@@ -96,11 +96,12 @@ const Local = {
 
       LiveCol.find({}).observe({
         added: async (doc) => {
-          LocalCol._collection.upsert(doc);
+          LocalCol.insert(doc);
           storeLocalCol();
         },
-        changed: async (doc) => {
-          LocalCol._collection.upsert(doc);
+        changed: async (changes, oldDoc) => {
+          delete changes._id;
+          LocalCol.update(oldDoc._id, { $set: changes });
           storeLocalCol();
         },
       });
