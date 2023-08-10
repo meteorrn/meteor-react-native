@@ -177,7 +177,11 @@ const User = {
             }
             this._loadInitialUser();
           }, time + 100);
-        } else {
+        }
+        else if (err?.error === 403) {
+          User.logout();
+        } 
+        else {
           User._handleLoginCallback(err, result);
         }
       });
