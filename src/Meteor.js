@@ -50,11 +50,6 @@ const Meteor = {
   disconnect() {
     if (Data.ddp) {
       Data.ddp.disconnect();
-      for (var i in Data.subscriptions) {
-        const sub = Data.subscriptions[i];
-        sub.ready = false;
-        sub.readyDeps.changed();
-      }
     }
   },
   _subscriptionsRestart() {
@@ -172,6 +167,13 @@ const Meteor = {
 
       if (isVerbose) {
         console.info('Disconnected from DDP server.');
+      }
+
+      // Mark subscriptions as ready=false
+      for (var i in Data.subscriptions) {
+        const sub = Data.subscriptions[i];
+        sub.ready = false;
+        sub.readyDeps.changed();
       }
 
       if (!Data.ddp.autoReconnect) return;
