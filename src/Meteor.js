@@ -50,6 +50,11 @@ const Meteor = {
   disconnect() {
     if (Data.ddp) {
       Data.ddp.disconnect();
+      for (var i in Data.subscriptions) {
+        const sub = Data.subscriptions[i];
+        sub.ready = false;
+        sub.readyDeps.changed();
+      }
     }
   },
   _subscriptionsRestart() {
