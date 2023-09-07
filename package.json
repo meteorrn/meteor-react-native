@@ -28,7 +28,8 @@
   "homepage": "https://github.com/TheRealNate/meteor-react-native#readme",
   "dependencies": {
     "@meteorrn/minimongo": "1.0.1",
-    "ejson": "2.2.3"
+    "ejson": "2.2.3",
+    "eventemitter3": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "7.19.6",
