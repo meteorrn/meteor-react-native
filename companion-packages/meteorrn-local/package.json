@@ -1,6 +1,6 @@
 {
   "name": "@meteorrn/local",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Store data locally",
   "main": "index.js",
   "scripts": {
