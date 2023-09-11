@@ -141,4 +141,4 @@ const {AsyncStorage} = Meteor.packageInterface();
 
 <hr/>
 
-Meteor React Native is maintained by [Nathaniel Dsouza](github.com/therealnate) who is available for consultation: nate@hiyllo.com
+Meteor React Native is maintained by [Nathaniel Dsouza](github.com/therealnate) who is available for consultation: nate@notaiyet.io
