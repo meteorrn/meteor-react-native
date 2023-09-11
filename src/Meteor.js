@@ -169,6 +169,13 @@ const Meteor = {
         console.info('Disconnected from DDP server.');
       }
 
+      // Mark subscriptions as ready=false
+      for (var i in Data.subscriptions) {
+        const sub = Data.subscriptions[i];
+        sub.ready = false;
+        sub.readyDeps.changed();
+      }
+
       if (!Data.ddp.autoReconnect) return;
 
       if (!lastDisconnect || new Date() - lastDisconnect > 3000) {
