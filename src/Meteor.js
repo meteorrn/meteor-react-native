@@ -113,7 +113,16 @@ const Meteor = {
 
     try {
       const NetInfo = require('@react-native-community/netinfo').default;
+
+      if (options.reachabilityUrl) {
+        NetInfo.configure({
+          reachabilityUrl: options.reachabilityUrl,
+          useNativeReachability: true,
+        });
+      }
+
       // Reconnect if we lose internet
+
       NetInfo.addEventListener(
         ({ type, isConnected, isInternetReachable, isWifiEnabled }) => {
           if (isConnected && Data.ddp.autoReconnect) {
@@ -158,6 +167,13 @@ const Meteor = {
 
       if (isVerbose) {
         console.info('Disconnected from DDP server.');
+      }
+
+      // Mark subscriptions as ready=false
+      for (var i in Data.subscriptions) {
+        const sub = Data.subscriptions[i];
+        sub.ready = false;
+        sub.readyDeps.changed();
       }
 
       if (!Data.ddp.autoReconnect) return;
