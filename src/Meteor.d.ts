@@ -1,14 +1,11 @@
 declare module '@meteorrn/core' {
+  type Callback = (...args: unknown[]) => void
+
   function connect(endpoint: string, options?: any): void;
   function disconnect(): void;
   function reconnect(): void;
 
-  type Status =
-    | 'change'
-    | 'connected'
-    | 'disconnected'
-    | 'loggingIn'
-    | 'loggingOut';
+  type Status = 'change' | 'connected' | 'disconnected' | 'loggingIn';
 
   function call(...args: any[]): void;
   function status(): {
@@ -16,18 +13,45 @@ declare module '@meteorrn/core' {
     status: Status;
   };
 
-  function logout(callback: (error: any) => void): void;
+  function logout(cb: Callback): void;
   function loggingOut(): boolean;
   function loggingIn(): boolean;
 
   interface Data {
     getUrl(): string;
-    waitDdpReady(cb: (...args: any[]) => void): void;
-    onChange(cb: (...args: any[]) => void): void;
-    offChange(cb: (...args: any[]) => void): void;
-    on(eventName: string, cb: (...args: any[]) => void): void;
-    off(eventName: string, cb: (...args: any[]) => void): void;
-    waitDdpConnected(cb: (...args: any[]) => void): void;
+    waitDdpReady(cb: Callback): void;
+    onChange(cb: Callback): void;
+    offChange(cb: Callback): void;
+    on(eventName: string, cb: Callback): void;
+    off(eventName: string, cb: Callback): void;
+    waitDdpConnected(cb: Callback): void;
+    ddp: {
+      sub: (name: string, params: any) => string;
+      unsub: (id: string) => void;
+      socket: unknown;
+    };
   }
   function getData(): Data;
+
+  interface User {
+    _id: string;
+    version: number;
+    username: string;
+    profile: {
+      settings: {
+      };
+    };
+  }
+  function user(): User | undefined;
+  interface Accounts {
+    onLogin(cb: Callback): void;
+  }
+  function getAuthToken(): string;
+
+  const ddp: Data
+  let isVerbose: boolean
+  function _handleLoginCallback(err: any, res: any): void;
+
+  function useTracker(cb: unknown);
+
 }
