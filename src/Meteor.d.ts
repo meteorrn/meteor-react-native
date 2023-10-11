@@ -1,5 +1,5 @@
 declare module '@meteorrn/core' {
-  type Callback = (...args: unknown[]) => void
+  type Callback = (...args: unknown[]) => void;
 
   function connect(endpoint: string, options?: any): void;
   function disconnect(): void;
@@ -38,8 +38,7 @@ declare module '@meteorrn/core' {
     version: number;
     username: string;
     profile: {
-      settings: {
-      };
+      settings: {};
     };
   }
   function user(): User | undefined;
@@ -48,10 +47,9 @@ declare module '@meteorrn/core' {
   }
   function getAuthToken(): string;
 
-  const ddp: Data
-  let isVerbose: boolean
+  const ddp: Data;
+  let isVerbose: boolean;
   function _handleLoginCallback(err: any, res: any): void;
 
   function useTracker(cb: unknown);
-
 }
