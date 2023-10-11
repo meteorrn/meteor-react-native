@@ -51,5 +51,5 @@ declare module '@meteorrn/core' {
   let isVerbose: boolean;
   function _handleLoginCallback(err: any, res: any): void;
 
-  function useTracker(cb: unknown);
+  function useTracker<T>(cb: () => T): T;
 }
