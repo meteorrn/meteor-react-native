@@ -4,8 +4,12 @@ declare module '@meteorrn/core' {
   function connect(endpoint: string, options?: any): void;
   function disconnect(): void;
   function reconnect(): void;
-
-  type Status = 'change' | 'connected' | 'disconnected' | 'loggingIn';
+  type Status =
+    | 'change'
+    | 'connected'
+    | 'disconnected'
+    | 'loggingIn'
+    | 'loggingOut';
 
   function call(...args: any[]): void;
   function status(): {
