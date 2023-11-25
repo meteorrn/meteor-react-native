@@ -73,6 +73,28 @@ const User = {
       }
     );
   },
+  loginWithPasswordAnd2faCode(selector, password, code, callback) {
+    this._isTokenLogin = false;
+    if (typeof selector === 'string') {
+      if (selector.indexOf('@') === -1) selector = { username: selector };
+      else selector = { email: selector };
+    }
+
+    User._startLoggingIn();
+    Meteor.call(
+      'login',
+      {
+        user: selector,
+        password: hashPassword(password),
+        code,
+      },
+      (err, result) => {
+        User._handleLoginCallback(err, result);
+
+        typeof callback == 'function' && callback(err);
+      }
+    );
+  },
   logoutOtherClients(callback = () => {}) {
     Meteor.call('getNewToken', (err, res) => {
       if (err) return callback(err);
