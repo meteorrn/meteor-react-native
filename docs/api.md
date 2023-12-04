@@ -183,6 +183,14 @@ Registers a callback to be called when login fails
 
 - callback
 
+#### `Accounts.has2faEnabled(callback)`
+
+Checks if the current user has 2fa enabled, via callback; cf. [the meteor docs](https://docs.meteor.com/packages/accounts-2fa#Accounts-has2faEnabled)
+
+**Arguments**
+
+- callback - Called with an error on the first argument, e.g. if the user is currently not logged in, and a boolean result on the second argument, if the user has 2fa enabled.
+
 #### `Accounts._hashPassword(plaintext)` => `{algorithm:"sha-256", digest:"..."}`
 
 Hashes a password using the sha-256 algorithm. Returns an object formatted for use in accounts calls. You can access the raw hashed string using the digest property.
