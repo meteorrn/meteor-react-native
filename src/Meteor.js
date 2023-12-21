@@ -18,7 +18,7 @@ let isVerbose = false;
 const Meteor = {
   isVerbose,
   enableVerbose() {
-    isVerbose = true;
+    this.isVerbose = true;
   },
   _reactiveDict: new ReactiveDict(),
   Random,
