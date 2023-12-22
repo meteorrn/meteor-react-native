@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="-11.5 -10.23174 512 512"
+   version="1.1"
+   id="svg12"
+   sodipodi:docname="react.svg"
+   width="512"
+   height="512"
+   inkscape:export-filename="/home/jankapunkt/Desktop/mrn-3.png"
+   inkscape:export-xdpi="75"
+   inkscape:export-ydpi="75"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs16">
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter3117"
+       x="-0.31268215"
+       y="-0.31268215"
+       width="1.6253643"
+       height="1.6253643">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="28.875804"
+         id="feGaussianBlur3119" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="namedview14"
+     pagecolor="#101926"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="1"
+     inkscape:pagecheckerboard="false"
+     showgrid="false"
+     borderlayer="false"
+     inkscape:zoom="0.64"
+     inkscape:cx="31.25"
+     inkscape:cy="224.21875"
+     inkscape:window-width="2560"
+     inkscape:window-height="1391"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg12" />
+  <g
+     fill="none"
+     stroke="#61dafb"
+     id="g10"
+     transform="matrix(22.26087,0,0,22.26087,244.5,252.06557)"
+     style="opacity:0.28152087"
+     inkscape:export-filename="/home/jankapunkt/Desktop/mrn.png"
+     inkscape:export-xdpi="75"
+     inkscape:export-ydpi="75">
+    <ellipse
+       rx="11"
+       ry="4.1999998"
+       id="ellipse4"
+       cx="0"
+       cy="0" />
+    <ellipse
+       rx="11"
+       ry="4.1999998"
+       transform="rotate(60)"
+       id="ellipse6"
+       cx="0"
+       cy="0" />
+    <ellipse
+       rx="11"
+       ry="4.1999998"
+       transform="rotate(120)"
+       id="ellipse8"
+       cx="0"
+       cy="0" />
+  </g>
+  <circle
+     fill="#61dafb"
+     r="110.8185"
+     id="circle2"
+     cx="169.875"
+     cy="171.9684"
+     style="stroke-width:54.0576;filter:url(#filter3117)"
+     transform="matrix(-1.4663268,0,0,-1.4663268,490.39217,503.27091)"
+     inkscape:export-filename="/home/jankapunkt/Desktop/mrn.png"
+     inkscape:export-xdpi="75"
+     inkscape:export-ydpi="75" />
+  <path
+     d="m 339.42699,220.01915 c 3.09265,0 5.41211,-2.31944 5.41211,-5.41208 0,-1.2886 -0.51544,-2.57719 -1.28861,-3.35036 -0.25771,-0.51547 -72.16148,-66.49168 -72.16148,-66.49168 l 63.39903,72.41922 c 0.77318,1.80403 2.5772,2.8349 4.63895,2.8349 z m 14.69002,36.85395 -0.51543,-0.51544 -156.69358,-143.03444 143.54987,156.17815 0.51544,0.5154 c 1.54633,1.54634 3.86579,2.5772 6.44301,2.5772 5.1544,0 9.27788,-4.12352 9.27788,-9.27793 0,-2.31946 -1.03085,-4.63895 -2.57719,-6.44294 z M 284.79042,353.77566 57.997129,143.73417 267.0078,371.81602 c 2.31945,2.5772 5.66982,4.38124 9.53561,4.38124 6.95843,0 12.62824,-5.66984 12.62824,-12.62823 0,-3.86584 -1.54628,-7.47392 -4.38123,-9.79337 z M 31.96745,56.624905 309.2738,351.9716 l 0.25773,0.25773 c 2.31945,2.31949 5.41211,3.60811 8.76247,3.60811 6.9584,0 12.62822,-5.66984 12.62822,-12.62829 0,-2.5772 -0.77315,-5.15438 -2.31949,-7.21615 C 327.82958,334.70441 31.96745,56.624905 31.96745,56.624905 Z M 347.41632,295.78873 120.623,85.747224 329.63362,313.82912 c 2.31949,2.5772 5.66986,4.38123 9.53565,4.38123 6.95844,0 12.62828,-5.66983 12.62828,-12.62828 0,-4.1235 -1.80405,-7.47386 -4.38123,-9.79334 z m -109.53086,63.91446 -0.51544,-0.51541 -156.693545,-143.03441 143.549815,156.1781 0.51545,0.51544 c 1.5463,1.54631 3.86578,2.57719 6.44301,2.57719 5.15436,0 9.27787,-4.12354 9.27787,-9.27791 0,-2.57716 -1.03085,-4.63894 -2.57716,-6.443 z m -120.61283,-71.90375 63.39903,72.41922 c 1.03091,1.54631 2.57723,2.8349 4.63896,2.8349 3.09266,0 5.41211,-2.31949 5.41211,-5.41209 0,-1.28863 -0.51542,-2.57721 -1.2886,-3.35038 -0.51539,-0.2577 -72.1615,-66.49165 -72.1615,-66.49165 z"
+     fill="#df5052"
+     id="path989"
+     style="fill:#101926;fill-opacity:1;stroke-width:2.5772"
+     inkscape:export-filename="/home/jankapunkt/Desktop/mrn.png"
+     inkscape:export-xdpi="75"
+     inkscape:export-ydpi="75" />
+</svg>

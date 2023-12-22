@@ -1,3 +1,12 @@
+<div align="center">
+  <a href="https://github.com/meteorrn/meteor-react-native">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="logo.svg">
+    <img alt="Novu Logo" src="logo.svg" width="280"/>
+  </picture>
+  </a>
+</div>
+
 <h1 align="center">Meteor React Native</h1>
 
 <div align="center">
