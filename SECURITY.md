@@ -8,4 +8,5 @@
 
 ## Reporting a Vulnerability
 
-To contact the lead developer for this package (@TheRealNate) directly about a security issue, please email nate@kidzideaz.tech.
+To contact the lead developer for this package (@jankapunkt) directly about a security issue, 
+please email info@jankuester.com with topic "Security Vulnerability in Meteor React Native detected"

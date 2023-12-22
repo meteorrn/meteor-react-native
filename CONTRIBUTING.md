@@ -6,13 +6,27 @@ Thanks for your interest in contributing!
 
 All PRs must address **one** feature or issue, and may only modify **one** package (unless there is an issue/feature that absolutely requires an update across multiple packages). Before you submit a PR, please make sure to test your update on iOS and Android in release mode. For more info on testing, see Testing below
 
+#### Commit conventions
+
+Please use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) 
+as good as possible to make our commit history more searchable.
+
+#### Branch conventions (Only for members)
+
+If you are member of the project and work on a certain feature or fix, then please
+consider the following concept for branch names:
+
+- feature - `feature/name-of-the-feature`
+- fix - `fix/name-of-the-fix-or-issue`
+- docs - `docs/name-of-docs-topic`
+
 ### Contributing to docs
 
 All PRs must address **one** feature or issue, and may only modify **one** package (unless there is an issue/feature that absolutely requires an update across multiple packages).
 
-# Testing
+## Testing
 
-#### Real Device Testing
+### Real Device Testing
 
 To test on a Real Android Device, you must build a release APK or release bundle (`./gradlew assembleRelease` or `./gradlew bundleRelease`).
 
