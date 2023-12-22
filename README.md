@@ -32,7 +32,7 @@ Connect your React Native app to your Meteor server, and take advantage of Meteo
 
 ## Features
 
-- 🪄 Meteor's "automagical" features for your mobile app 
+- 🪄 Meteor's "automagical" features for your mobile app
 - 🌱 Easy to set up and integrate
 - 🚀 Build mobile apps with React-Native + Meteor in no time
 - 🌈 Zero-Config Accounts / Authentication
@@ -65,12 +65,12 @@ Connect your React Native app to your Meteor server, and take advantage of Meteo
 
 1. `npm install --save @meteorrn/core`
 2. Confirm you have peer dependencty `@react-native-community/netinfo` installed
-3. Confirm you have `@react-native-async-storage/async-storage@>=1.8.1` installed. 
+3. Confirm you have `@react-native-async-storage/async-storage@>=1.8.1` installed.
    If you are using Expo, or otherwise cannot use `@react-native-async-storage/async-storage`, read below
 
 ### Use a different async storage
 
-This package uses `@react-native-async-storage/async-storage` by default. 
+This package uses `@react-native-async-storage/async-storage` by default.
 This may cause issues if you are using certain React Native versions, or if you are using Expo.
 To use a custom AsyncStorage implementation, pass it as an option in `Meteor.connect`:
 
@@ -82,7 +82,7 @@ import { AsyncStorage } from 'react-native';
 Meteor.connect('wss://myapp.meteor.com/websocket', { AsyncStorage });
 ```
 
-If you are using the `AsyncStorage` API yourself, its important that you use the same version that MeteorRN is using, or issues could be caused due to the conflicting versions. 
+If you are using the `AsyncStorage` API yourself, its important that you use the same version that MeteorRN is using, or issues could be caused due to the conflicting versions.
 
 Make sure you are using the same AsyncStorage you pass into Meteor (or `@react-native-async-storage/async-storage` if you aren't passing anything), or you can use [MeteorRN's package interface](#package-interface).
 
@@ -92,7 +92,7 @@ This example shows how to use Expo's secure store implementation as Async storag
 Note, that secure storage in both Android and iOS have a low upper size limit of a few megabytes.
 
 ```js
-import * as SecureStore from 'expo-secure-store'
+import * as SecureStore from 'expo-secure-store';
 
 // ...
 
@@ -100,9 +100,9 @@ Meteor.connect('wss://myapp.meteor.com/websocket', {
   AsyncStorage: {
     getItem: SecureStore.getItemAsync,
     setItem: SecureStore.setItemAsync,
-    removeItem: SecureStore.deleteItemAsync
-  }
-})
+    removeItem: SecureStore.deleteItemAsync,
+  },
+});
 ```
 
 ## Basic Usage
@@ -110,7 +110,7 @@ Meteor.connect('wss://myapp.meteor.com/websocket', {
 ```javascript
 import Meteor, { Mongo, withTracker } from '@meteorrn/core';
 
-// "mycol" should match the name of the collection on your meteor server, 
+// "mycol" should match the name of the collection on your meteor server,
 // or pass null for a local collection
 let MyCol = new Mongo.Collection('mycol');
 
@@ -152,7 +152,7 @@ Here are some examples:
 - `@meteorrn/oauth-google`: Allows you to let users login to your app with Google
 - `@meteorrn/oauth-facebook`: Allows you to let users login to your app with Facebook
 
-For the full list of officially recognized packages, 
+For the full list of officially recognized packages,
 check out [the @meteorrn github org](https://github.com/meteorrn).
 
 ## Compatibility
@@ -190,8 +190,8 @@ The [GitHub Releases Tab](https://github.com/TheRealNate/meteor-react-native/rel
 
 ## Package Interface
 
-To ensure that MeteorRN companion packages use the same versions of external packages like AsyncStorage as the core, 
-`@meteorrn/core` provides a package interface, where companion packages can access certain packages. 
+To ensure that MeteorRN companion packages use the same versions of external packages like AsyncStorage as the core,
+`@meteorrn/core` provides a package interface, where companion packages can access certain packages.
 Currently, package interface returns an object with the following properties:
 
 - AsyncStorage
@@ -201,7 +201,7 @@ Currently, package interface returns an object with the following properties:
 ```js
 import Meteor from '@meteorrn/core';
 
-const {AsyncStorage} = Meteor.packageInterface();
+const { AsyncStorage } = Meteor.packageInterface();
 ```
 
 ### Differences from Meteor Core to Note:
@@ -211,28 +211,27 @@ const {AsyncStorage} = Meteor.packageInterface();
 ## Showcase
 
 | Whazzup.co                                                                                                                                    | StarlingRealtime                                                                                                                                            |
-|-----------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | <img src="https://user-images.githubusercontent.com/16267331/120551863-84907c80-c3c4-11eb-8e32-39b950b67875.png" height="200" align="center"> | <img src="https://uploads-ssl.webflow.com/5f112aac57df16c9ac9c21e0/5f11b8a2e5a66ea03a1a9835_android-chrome-512x512%20copy.png" height="200" align="center"> |
 | [Whazzup.co](https://whazzup.co/) uses Meteor React Native in their native app                                                                | [StarlingRealtime](https://www.starlingrealtime.com/) uses Meteor React Native in their production app                                                      |
 
-| lea.online                                                                                                                                            | Your app here!                               |
-|-------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------|
-| <img src="https://avatars.githubusercontent.com/u/48286741?s=250&v=4" height="200" align="center">                                                    | <img src="https://avatars.githubusercontent.com/u/789528?s=200&v=4" height="200" align="center">    |
-| [lea.online](https://github.com/leaonline) uses Meteor React Native in their [native mobile learning app](https://github.com/leaonline/leaonline-app) | **Show us your app that uses this library!** |
-
+| lea.online                                                                                                                                            | Your app here!                                                                                   |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| <img src="https://avatars.githubusercontent.com/u/48286741?s=250&v=4" height="200" align="center">                                                    | <img src="https://avatars.githubusercontent.com/u/789528?s=200&v=4" height="200" align="center"> |
+| [lea.online](https://github.com/leaonline) uses Meteor React Native in their [native mobile learning app](https://github.com/leaonline/leaonline-app) | **Show us your app that uses this library!**                                                     |
 
 ## Contribution and maintenance
 
-Meteor React Native is maintained by [Jan Küster](https://github.com/jankapunkt) 
-and was formerly maintained by [Nathaniel Dsouza](github.com/therealnate) 
+Meteor React Native is maintained by [Jan Küster](https://github.com/jankapunkt)
+and was formerly maintained by [Nathaniel Dsouza](github.com/therealnate)
 who is available for consultation: nate@notaiyet.io
 
 > We appreciate any contributions to this project!
 
-If you have an issue, a question or want to discuss things, then use our [issue link](https://github.com/meteorrn/meteor-react-native/issues/new/choose) that will help you find the 
+If you have an issue, a question or want to discuss things, then use our [issue link](https://github.com/meteorrn/meteor-react-native/issues/new/choose) that will help you find the
 right spot to ask or tell.
 
-If you want to contribute code, then please, make sure you have read our [contribution guide](./CONTRIBUTING.md) and our 
+If you want to contribute code, then please, make sure you have read our [contribution guide](./CONTRIBUTING.md) and our
 [code of conduct](./CODE_OF_CONDUCT.md).
 
 You can [ask us anytime](https://github.com/meteorrn/meteor-react-native/discussions/categories/q-a), if you get stuck or any of these documents are unclear to you.

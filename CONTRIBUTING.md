@@ -8,7 +8,7 @@ All PRs must address **one** feature or issue, and may only modify **one** packa
 
 #### Commit conventions
 
-Please use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) 
+Please use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
 as good as possible to make our commit history more searchable.
 
 #### Branch conventions (Only for members)
