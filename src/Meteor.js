@@ -13,12 +13,10 @@ import useTracker from './components/useTracker';
 
 import ReactiveDict from './ReactiveDict';
 
-let isVerbose = false;
-
 const Meteor = {
-  isVerbose,
+  isVerbose: false,
   enableVerbose() {
-    isVerbose = true;
+    this.isVerbose = true;
   },
   _reactiveDict: new ReactiveDict(),
   Random,
@@ -147,7 +145,7 @@ const Meteor = {
         }
       }
 
-      if (isVerbose) {
+      if (this.isVerbose) {
         console.info('Connected to DDP server.');
       }
       this._loadInitialUser().then(() => {
@@ -165,7 +163,7 @@ const Meteor = {
 
       Data.notify('change');
 
-      if (isVerbose) {
+      if (this.isVerbose) {
         console.info('Disconnected from DDP server.');
       }
 
