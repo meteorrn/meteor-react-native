@@ -77,6 +77,10 @@ class AccountsPassword {
   onLoginFailure = (cb) => {
     Data.on('onLoginFailure', cb);
   };
+
+  has2faEnabled = (callback = () => {}) => {
+    call('has2faEnabled', callback);
+  };
 }
 
 export default new AccountsPassword();
