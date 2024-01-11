@@ -217,6 +217,163 @@ const { AsyncStorage } = Meteor.packageInterface();
 
 - This API does not implement `observeChanges` (but it does implement `observe`)
 
+## Advanced topics
+
+### Logging library internals
+
+The library includes several internal classes and constructs, 
+that are mostly operate on their own and without user's influence.
+
+Debugging the library working as expected requires listening to several events.
+The following shows several events that allow for detailed logging and inspection.
+
+> The logging can be useful for analysis and instrumentation of production apps
+> where no console access is possible
+
+#### Data level events (high level)
+
+The most convenient way to track internals is via `Data.onChange`:
+
+```js
+const Data = Meteor.getData();
+data.onChange(event => console.debug(event));
+```
+
+Under the hood this does:
+
+```js
+this.db.on('change', cb);
+this.ddp.on('connected', cb);
+this.ddp.on('disconnected', cb);
+this.on('loggingIn', cb);
+this.on('loggingOut', cb);
+this.on('change', cb);
+```
+
+You can also listen on `loggingIn`, `loggingOut`, `onLogin`, `onLoginFailure`
+and `change` individually:
+
+```js
+const Data = Meteor.getData();
+Data.on('loggingIn', (e) => console.debug('loggingIn', e));
+// ...
+```
+
+#### DDP events (high-level)
+
+```js
+const events = [
+  // connection messages
+  'connected',
+  'disconnected',
+  // Subscription messages (Meteor Publications)
+  'ready',
+  'nosub',
+  'added',
+  'changed',
+  'removed',
+  // Method messages (Meteor Methods)
+  'result',
+  'updated',
+  // Error messages
+  'error',
+];
+const Data = Meteor.getData();
+events.forEach((eventName) => {
+  Data.ddp.on(eventName, (event) => console.debug(eventName, event));
+});
+```
+
+#### Websocket events (low-level)
+
+The library attempts to use the native Websocket, provided by ReactNative.
+With the following events you can hook into the low-level messaging with the server:
+
+- `open` - the Websocket successfully opens
+- `close` - the Websocket successfully closes
+- `message:out` - a message is sent to the server
+- `message:in` - a message comes in from the server
+- `error` - an error occurred on the Websocket level
+
+```js
+const Data = Meteor.getData();
+const socket = Data.ddp.socket; 
+const events = ['open', 'close', 'message:out', 'message:in', 'error'];
+events.forEach(eventName => {
+  socket.on(eventName, event => console.debug(eventName, event));
+});
+```
+
+#### Raw Websocket (lowest-level)
+
+There is the possibility to hook into Websocket one level lower by accessing the 
+raw socket.
+
+> This is highly discouraged for production, use at your own risk!
+> Note, that Data.ddp.socket listens to some of these already (e.g. error)
+> and bubbles them up but also handles cleanup and garbage collection properly.
+> Raw socket errors will have the `isRaw` property set to `true`.
+
+```js
+const Data = Meteor.getData();
+const rawSocket = Data.ddp.socket.rawSocket; 
+rawSocket.onopen = (e) => console.debug('raw open', e)
+rawSocket.onmessage = (e) => console.debug('raw message', e)
+rawSocket.onclose = (e) => console.debug('raw close', e)
+rawSocket.onerror = (e) => console.debug('raw error', e)
+```
+
+#### Minimongo (low-level)
+
+You can hook into DB events from minimongo directly:
+```js
+const Data = Meteor.getData();
+Data.db.on('change', )
+```
+
+### Send logs and errors to the server and external services
+
+While Meteor relies on Websocket connections and DDP as protocol,
+you might want sometimes to send data over HTTP.
+
+The following example provides an easy way to listen to errors and send them
+to a service via `fetch` request:
+
+```js
+// in your App code
+const errorToBody = err => {
+  const errProps = Object.getOwnPropertyNames(err) ;
+  const formBody = [];
+  for (const prop of errProps) {
+    const encodedKey = encodeURIComponent(prop);
+    const encodedValue = encodeURIComponent(err[prop]);
+    formBody.push(encodedKey + "=" + encodedValue);
+  }
+  return formBody.join("&");
+}
+
+const sendError = err => {
+  fetch('https://mydomain.tld/log/error', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+    },
+    body: errToBody(err)
+  })
+  .then(console.debug)
+  .catch(console.error)
+}
+
+// hook into all DDP and socket-level errors
+const Data = Meteor.getData();
+Data.dpp.on('error', e => {
+  const error = e instanceof Error ? e : e?.error;
+  return error && sendError(error);
+});
+```
+
+#### Accounts
+
 ## Showcase
 
 | Whazzup.co                                                                                                                                    | StarlingRealtime                                                                                                                                            |

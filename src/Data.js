@@ -22,8 +22,14 @@ function runAfterOtherComputations(fn) {
 export default {
   _endpoint: null,
   _options: {},
+  /**
+   * @type {DDP}
+   */
   ddp: null,
   subscriptions: {},
+  /**
+   * @type {minimongo}
+   */
   db: db,
   calls: [],
 
@@ -72,13 +78,13 @@ export default {
       1
     );
   },
-  notify(eventName) {
+  notify(eventName,optionalData) {
     // Notifify that changes have been made
     // Put in timeout so it doesn't block main thread
     setTimeout(() => {
       this._cbs.map((cb) => {
         if (cb.eventName == eventName && typeof cb.callback == 'function') {
-          cb.callback();
+          cb.callback(optionalData);
         }
       });
     }, 1);

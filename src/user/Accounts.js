@@ -57,7 +57,6 @@ class AccountsPassword {
     call('resetPassword', token, hashPassword(newPassword), (err, result) => {
       Meteor.isVerbose &&
         console.info('Accounts.resetPassword::: err:', err, 'result:', result);
-
       if (!err) {
         User._loginWithToken(result.token);
       }

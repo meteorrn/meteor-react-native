@@ -166,7 +166,8 @@ const User = {
         User._endLoggingIn();
       }
       User._endLoggingIn();
-      Data.notify('onLoginFailure');
+      // we delegate the error to enable better logging
+      Data.notify('onLoginFailure', err);
     }
     Data.notify('change');
   },
