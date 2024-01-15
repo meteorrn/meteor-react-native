@@ -2,16 +2,38 @@ import EJSON from 'ejson';
 import MongoID from '../lib/mongo-id';
 import Tracker from './Tracker';
 
+/**
+ * Use EJSON to strinify a given value
+ * @param value {any}
+ * @returns {string}
+ */
 const stringify = function (value) {
   if (value === undefined) return 'undefined';
   return EJSON.stringify(value);
 };
 
+/**
+ * Uses EJSON to parse a ejsonable string
+ * @private
+ * @param serialized {string}
+ * @returns {undefined|*}
+ */
 const parse = function (serialized) {
   if (serialized === undefined || serialized === 'undefined') return undefined;
   return EJSON.parse(serialized);
 };
 
+/**
+ * The reference implementation to Meteor's ReactiveDict
+ *
+ * A ReactiveDict stores an arbitrary set of key-value pairs.
+ * Use it to manage internal state in your components, ie. like the currently selected item in a list.
+ * Each key is individully reactive such that calling set for a key will invalidate any Computations
+ * that called get with that key, according to the usual contract for reactive data sources.
+ *
+ * @see https://docs.meteor.com/api/reactive-dict.html
+ * @class
+ */
 export default class ReactiveDict {
   constructor(dictName) {
     this.keys = {};

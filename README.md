@@ -30,7 +30,7 @@ Connect your React Native app to your Meteor server, and take advantage of Meteo
 <span>·</span>
 <a href="https://dev.to/jankapunkt/meteor-and-react-native-create-a-native-mobile-app-2ile">Beginners Workshop</a>
 <span>·</span>
-<a href="https://github.com/meteorrn/meteor-react-native/blob/master/docs/api.md">Full API Documentation</a>
+<a href="https://github.com/meteorrn/meteor-react-native/blob/master/docs/index.html">Full API Documentation</a>
 <span>·</span>
 <a href="https://github.com/meteorrn/sample">Example Project</a>
 <span>·</span>
@@ -73,7 +73,7 @@ Connect your React Native app to your Meteor server, and take advantage of Meteo
 ## Installation
 
 1. `npm install --save @meteorrn/core`
-2. Confirm you have peer dependencty `@react-native-community/netinfo` installed
+2. Confirm you have peer dependency `@react-native-community/netinfo` installed
 3. Confirm you have `@react-native-async-storage/async-storage@>=1.8.1` installed.
    If you are using Expo, or otherwise cannot use `@react-native-async-storage/async-storage`, read below
 
@@ -221,7 +221,7 @@ const { AsyncStorage } = Meteor.packageInterface();
 
 ### Logging library internals
 
-The library includes several internal classes and constructs, 
+The library includes several internal classes and constructs,
 that are mostly operate on their own and without user's influence.
 
 Debugging the library working as expected requires listening to several events.
@@ -236,7 +236,7 @@ The most convenient way to track internals is via `Data.onChange`:
 
 ```js
 const Data = Meteor.getData();
-data.onChange(event => console.debug(event));
+data.onChange((event) => console.debug(event));
 ```
 
 Under the hood this does:
@@ -297,16 +297,16 @@ With the following events you can hook into the low-level messaging with the ser
 
 ```js
 const Data = Meteor.getData();
-const socket = Data.ddp.socket; 
+const socket = Data.ddp.socket;
 const events = ['open', 'close', 'message:out', 'message:in', 'error'];
-events.forEach(eventName => {
-  socket.on(eventName, event => console.debug(eventName, event));
+events.forEach((eventName) => {
+  socket.on(eventName, (event) => console.debug(eventName, event));
 });
 ```
 
 #### Raw Websocket (lowest-level)
 
-There is the possibility to hook into Websocket one level lower by accessing the 
+There is the possibility to hook into Websocket one level lower by accessing the
 raw socket.
 
 > This is highly discouraged for production, use at your own risk!
@@ -316,19 +316,20 @@ raw socket.
 
 ```js
 const Data = Meteor.getData();
-const rawSocket = Data.ddp.socket.rawSocket; 
-rawSocket.onopen = (e) => console.debug('raw open', e)
-rawSocket.onmessage = (e) => console.debug('raw message', e)
-rawSocket.onclose = (e) => console.debug('raw close', e)
-rawSocket.onerror = (e) => console.debug('raw error', e)
+const rawSocket = Data.ddp.socket.rawSocket;
+rawSocket.onopen = (e) => console.debug('raw open', e);
+rawSocket.onmessage = (e) => console.debug('raw message', e);
+rawSocket.onclose = (e) => console.debug('raw close', e);
+rawSocket.onerror = (e) => console.debug('raw error', e);
 ```
 
 #### Minimongo (low-level)
 
 You can hook into DB events from minimongo directly:
+
 ```js
 const Data = Meteor.getData();
-Data.db.on('change', )
+Data.db.on('change', (e) => console.debug(e));
 ```
 
 ### Send logs and errors to the server and external services
@@ -341,32 +342,32 @@ to a service via `fetch` request:
 
 ```js
 // in your App code
-const errorToBody = err => {
-  const errProps = Object.getOwnPropertyNames(err) ;
+const errorToBody = (err) => {
+  const errProps = Object.getOwnPropertyNames(err);
   const formBody = [];
   for (const prop of errProps) {
     const encodedKey = encodeURIComponent(prop);
     const encodedValue = encodeURIComponent(err[prop]);
-    formBody.push(encodedKey + "=" + encodedValue);
+    formBody.push(encodedKey + '=' + encodedValue);
   }
-  return formBody.join("&");
-}
+  return formBody.join('&');
+};
 
-const sendError = err => {
+const sendError = (err) => {
   fetch('https://mydomain.tld/log/error', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
     },
-    body: errToBody(err)
+    body: errToBody(err),
   })
-  .then(console.debug)
-  .catch(console.error)
-}
+    .then(console.debug)
+    .catch(console.error);
+};
 
 // hook into all DDP and socket-level errors
 const Data = Meteor.getData();
-Data.dpp.on('error', e => {
+Data.dpp.on('error', (e) => {
   const error = e instanceof Error ? e : e?.error;
   return error && sendError(error);
 });

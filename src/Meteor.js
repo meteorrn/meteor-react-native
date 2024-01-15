@@ -13,8 +13,17 @@ import useTracker from './components/useTracker';
 
 import ReactiveDict from './ReactiveDict';
 
+/**
+ * @namespace Meteor
+ * @type {object}
+ * @summary the main Object to interact with this library
+ */
 const Meteor = {
   isVerbose: false,
+
+  /**
+   * Calling this enables extended internal logging to console
+   */
   enableVerbose() {
     this.isVerbose = true;
   },
@@ -30,9 +39,17 @@ const Meteor = {
   },
   withTracker,
   useTracker,
+  /**
+   * returns the Data layer implementation
+   * @returns {Data}
+   */
   getData() {
     return Data;
   },
+  /**
+   * Reactive. Returns the current connection status.
+   * @returns {object} `{connected: boolean, status: string}`
+   */
   status() {
     return {
       connected: !!this._reactiveDict.get('connected'),
