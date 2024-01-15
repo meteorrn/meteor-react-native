@@ -109,29 +109,37 @@ const Meteor = {
       ...options,
     });
 
-    try {
-      const NetInfo = require('@react-native-community/netinfo').default;
+    if (options.NetInfo !== null) {
+      try {
+        const NetInfo = getNetInfo();
 
-      if (options.reachabilityUrl) {
-        NetInfo.configure({
-          reachabilityUrl: options.reachabilityUrl,
-          useNativeReachability: true,
-        });
-      }
-
-      // Reconnect if we lose internet
-
-      NetInfo.addEventListener(
-        ({ type, isConnected, isInternetReachable, isWifiEnabled }) => {
-          if (isConnected && Data.ddp.autoReconnect) {
-            Data.ddp.connect();
-          }
+        if (options.reachabilityUrl) {
+          NetInfo.configure({
+            reachabilityUrl: options.reachabilityUrl,
+            useNativeReachability: true,
+          });
         }
-      );
-    } catch (e) {
+
+        // Reconnect if we lose internet
+
+        NetInfo.addEventListener(
+          ({ type, isConnected, isInternetReachable, isWifiEnabled }) => {
+            if (isConnected && Data.ddp.autoReconnect) {
+              Data.ddp.connect();
+            }
+          }
+        );
+      } catch (e) {
+        console.warn(
+          'Warning: NetInfo not installed, so DDP will not automatically reconnect'
+        );
+        Data.ddp.connect();
+      }
+    } else {
       console.warn(
         'Warning: NetInfo not installed, so DDP will not automatically reconnect'
       );
+      Data.ddp.connect();
     }
 
     Data.ddp.on('connected', () => {
@@ -425,5 +433,8 @@ const Meteor = {
     return handle;
   },
 };
+
+const getNetInfo = (NetInfo) =>
+  NetInfo ? NetInfo : require('@react-native-community/netinfo').default;
 
 export default Meteor;
