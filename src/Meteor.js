@@ -111,7 +111,7 @@ const Meteor = {
 
     if (options.NetInfo !== null) {
       try {
-        const NetInfo = getNetInfo();
+        const NetInfo = getNetInfo(options.NetInfo);
 
         if (options.reachabilityUrl) {
           NetInfo.configure({
