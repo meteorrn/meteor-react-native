@@ -165,9 +165,6 @@ const Meteor = {
         Data.ddp.connect();
       }
     } else {
-      console.warn(
-        'Warning: NetInfo not installed, so DDP will not automatically reconnect'
-      );
       Data.ddp.connect();
     }
 
