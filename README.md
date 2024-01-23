@@ -382,10 +382,12 @@ Data.dpp.on('error', (e) => {
 | <img src="https://user-images.githubusercontent.com/16267331/120551863-84907c80-c3c4-11eb-8e32-39b950b67875.png" height="200" align="center"> | <img src="https://uploads-ssl.webflow.com/5f112aac57df16c9ac9c21e0/5f11b8a2e5a66ea03a1a9835_android-chrome-512x512%20copy.png" height="200" align="center"> |
 | [Whazzup.co](https://whazzup.co/) uses Meteor React Native in their native app                                                                | [StarlingRealtime](https://www.starlingrealtime.com/) uses Meteor React Native in their production app                                                      |
 
-| lea.online                                                                                                                                            | Your app here!                                                                                   |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| <img src="https://avatars.githubusercontent.com/u/48286741?s=250&v=4" height="200" align="center">                                                    | <img src="https://avatars.githubusercontent.com/u/789528?s=200&v=4" height="200" align="center"> |
-| [lea.online](https://github.com/leaonline) uses Meteor React Native in their [native mobile learning app](https://github.com/leaonline/leaonline-app) | **Show us your app that uses this library!**                                                     |
+| lea.online                                                                                                                                            | Plan B Schule                                                                                         |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| <img src="https://avatars.githubusercontent.com/u/48286741?s=250&v=4" height="200" align="center">                                                    | <img src="https://planb.schule/wp-content/uploads/2024/01/logo-blau.png" height="200" align="center"> |
+| [lea.online](https://github.com/leaonline) uses Meteor React Native in their [native mobile learning app](https://github.com/leaonline/leaonline-app) | [Plan B Schule](https://www.planb.schule) uses Meteor React Native in their production app            |
+
+**Want to showcase your app using meteor-react-native?** Just create a PR to add your logo here.
 
 ## Contribution and maintenance
 
