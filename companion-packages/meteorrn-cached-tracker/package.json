@@ -1,0 +1,14 @@
+{
+  "name": "@meteorrn/cached-tracker",
+  "version": "0.0.1",
+  "description": "Cache Tracker Computations for offline first apps",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "@meteorrn/core":">=2.7.1"
+  }
+}
