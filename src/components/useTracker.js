@@ -1,8 +1,25 @@
 import { useEffect, useRef, useReducer, useMemo } from 'react';
 import Tracker from '../Tracker.js';
 
-const fur = (x: number): number => x + 1;
-const useForceUpdate = () => useReducer(fur, 0)[1];
+/** @private */
+const increment = (x) => x + 1;
+/** @private */
+const useForceUpdate = () => useReducer(increment, 0)[1];
+
+/**
+ * Hook that re-runs any time a reactive data is changed.
+ * TODO: make work with async functions.
+ *
+ * Reactive data sources that trigger a re-run are, for example:
+ * - ReactiveDict.prototype.get
+ * - Meteor.user() calls
+ * - Meteor.status() calls
+ * - subscription handles
+ *
+ * @param trackerFn {function}
+ * @param deps
+ * @returns {null}
+ */
 export default (trackerFn, deps = []) => {
   const { current: refs } = useRef({
     data: null,

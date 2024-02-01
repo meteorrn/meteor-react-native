@@ -7,6 +7,12 @@ import ReactiveDict from '../ReactiveDict';
 const TOKEN_KEY = 'reactnativemeteor_usertoken';
 const Users = new Mongo.Collection('users');
 
+/**
+ * @namespace User
+ * @type {object}
+ * @summary Represents all user/Accounts related functionality,
+ * that is to be available on the `Meteor` Object.
+ */
 const User = {
   users: Users,
   _reactiveDict: new ReactiveDict(),
@@ -166,7 +172,8 @@ const User = {
         User._endLoggingIn();
       }
       User._endLoggingIn();
-      Data.notify('onLoginFailure');
+      // we delegate the error to enable better logging
+      Data.notify('onLoginFailure', err);
     }
     Data.notify('change');
   },

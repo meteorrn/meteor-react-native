@@ -4,3 +4,5 @@ example/
 coverage
 node_modules
 .github
+docs/
+jsdoc.conf.json

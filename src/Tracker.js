@@ -4,12 +4,15 @@
 
 /**
  * @namespace Tracker
+ * @type {object}
  * @summary The namespace for Tracker-related methods.
+ * @see http://docs.meteor.com/#tracker
  */
 const Tracker = {};
 
 /**
- * @namespace Deps
+ * @class
+ * @private
  * @deprecated
  */
 const Deps = Tracker;
@@ -32,11 +35,19 @@ Tracker.active = false;
  */
 Tracker.currentComputation = null;
 
+/**
+ * @private
+ * @param c {Tracker.Computation}
+ */
 function setCurrentComputation(c) {
   Tracker.currentComputation = c;
   Tracker.active = !!c;
 }
 
+/**
+ * @returns {*|function}
+ * @private
+ */
 function _debugFunc() {
   // We want this code to work without Meteor, and also without
   // "console" (which is technically non-standard and may be missing
@@ -52,6 +63,10 @@ function _debugFunc() {
     : function () {};
 }
 
+/**
+ * @param messagesLength {number}
+ * @private
+ */
 function _maybeSuppressMoreLogs(messagesLength) {
   // Sometimes when running tests, we intentionally suppress logs on expected
   // printed errors. Since the current implementation of _throwOrLog can log
@@ -64,6 +79,11 @@ function _maybeSuppressMoreLogs(messagesLength) {
   }
 }
 
+/**
+ * @param from
+ * @param e
+ * @private
+ */
 function _throwOrLog(from, e) {
   if (throwFirstError) {
     throw e;
@@ -87,11 +107,15 @@ function _throwOrLog(from, e) {
   }
 }
 
-// Takes a function `f`, and wraps it in a `Meteor._noYieldsAllowed`
-// block if we are running on the server. On the client, returns the
-// original function (since `Meteor._noYieldsAllowed` is a
-// no-op). This has the benefit of not adding an unnecessary stack
-// frame on the client.
+/**
+ * Takes a function `f`, and wraps it in a `Meteor._noYieldsAllowed`
+ * block if we are running on the server. On the client, returns the
+ * original function (since `Meteor._noYieldsAllowed` is a
+ * no-op). This has the benefit of not adding an unnecessary stack
+ * frame on the client.
+ * @param f {function}
+ * @returns {function|*}
+ */
 function withNoYieldsAllowed(f) {
   if (typeof Meteor === 'undefined' || Meteor.isClient) {
     return f;

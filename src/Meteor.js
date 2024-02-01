@@ -13,8 +13,17 @@ import useTracker from './components/useTracker';
 
 import ReactiveDict from './ReactiveDict';
 
+/**
+ * @namespace Meteor
+ * @type {object}
+ * @summary the main Object to interact with this library
+ */
 const Meteor = {
   isVerbose: false,
+
+  /**
+   * Calling this enables extended internal logging to console
+   */
   enableVerbose() {
     this.isVerbose = true;
   },
@@ -30,9 +39,17 @@ const Meteor = {
   },
   withTracker,
   useTracker,
+  /**
+   * returns the Data layer implementation
+   * @returns {Data}
+   */
   getData() {
     return Data;
   },
+  /**
+   * Reactive. Returns the current connection status.
+   * @returns {object} `{connected: boolean, status: string}`
+   */
   status() {
     return {
       connected: !!this._reactiveDict.get('connected'),
@@ -74,6 +91,18 @@ const Meteor = {
         require('@react-native-async-storage/async-storage').default,
     };
   },
+  /**
+   * Connect to a Meteor server using a given websocket endpoint.
+   * The endpoint needs to start with `ws://` or `wss://`
+   * and has to end with `/websocket`.
+   *
+   * @param endpoint {string} required, websocket of Meteor server to connect with
+   * @param options {object=} optional options
+   * @param options.suppressUrlErrors {boolean=} suppress error when websocket endpoint is invalid
+   * @param options.AsyncStorage {AsyncStorage=} suppress error when websocket endpoint is invalid
+   * @param options.reachabilityUrl {string=} a URL that is used by @react-native-community/netinfo to run a connection
+   *   check using a 204 request
+   */
   connect(endpoint, options) {
     if (!endpoint) endpoint = Data._endpoint;
     if (!options) options = Data._options;
@@ -136,9 +165,6 @@ const Meteor = {
         Data.ddp.connect();
       }
     } else {
-      console.warn(
-        'Warning: NetInfo not installed, so DDP will not automatically reconnect'
-      );
       Data.ddp.connect();
     }
 
@@ -369,6 +395,8 @@ const Meteor = {
       id = Random.id();
       const subIdRemember = Data.ddp.sub(name, params);
 
+      // TODO subscription object should be represented by
+      //   a Subscription data-class
       Data.subscriptions[id] = {
         id: id,
         subIdRemember: subIdRemember,
@@ -392,6 +420,7 @@ const Meteor = {
     }
 
     // return a handle to the application.
+    // TODO represent handle by a SubscriptionHandle class
     var handle = {
       stop: function () {
         if (Data.subscriptions[id]) Data.subscriptions[id].stop();
