@@ -132,11 +132,15 @@ const Meteor = {
     Data._endpoint = endpoint;
     Data._options = options;
 
-    this.ddp = Data.ddp = new DDP({
+
+    const ddp = new DDP({
       endpoint: endpoint,
       SocketConstructor: WebSocket,
       ...options,
     });
+
+    Data.ddp = ddp;
+    this.ddp = ddp;
 
     Data.ddp.on('connected', () => {
       // Clear the collections of any stale data in case this is a reconnect
