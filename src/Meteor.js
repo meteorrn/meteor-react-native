@@ -132,7 +132,6 @@ const Meteor = {
     Data._endpoint = endpoint;
     Data._options = options;
 
-
     const ddp = new DDP({
       endpoint: endpoint,
       SocketConstructor: WebSocket,
