@@ -138,36 +138,6 @@ const Meteor = {
       ...options,
     });
 
-    if (options.NetInfo !== null) {
-      try {
-        const NetInfo = getNetInfo(options.NetInfo);
-
-        if (options.reachabilityUrl) {
-          NetInfo.configure({
-            reachabilityUrl: options.reachabilityUrl,
-            useNativeReachability: true,
-          });
-        }
-
-        // Reconnect if we lose internet
-
-        NetInfo.addEventListener(
-          ({ type, isConnected, isInternetReachable, isWifiEnabled }) => {
-            if (isConnected && Data.ddp.autoReconnect) {
-              Data.ddp.connect();
-            }
-          }
-        );
-      } catch (e) {
-        console.warn(
-          'Warning: NetInfo not installed, so DDP will not automatically reconnect'
-        );
-        Data.ddp.connect();
-      }
-    } else {
-      Data.ddp.connect();
-    }
-
     Data.ddp.on('connected', () => {
       // Clear the collections of any stale data in case this is a reconnect
       if (Data.db && Data.db.collections) {
@@ -326,9 +296,36 @@ const Meteor = {
         }
       }
     });
-    Data.ddp.on('error', (message) => {
-      console.warn(message);
-    });
+
+    if (options.NetInfo !== null) {
+      try {
+        const NetInfo = getNetInfo(options.NetInfo);
+
+        if (options.reachabilityUrl) {
+          NetInfo.configure({
+            reachabilityUrl: options.reachabilityUrl,
+            useNativeReachability: true,
+          });
+        }
+
+        // Reconnect if we lose internet
+
+        NetInfo.addEventListener(
+          ({ type, isConnected, isInternetReachable, isWifiEnabled }) => {
+            if (isConnected && Data.ddp.autoReconnect) {
+              Data.ddp.connect();
+            }
+          }
+        );
+      } catch (e) {
+        console.warn(
+          'Warning: NetInfo not installed, so DDP will not automatically reconnect'
+        );
+        Data.ddp.connect();
+      }
+    } else {
+      Data.ddp.connect();
+    }
   },
   subscribe(name) {
     let params = Array.prototype.slice.call(arguments, 1);
