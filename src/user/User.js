@@ -182,13 +182,16 @@ const User = {
   _isTokenLogin: false,
   _isCallingLogin: false,
   _loginWithToken(value) {
-    if (!value){
-      Meteor.isVerbose && console.info('User._loginWithToken::: parameter value is null, do not save token.');
+    if (!value) {
+      Meteor.isVerbose &&
+        console.info(
+          'User._loginWithToken::: parameter value is null, do not save token.'
+        );
     } else {
       Data._tokenIdSaved = value;
     }
-    
-      if (value !== null) {
+
+    if (value !== null) {
       this._isTokenLogin = true;
       Meteor.isVerbose && console.info('User._loginWithToken::: token:', value);
       if (this._isCallingLogin) {
