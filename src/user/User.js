@@ -185,7 +185,7 @@ const User = {
     if (!value) {
       Meteor.isVerbose &&
         console.info(
-          'User._loginWithToken::: parameter value is null, do not save token.'
+          'User._loginWithToken::: parameter value is null, will not save as token.'
         );
     } else {
       Data._tokenIdSaved = value;
