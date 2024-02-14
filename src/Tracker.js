@@ -54,9 +54,11 @@ function _debugFunc() {
   // on some browser we come across, like it was on IE 7).
   //
   // Lazy evaluation because `Meteor` does not exist right away.(??)
-  return typeof Meteor !== 'undefined'
-    ? Meteor._debug
-    : typeof console !== 'undefined' && console.error
+  if (typeof Meteor !== 'undefined') {
+    return Meteor._debug;
+  }
+
+  return typeof console !== 'undefined' && console.error
     ? function () {
         console.error.apply(console, arguments);
       }
