@@ -312,7 +312,6 @@ const Meteor = {
         }
 
         // Reconnect if we lose internet
-
         NetInfo.addEventListener(
           ({ type, isConnected, isInternetReachable, isWifiEnabled }) => {
             if (isConnected && Data.ddp.autoReconnect) {
@@ -324,10 +323,7 @@ const Meteor = {
         console.warn(
           'Warning: NetInfo not installed, so DDP will not automatically reconnect'
         );
-        Data.ddp.connect();
       }
-    } else {
-      Data.ddp.connect();
     }
   },
   subscribe(name) {
