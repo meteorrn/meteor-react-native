@@ -3,6 +3,8 @@ import Meteor from '../src/Meteor';
 
 export const stubs = new Map();
 
+export const endpoint = 'ws://localhost:3000/websocket';
+
 export const stub = (target, name, handler) => {
   if (stubs.get(target)) {
     throw new Error(`already stubbed: ${name}`);

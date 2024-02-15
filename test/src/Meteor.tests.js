@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import Meteor from '../../src/Meteor';
 import { awaitDisconnected, stub, restoreAll } from '../testHelpers';
 import DDP from '../../lib/ddp';
+import { endpoint } from '../testHelpers'
 
 describe('Meteor - integration', function () {
   it('uses the default async storage if none is defined', function () {
@@ -12,7 +13,7 @@ describe('Meteor - integration', function () {
   });
 
   describe(Meteor.connect.name, () => {
-    before(awaitDisconnected);
+    beforeEach(awaitDisconnected);
     afterEach(() => {
       restoreAll();
     });
@@ -26,7 +27,6 @@ describe('Meteor - integration', function () {
         removeItem: async () => {},
       };
 
-      const endpoint = `ws://localhost:3000/websocket`;
       Meteor.connect(endpoint, {
         AsyncStorage,
         NetInfo: null,
@@ -49,7 +49,6 @@ describe('Meteor - integration', function () {
         },
       };
 
-      const endpoint = `ws://localhost:3000/websocket`;
       Meteor.connect(endpoint, {
         AsyncStorage,
         NetInfo,

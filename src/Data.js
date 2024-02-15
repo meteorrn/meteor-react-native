@@ -106,13 +106,26 @@ const Data = {
    * @param cb {function}
    */
   onChange(cb) {
-    this.db.on('change', cb);
-    this.ddp.on('connected', cb);
-    this.ddp.on('disconnected', cb);
-    this.on('loggingIn', cb);
-    this.on('loggingOut', cb);
-    this.on('change', cb);
+    // In order to specifiy which event caused the change
+    // we wrap them all to bubble the name into the callback
+    // and also provide a way to safely remove the listeners
+    const wrap = ctx => function (...args) { cb.call(this, ctx, ...args) }
+    const wrappers = {
+      change: wrap('change'),
+      connected: wrap('connected'),
+      disconnected: wrap('disconnected'),
+      loggingIn: wrap('loggingIn'),
+      loggingOut: wrap('loggingOut'),
+    }
+    this._onChangeWrappers[cb] = wrappers
+    this.db.on('change', wrappers.change);
+    this.ddp.on('connected', wrappers.connected);
+    this.ddp.on('disconnected', wrappers.disconnected);
+    this.on('loggingIn', wrappers.loggingIn);
+    this.on('loggingOut', wrappers.loggingOut);
+    this.on('change', wrappers.change);
   },
+  _onChangeWrappers: {},
 
   /**
    * Stops listening the events from `Data.onChange`.
@@ -120,12 +133,16 @@ const Data = {
    * @param cb {function}
    */
   offChange(cb) {
-    this.db.off('change', cb);
-    this.ddp.off('connected', cb);
-    this.ddp.off('disconnected', cb);
-    this.off('loggingIn', cb);
-    this.off('loggingOut', cb);
-    this.off('change', cb);
+    const wrappers = this._onChangeWrappers[cb]
+    if (wrappers) {
+      this.db.off('change', wrappers.change);
+      this.ddp.off('connected', wrappers.connected);
+      this.ddp.off('disconnected', wrappers.disconnected);
+      this.off('loggingIn', wrappers.loggingIn);
+      this.off('loggingOut', wrappers.loggingOut);
+      this.off('change', wrappers.change);
+      delete this._onChangeWrappers[cb];
+    }
   },
 
   /**
@@ -175,7 +192,7 @@ const Data = {
    * @param callback {function}
    */
   waitDdpConnected(callback) {
-    if (this.ddp && this.ddp.status == 'connected') {
+    if (this.ddp && this.ddp.status === 'connected') {
       callback();
     } else if (this.ddp) {
       this.ddp.once('connected', callback);

@@ -2,6 +2,8 @@ import Data from '../../src/Data';
 import Meteor from '../../src/Meteor'
 import { expect } from 'chai'
 import { awaitDisconnected, endpoint } from '../testHelpers'
+import { restoreAll, stub } from '../testHelpers'
+import User from '../../src/user/User'
 
 describe('Data', function () {
   let data
@@ -9,6 +11,9 @@ describe('Data', function () {
     await awaitDisconnected()
     data = Meteor.getData()
     expect(data.ddp.status).to.equal('disconnected')
+  })
+  afterEach(() => {
+    restoreAll()
   })
   describe(Data.getUrl.name, function () {
     it('returns the endpoint url', () => {
@@ -35,30 +40,46 @@ describe('Data', function () {
   })
   describe(Data.waitDdpConnected.name, () => {
     it('immediately resolves if already connected', (done) => {
+      let userLoaded = false
+      stub(User, '_loadInitialUser', () => ({
+        then: () => {
+          userLoaded = true
+        }
+      }))
+
       const beforeDDP = data.ddp
       Meteor.connect(endpoint, { NetInfo: null, autoConnect: false })
       expect(beforeDDP).to.not.equal(data.ddp)
 
       data.ddp.once('connected', () => {
-          done()
         data.waitDdpConnected(() => {
+          expect(userLoaded).to.equal(true)
+          done()
         })
       })
 
       data.ddp.connect()
     })
     it('resolves, once connected', done => {
-      Meteor.connect(endpoint, { NetInfo: null, autoConnect: false })
+      Meteor.connect(endpoint, { NetInfo: null, autoConnect: false, autoReconnect: false })
       data.ddp.once('connected', () => {
         data.waitDdpConnected(() => {
           done()
         })
       })
     })
-    it('resolves, once ddp is ready and connected')
+    it('resolves, once ddp is ready and connected', (done) => {
+      data.ddp = null
+      data.waitDdpConnected(() => {
+        done()
+      })
+      Meteor.connect(endpoint, { NetInfo: null })
+    })
   })
   describe(Data.onChange.name, () => {
-    it('listens to various events of change and pipes them into a single callback', done => {
+    it('listens to various events of change and pipes them into a single callback', function (done) {
+      this.timeout(5000)
+      expect(data.ddp.status).to.equal('disconnected')
       /* Events:
        * - ddp: change
        * - ddp: connected
@@ -67,17 +88,24 @@ describe('Data', function () {
        * - Accounts: loggingOut
        * - DB: change
        */
-      const events = []
-      const checkDone = (event, data) => {
-        console.debug(event, data)
-        events.push(event)
-        if (events.length >= 6) {
+      const events = new Set()
+      const checkDone = function (name){
+        events.add(name)
+        if (events.size >= 5) {
           data.offChange(checkDone)
+          expect(data._onChangeWrappers).to.deep.equal({})
+          expect([...events]).to.deep.equal(['connected', 'loggingIn', 'change', 'loggingOut', 'disconnected'])
           done()
         }
       }
+      Meteor.connect(endpoint, { NetInfo: null, autoConnect: false, autoReconnect: false })
+      data = Meteor.getData()
       data.onChange(checkDone)
-      Meteor.connect(endpoint, { NetInfo: null })
+      data.ddp.connect()
+      data.waitDdpConnected(() => {
+        User.logout()
+        Meteor.disconnect()
+      })
     })
   })
   describe(Data.offChange.name, () => {

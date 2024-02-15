@@ -1,6 +1,7 @@
 import { WebSocket } from 'mock-socket';
+import Mongo from '../../src/Mongo';
+import { endpoint } from '../testHelpers'
 import {
-  Collection,
   localCollections,
   runObservers,
 } from '../../src/Collection';
@@ -10,8 +11,9 @@ import DDP from '../../lib/ddp';
 import Random from '../../lib/Random';
 import { server } from '../hooks/mockServer';
 
+const Collection = Mongo.Collection;
+
 describe('Collection', function () {
-  const endpoint = 'ws://localhost:3000/websocket';
 
   // for proper collection tests we need the server to be active
 
@@ -20,6 +22,7 @@ describe('Collection', function () {
       Data.ddp = new DDP({
         SocketConstructor: WebSocket,
         endpoint,
+        autoConnect: false
       });
       Data.ddp.socket.on('open', () => {
         Data.ddp.socket.emit('message:in', { msg: 'connected' });
@@ -46,6 +49,9 @@ describe('Collection', function () {
   });
 
   describe('constructor', function () {
+    it('is exported via Mongo', () => {
+      expect(Mongo.Collection).to.equal(Collection);
+    })
     it('creates a new collection and one in Minimongo', function () {
       const name = Random.id(6);
       const c = new Collection(name);

@@ -1,4 +1,4 @@
-const endpoint = 'ws://localhost:3000/websocket';
+import { endpoint } from '../testHelpers'
 import { Server } from 'mock-socket';
 
 let server;
@@ -30,6 +30,11 @@ module.exports = {
       socket.on('message', (data) => {
         currentMessageFn(data, server, socket);
       });
+
+      // simulate that we got a successful connection
+      setTimeout(() => {
+        socket.send(JSON.stringify({ msg: 'connected' }))
+      }, 10)
     });
   },
   mochaGlobalTeardown() {

@@ -12,6 +12,7 @@ import withTracker from './components/withTracker';
 import useTracker from './components/useTracker';
 
 import ReactiveDict from './ReactiveDict';
+import User from './user/User'
 
 /**
  * @namespace Meteor
@@ -138,6 +139,12 @@ const Meteor = {
       ...options,
     });
 
+    if (Data.ddp && this.ddp) {
+      Data._cbs = []
+      Data.ddp.socket.removeAllListeners()
+      Data.ddp.removeAllListeners()
+    }
+
     Data.ddp = ddp;
     this.ddp = ddp;
 
@@ -155,7 +162,12 @@ const Meteor = {
       if (this.isVerbose) {
         console.info('Connected to DDP server.');
       }
-      this._loadInitialUser().then(() => {
+
+      // XXX: in tests we can't access this._loadInitialUser,
+      // so instead we use User._loadInitialUser().
+      // It's also questionable to implicitly assume a dependency
+      // that was not declared in this file using this._loadInitialUser
+      User._loadInitialUser().then(() => {
         this._subscriptionsRestart();
       });
       this._reactiveDict.set('connected', true);
