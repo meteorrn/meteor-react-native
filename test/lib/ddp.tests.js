@@ -172,14 +172,14 @@ describe('ddp', function () {
       listen(ddp, 'foo', () => done());
       ddp.emit('foo');
     });
-    it('allows to on/off events', done => {
+    it('allows to on/off events', (done) => {
       ddp = new DDP(validOptions);
       const fn = () => done(new Error('event not removed'));
-      ddp.on('foo', fn)
-      ddp.off('foo', fn)
+      ddp.on('foo', fn);
+      ddp.off('foo', fn);
       ddp.emit('foo');
-      setTimeout(() => done(), 100)
-    })
+      setTimeout(() => done(), 100);
+    });
     it('re-emits incoming public events', function (done) {
       ddp = new DDP(validOptions);
       listen(ddp, 'ready', () => {

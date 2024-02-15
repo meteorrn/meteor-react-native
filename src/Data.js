@@ -109,15 +109,18 @@ const Data = {
     // In order to specifiy which event caused the change
     // we wrap them all to bubble the name into the callback
     // and also provide a way to safely remove the listeners
-    const wrap = ctx => function (...args) { cb.call(this, ctx, ...args) }
+    const wrap = (ctx) =>
+      function (...args) {
+        cb.call(this, ctx, ...args);
+      };
     const wrappers = {
       change: wrap('change'),
       connected: wrap('connected'),
       disconnected: wrap('disconnected'),
       loggingIn: wrap('loggingIn'),
       loggingOut: wrap('loggingOut'),
-    }
-    this._onChangeWrappers[cb] = wrappers
+    };
+    this._onChangeWrappers[cb] = wrappers;
     this.db.on('change', wrappers.change);
     this.ddp.on('connected', wrappers.connected);
     this.ddp.on('disconnected', wrappers.disconnected);
@@ -133,7 +136,7 @@ const Data = {
    * @param cb {function}
    */
   offChange(cb) {
-    const wrappers = this._onChangeWrappers[cb]
+    const wrappers = this._onChangeWrappers[cb];
     if (wrappers) {
       this.db.off('change', wrappers.change);
       this.ddp.off('connected', wrappers.connected);

@@ -1,4 +1,4 @@
-import { endpoint } from '../testHelpers'
+import { endpoint } from '../testHelpers';
 import { Server } from 'mock-socket';
 
 let server;
@@ -33,8 +33,8 @@ module.exports = {
 
       // simulate that we got a successful connection
       setTimeout(() => {
-        socket.send(JSON.stringify({ msg: 'connected' }))
-      }, 10)
+        socket.send(JSON.stringify({ msg: 'connected' }));
+      }, 10);
     });
   },
   mochaGlobalTeardown() {

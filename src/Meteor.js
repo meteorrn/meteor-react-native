@@ -12,7 +12,7 @@ import withTracker from './components/withTracker';
 import useTracker from './components/useTracker';
 
 import ReactiveDict from './ReactiveDict';
-import User from './user/User'
+import User from './user/User';
 
 /**
  * @namespace Meteor
@@ -140,9 +140,9 @@ const Meteor = {
     });
 
     if (Data.ddp && this.ddp) {
-      Data._cbs = []
-      Data.ddp.socket.removeAllListeners()
-      Data.ddp.removeAllListeners()
+      Data._cbs = [];
+      Data.ddp.socket.removeAllListeners();
+      Data.ddp.removeAllListeners();
     }
 
     Data.ddp = ddp;

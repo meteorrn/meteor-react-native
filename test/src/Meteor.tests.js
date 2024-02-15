@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import Meteor from '../../src/Meteor';
 import { awaitDisconnected, stub, restoreAll } from '../testHelpers';
 import DDP from '../../lib/ddp';
-import { endpoint } from '../testHelpers'
+import { endpoint } from '../testHelpers';
 
 describe('Meteor - integration', function () {
   it('uses the default async storage if none is defined', function () {
