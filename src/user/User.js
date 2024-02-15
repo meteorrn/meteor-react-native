@@ -165,10 +165,18 @@ const User = {
             return;
           }
           Meteor.isVerbose &&
-            console.info('User._handleLoginCallback::: trying again to login with '+Data._tokenIdSaved+' after '+this._timeout+'ms.');
+            console.info(
+              'User._handleLoginCallback::: trying again to login with ' +
+                Data._tokenIdSaved +
+                ' after ' +
+                this._timeout +
+                'ms.'
+            );
           if (this._timeout > 10000) {
             Meteor.isVerbose &&
-              console.info('User._handleLoginCallback::: 10000ms timeout exceeded, ending logging in.');
+              console.info(
+                'User._handleLoginCallback::: 10000ms timeout exceeded, ending logging in.'
+              );
             User._endLoggingIn();
             Data.notify('onLoginFailure', err);
             return;
@@ -177,9 +185,11 @@ const User = {
         }, this._timeout);
       } else {
         Meteor.isVerbose &&
-          console.info('User._handleLoginCallback::: not token login, ending logging in.');
-          User._endLoggingIn();
-          Data.notify('onLoginFailure', err);
+          console.info(
+            'User._handleLoginCallback::: not token login, ending logging in.'
+          );
+        User._endLoggingIn();
+        Data.notify('onLoginFailure', err);
       }
       // Signify we aren't logginging in any more after a few seconds
       /*if (this._timeout > 2000) {
@@ -212,7 +222,8 @@ const User = {
       this._isTokenLogin = true;
       Meteor.isVerbose && console.info('User._loginWithToken::: token:', value);
       if (this._isCallingLogin) {
-        Meteor.isVerbose && console.info('User._loginWithToken::: already calling login');
+        Meteor.isVerbose &&
+          console.info('User._loginWithToken::: already calling login');
         return;
       }
       this._isCallingLogin = true;
@@ -237,20 +248,24 @@ const User = {
             console.info(
               'User._handleLoginCallback::: token login failed, logging out.'
             );
-              Data.notify('onLoginFailure', err);
-              Data.notify('change');
+          Data.notify('onLoginFailure', err);
+          Data.notify('change');
           User.logout();
         } else {
           Meteor.isVerbose &&
             console.info(
               'User._handleLoginCallback::: token login error and result:',
-              err, result
+              err,
+              result
             );
           User._handleLoginCallback(err, result);
         }
       });
     } else {
-      Meteor.isVerbose && console.info('User._loginWithToken::: token is null, ending logging in.');
+      Meteor.isVerbose &&
+        console.info(
+          'User._loginWithToken::: token is null, ending logging in.'
+        );
       Data.notify('onLoginFailure', err);
       Data.notify('change');
       User._endLoggingIn();
@@ -271,7 +286,9 @@ const User = {
       User._endLoggingIn();
       Data.notify('onLoginFailure', err);
       Data.notify('change');
-      console.warn('AsyncStorage error: ' + error.message + " while loading token");
+      console.warn(
+        'AsyncStorage error: ' + error.message + ' while loading token'
+      );
     }
   },
 };
