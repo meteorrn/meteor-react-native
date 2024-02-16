@@ -191,15 +191,6 @@ const User = {
         User._endLoggingIn();
         Data.notify('onLoginFailure', err);
       }
-      // Signify we aren't logginging in any more after a few seconds
-      /*if (this._timeout > 2000) {
-        Meteor.isVerbose &&
-            console.info('User._handleLoginCallback::: 2000ms timeout exceeded, ending logging in.');
-        User._endLoggingIn();
-      }*/
-      // User._endLoggingIn();
-      // we delegate the error to enable better logging
-      // Data.notify('onLoginFailure', err);
     }
     Data.notify('change');
   },
@@ -208,7 +199,6 @@ const User = {
   _isTokenLogin: false,
   _isCallingLogin: false,
   _loginWithToken(value) {
-    console.log('User._loginWithToken::: value:', value);
     if (!value) {
       Meteor.isVerbose &&
         console.info(
