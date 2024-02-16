@@ -210,6 +210,20 @@ describe('Collection', function () {
         done();
       });
     });
+    it('triggers a reactive observer', (done) => {
+      const collectionName = Random.id(6);
+      const c = new Mongo.Collection(collectionName);
+
+      Tracker.autorun((comp) => {
+        const doc = c.findOne({ foo: 1 });
+        if (doc) {
+          comp.stop();
+          done();
+        }
+      });
+
+      setTimeout(() => c.insert({ foo: 1 }), 50);
+    });
     it('does not imply prototype pollution', (done) => {
       const collectionName = Random.id(6);
       const c = new Mongo.Collection(collectionName);
@@ -221,15 +235,29 @@ describe('Collection', function () {
       });
 
       Tracker.autorun((comp) => {
-        const docs = c.find(insertDoc).fetch();
-        expect(props({})).to.deep.equal(objectProps);
-        if (docs.length > 0) {
-          comp.stop();
-          done();
+        if (c.find().count() < 1) {
+          return;
         }
+
+        c._name = '__proto__';
+        try {
+          c.find(insertDoc);
+        } catch {}
+        try {
+          expect(props({})).to.deep.equal(objectProps);
+        } catch (e) {
+          comp.stop();
+          return done(e);
+        }
+
+        comp.stop();
+        done();
       });
 
-      setTimeout(() => c.insert(insertDoc), 50);
+      setTimeout(() => {
+        c._name = collectionName;
+        c.insert(insertDoc);
+      }, 50);
     });
   });
 

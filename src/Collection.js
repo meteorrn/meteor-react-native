@@ -9,12 +9,12 @@ import { hasOwn, isPlainObject } from '../lib/utils.js';
  * @private
  * @type {object}
  */
-const observers = {};
+const observers = Object.create(null);
 /**
  * @private
  * @type {object}
  */
-const observersByComp = {};
+const observersByComp = Object.create(null);
 /**
  * Get the list of callbacks for changes on a collection
  * @param {string} type - Type of change happening.
@@ -45,7 +45,7 @@ export function getObservers(type, collection, newDocument) {
     });
   }
   // Find the observers related to the specific query
-  if (observersByComp[collection]) {
+  if (observersByComp[collection] && !(collection in {})) {
     let keys = Object.keys(observersByComp[collection]);
     for (let i = 0; i < keys.length; i++) {
       observersByComp[collection][keys[i]].callbacks.forEach(
@@ -243,7 +243,8 @@ export class Collection {
     // collection is changed it needs to be re-run
     if (Tracker.active && Tracker.currentComputation) {
       let id = Tracker.currentComputation._id;
-      observersByComp[this._name] = observersByComp[this._name] || {};
+      observersByComp[this._name] =
+        observersByComp[this._name] || Object.create(null);
       if (!observersByComp[this._name][id]) {
         let item = {
           computation: Tracker.currentComputation,
@@ -251,6 +252,7 @@ export class Collection {
         };
         observersByComp[this._name][id] = item;
       }
+
       let item = observersByComp[this._name][id];
 
       item.callbacks.push({
