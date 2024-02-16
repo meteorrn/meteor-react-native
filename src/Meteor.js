@@ -228,6 +228,7 @@ const Meteor = {
         const sub = Data.subscriptions[i];
         idsMap.set(sub.subIdRemember, sub.id);
       }
+
       for (var i in message.subs) {
         const subId = idsMap.get(message.subs[i]);
         if (subId) {
@@ -342,8 +343,7 @@ const Meteor = {
       Data.ddp.connect();
     }
   },
-  subscribe(name) {
-    let params = Array.prototype.slice.call(arguments, 1);
+  subscribe(name, ...params) {
     let callbacks = {};
     if (params.length) {
       let lastParam = params[params.length - 1];
@@ -378,7 +378,7 @@ const Meteor = {
     // being invalidated, we will require N matching subscribe calls to keep
     // them all active.
 
-    let existing = false;
+    let existing = null;
     for (let i in Data.subscriptions) {
       const sub = Data.subscriptions[i];
       if (sub.inactive && sub.name === name && EJSON.equals(sub.params, params))

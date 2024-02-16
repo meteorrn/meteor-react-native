@@ -49,3 +49,14 @@ export const awaitDisconnected = async () => {
     }, 100);
   });
 };
+
+// credits: https://stackoverflow.com/a/30158566/3098783
+export const props = (obj) => {
+  let p = [];
+  for (; obj != null; obj = Object.getPrototypeOf(obj)) {
+    let op = Object.getOwnPropertyNames(obj);
+    for (let i = 0; i < op.length; i++)
+      if (p.indexOf(op[i]) === -1) p.push(op[i]);
+  }
+  return p;
+};
