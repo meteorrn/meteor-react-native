@@ -184,6 +184,17 @@ export class Collection {
       localCollections.push(name);
     }
 
+    // XXX: apparently using a name that occurs in Object prototype causes
+    // Data.db[name] to return the full MemoryDb implementation from Minimongo
+    // instead of a collection.
+    // A respective issues has been opened: https://github.com/meteorrn/minimongo-cache
+    // Additionally, this is subject to prototype pollution.
+    if (name in {}) {
+      throw new Error(
+        `Object-prototype property ${name} is not a supported Collection name`
+      );
+    }
+
     if (!Data.db[name]) Data.db.addCollection(name);
 
     this._collection = Data.db[name];
