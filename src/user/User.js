@@ -51,7 +51,8 @@ const User = {
     });
   },
   handleLogout() {
-    Data._options.AsyncStorage.removeItem(TOKEN_KEY);
+    const storage = Data._options.AsyncTokenStorage || Data._options.AsyncStorage;
+    storage.removeItem(TOKEN_KEY);
     Data._tokenIdSaved = null;
     this._reactiveDict.set('_userIdSaved', null);
 
@@ -145,7 +146,8 @@ const User = {
           'id:',
           result.id
         );
-      Data._options.AsyncStorage.setItem(TOKEN_KEY, result.token);
+      const storage = Data._options.AsyncTokenStorage || Data._options.AsyncStorage;
+      storage.setItem(TOKEN_KEY, result.token);
       Data._tokenIdSaved = result.token;
       this._reactiveDict.set('_userIdSaved', result.id);
       User._userIdSaved = result.id;
@@ -270,7 +272,8 @@ const User = {
     User._startLoggingIn();
     var value = null;
     try {
-      value = await Data._options.AsyncStorage.getItem(TOKEN_KEY);
+      const storage = Data._options.AsyncTokenStorage || Data._options.AsyncStorage;
+      value = await storage.getItem(TOKEN_KEY);
       User._loginWithToken(value);
     } catch (error) {
       User._endLoggingIn();
