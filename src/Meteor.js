@@ -129,6 +129,10 @@ const Meteor = {
       }
     }
 
+    if (!options.AsyncTokenStorage) {
+      options.AsyncTokenStorage = options.AsyncStorage;
+    }
+
     Data._endpoint = endpoint;
     Data._options = options;
 
