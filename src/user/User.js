@@ -163,6 +163,7 @@ const User = {
       this._reactiveDict.set('_userIdSaved', result.id);
       User._userIdSaved = result.id;
       User._endLoggingIn();
+      Meteor._reactiveDict.set('_userReady', true);
       this._isTokenLogin = false;
       Data.notify('onLogin');
     } else {
@@ -191,6 +192,7 @@ const User = {
                 'User._handleLoginCallback::: 10000ms timeout exceeded, ending logging in.'
               );
             User._endLoggingIn();
+            Meteor._reactiveDict.set('_userReady', true);
             Data.notify('onLoginFailure', err);
             return;
           }
@@ -202,6 +204,7 @@ const User = {
             'User._handleLoginCallback::: not token login, ending logging in.'
           );
         User._endLoggingIn();
+        Meteor._reactiveDict.set('_userReady', true);
         Data.notify('onLoginFailure', err);
       }
     }
@@ -272,8 +275,8 @@ const User = {
       Data.notify('onLoginFailure', err);
       Data.notify('change');
       User._endLoggingIn();
+      Meteor._reactiveDict.set('_userReady', true);
     }
-    Meteor._reactiveDict.set('_userReady', true);
   },
   getAuthToken() {
     return Data._tokenIdSaved;
