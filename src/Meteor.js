@@ -185,6 +185,9 @@ const Meteor = {
         sub.readyDeps.changed();
       }
 
+      // Mark user as not ready
+      this._reactiveDict.set('_userReady', false);
+
       if (!Data.ddp.autoReconnect) return;
 
       if (!lastDisconnect || new Date() - lastDisconnect > 3000) {

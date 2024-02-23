@@ -32,6 +32,9 @@ const User = {
     const user = Users.findOne(user_id);
     return user && user._id;
   },
+  userReady() {
+    return !!Meteor._reactiveDict.get('_userReady');
+  },
   _isLoggingIn: true,
   _isLoggingOut: false,
   loggingIn() {
@@ -53,6 +56,8 @@ const User = {
   handleLogout() {
     Data._options.AsyncTokenStorage.removeItem(TOKEN_KEY);
     Data._tokenIdSaved = null;
+    Meteor.isVerbose &&
+      console.info('User.handleLogout()::: userId Saved: null');
     this._reactiveDict.set('_userIdSaved', null);
 
     User._userIdSaved = null;
@@ -268,11 +273,13 @@ const User = {
       Data.notify('change');
       User._endLoggingIn();
     }
+    Meteor._reactiveDict.set('_userReady', true);
   },
   getAuthToken() {
     return Data._tokenIdSaved;
   },
   async _loadInitialUser() {
+    Meteor._reactiveDict.set('_userReady', false);
     this._timeout = 500;
 
     User._startLoggingIn();
