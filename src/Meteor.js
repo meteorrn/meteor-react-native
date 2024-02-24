@@ -12,6 +12,7 @@ import withTracker from './components/withTracker';
 import useTracker from './components/useTracker';
 
 import ReactiveDict from './ReactiveDict';
+import User from './user/User.js';
 
 /**
  * @namespace Meteor
@@ -162,12 +163,12 @@ const Meteor = {
       if (this.isVerbose) {
         console.info('Connected to DDP server.');
       }
-      this._loadInitialUser().then(() => {
+      User._loadInitialUser().then(() => {
         this._subscriptionsRestart();
+        this._reactiveDict.set('connected', true);
+        this.connected = true;
+        Data.notify('change');  
       });
-      this._reactiveDict.set('connected', true);
-      this.connected = true;
-      Data.notify('change');
     });
 
     let lastDisconnect = null;
