@@ -146,6 +146,9 @@ const Meteor = {
     this.ddp = ddp;
 
     Data.ddp.on('connected', () => {
+
+      Meteor._reactiveDict.set('_userReady', false);
+      
       // Clear the collections of any stale data in case this is a reconnect
       if (Data.db && Data.db.collections) {
         for (var collection in Data.db.collections) {
