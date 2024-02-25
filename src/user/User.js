@@ -33,7 +33,7 @@ const User = {
     return user && user._id;
   },
   userReady() {
-    return !!Meteor._reactiveDict.get('_userReady');
+    return Meteor._reactiveDict.get('_userReady');
   },
   _isLoggingIn: true,
   _isLoggingOut: false,
@@ -279,7 +279,6 @@ const User = {
     return Data._tokenIdSaved;
   },
   async _loadInitialUser() {
-    Meteor._reactiveDict.set('_userReady', false);
     this._timeout = 500;
 
     User._startLoggingIn();
