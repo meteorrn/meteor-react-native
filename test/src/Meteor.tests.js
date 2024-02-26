@@ -6,7 +6,7 @@ import DDP from '../../lib/ddp';
 import { endpoint } from '../testHelpers';
 import { server } from '../hooks/mockServer';
 import Random from '../../lib/Random';
-import Data from '../../src/Data';
+import Tracker from '../../src/Tracker'
 
 Meteor.enableVerbose();
 
@@ -122,7 +122,38 @@ describe('Meteor - integration', function () {
         }, 100);
       });
 
-      Meteor.getData().ddp.connect();
+      Meteor.reconnect();
     });
+    it('returns a reactive handle to resolve ready state', (done) => {
+      Meteor.isVerbose = false;
+      Meteor.connect(endpoint, { NetInfo: null, autoConnect: false });
+      const collection = new Mongo.Collection('bazSubs');
+      const _id = Random.id();
+
+      server().publish({
+        name: 'baz',
+        collection: 'bazSubs',
+        getDocs: () => ({ _id, foo: 'bar' }),
+      });
+
+      Meteor.getData().waitDdpConnected(() => {
+        setTimeout(() => {
+          const handle = Meteor.subscribe('baz');
+
+          Tracker.autorun((c) => {
+            console.debug('autorun', handle, handle.ready())
+              if (handle.ready()) {
+                expect(collection.find({}).fetch()).to.deep.equal([
+                  { _id, foo: 'bar', _version: 1 },
+                ]);
+                c.stop();
+                done();
+              }
+          })
+        }, 100);
+      });
+
+      Meteor.reconnect();
+    })
   });
 });
