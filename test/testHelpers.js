@@ -3,6 +3,8 @@ import Meteor from '../src/Meteor';
 
 export const stubs = new Map();
 
+export const endpoint = 'ws://localhost:3000/websocket';
+
 export const stub = (target, name, handler) => {
   if (stubs.get(target)) {
     throw new Error(`already stubbed: ${name}`);
@@ -46,4 +48,15 @@ export const awaitDisconnected = async () => {
       }
     }, 100);
   });
+};
+
+// credits: https://stackoverflow.com/a/30158566/3098783
+export const props = (obj) => {
+  let p = [];
+  for (; obj != null; obj = Object.getPrototypeOf(obj)) {
+    let op = Object.getOwnPropertyNames(obj);
+    for (let i = 0; i < op.length; i++)
+      if (p.indexOf(op[i]) === -1) p.push(op[i]);
+  }
+  return p;
 };
