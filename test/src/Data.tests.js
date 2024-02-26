@@ -18,7 +18,9 @@ describe('Data', function () {
   describe(Data.getUrl.name, function () {
     it('returns the endpoint url', () => {
       data._endpoint = null;
-      expect(() => data.getUrl()).to.throw('Cannot read property \'substring\' of null');
+      expect(() => data.getUrl()).to.throw(
+        "Cannot read property 'substring' of null"
+      );
       data._endpoint = endpoint;
       const base = data.getUrl();
       expect(base).to.equal('ws://localhost:3000');

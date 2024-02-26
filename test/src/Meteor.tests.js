@@ -6,7 +6,7 @@ import DDP from '../../lib/ddp';
 import { endpoint } from '../testHelpers';
 import { server } from '../hooks/mockServer';
 import Random from '../../lib/Random';
-import Tracker from '../../src/Tracker'
+import Tracker from '../../src/Tracker';
 
 Meteor.enableVerbose();
 
@@ -141,19 +141,19 @@ describe('Meteor - integration', function () {
           const handle = Meteor.subscribe('baz');
 
           Tracker.autorun((c) => {
-            console.debug('autorun', handle, handle.ready())
-              if (handle.ready()) {
-                expect(collection.find({}).fetch()).to.deep.equal([
-                  { _id, foo: 'bar', _version: 1 },
-                ]);
-                c.stop();
-                done();
-              }
-          })
+            console.debug('autorun', handle, handle.ready());
+            if (handle.ready()) {
+              expect(collection.find({}).fetch()).to.deep.equal([
+                { _id, foo: 'bar', _version: 1 },
+              ]);
+              c.stop();
+              done();
+            }
+          });
         }, 100);
       });
 
       Meteor.reconnect();
-    })
+    });
   });
 });
