@@ -185,7 +185,6 @@ describe('Meteor - integration', function () {
           const handle = Meteor.subscribe('baz');
 
           Tracker.autorun((c) => {
-            console.debug('autorun', handle, handle.ready());
             if (handle.ready()) {
               expect(collection.find({}).fetch()).to.deep.equal([
                 { _id, foo: 'bar', _version: 1 },

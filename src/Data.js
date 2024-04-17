@@ -72,7 +72,13 @@ const Data = {
    * @returns {string} the connection url
    */
   getUrl() {
-    return this._endpoint.substring(0, this._endpoint.indexOf('/websocket'));
+    const ep = this._endpoint;
+    if (!ep) {
+      throw new Error(
+        `Expected a configured endpoint, got ${ep}, did you forget to call Meteor.connect({...})?`
+      );
+    }
+    return ep.substring(0, ep.indexOf('/websocket'));
   },
 
   /**

@@ -19,7 +19,7 @@ describe('Data', function () {
     it('returns the endpoint url', () => {
       data._endpoint = null;
       expect(() => data.getUrl()).to.throw(
-        "Cannot read property 'substring' of null"
+        'Expected a configured endpoint, got null, did you forget to call Meteor.connect({...})?'
       );
       data._endpoint = endpoint;
       const base = data.getUrl();
@@ -63,16 +63,19 @@ describe('Data', function () {
       data.ddp.connect();
     });
     it('resolves, once connected', (done) => {
+      const beforeDDP = data.ddp;
       Meteor.connect(endpoint, {
         NetInfo: null,
         autoConnect: false,
         autoReconnect: false,
       });
+      expect(beforeDDP).to.not.equal(data.ddp);
+
       data.ddp.once('connected', () => {
-        data.waitDdpConnected(() => {
-          done();
-        });
+        data.waitDdpConnected(() => done());
       });
+
+      data.ddp.connect();
     });
     it('resolves, once ddp is ready and connected', (done) => {
       data.ddp = null;
