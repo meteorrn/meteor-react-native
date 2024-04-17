@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: lib/socket.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: lib/socket.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import EventEmitter from 'eventemitter3';
+import EJSON from 'ejson';
+import './mongo-id'; //  Register mongo object ids */
+
+const events = ['open', 'close', 'message:in', 'message:out'];
+
+/**
+ * Wrapper-class for whatever native Websocket implementation
+ * we use.
+ * Standardizes messaging, so it's compatible with the Meteor backend.
+ * @class
+ */
+export default class Socket extends EventEmitter {
+  /**
+   * Instantiate a new Socket. Pass the actual Socket implementation as constructor.
+   * @example
+   * const socket = Socket(Websocket, 'ws://localhost:3000/websocket');
+   * socket.on('open', () => {
+   *   // When the socket opens, send the `connect` message
+   *   // to establish the DDP connection
+   *   socket.send({
+   *     msg: 'connect',
+   *     version: '1.0',
+   *     support: ['1.0'],
+   *   });
+   * });
+   * socket.open();
+   * @constructor
+   * @param SocketConstructor {function} constructor function (Es5) or class (es6+) passed. Don't pass the instance!
+   * @param endpoint {string} the websocket endpoint, usually (but not necessarily)
+   *  starts with ws:// or wss:// and ends with /websocket
+   */
+  constructor(SocketConstructor, endpoint) {
+    super();
+    this.SocketConstructor = SocketConstructor;
+    this.endpoint = endpoint;
+    this.rawSocket = null;
+  }
+
+  /**
+   * Sends a message out using the underlying
+   * Websocket implementation.
+   * @param object {object}
+   */
+  send(object) {
+    if (!this.closing) {
+      const message = EJSON.stringify(object);
+      this.rawSocket.send(message);
+      // Emit a copy of the object, as the listener might mutate it.
+      this.emit('message:out', EJSON.parse(message));
+    }
+  }
+
+  /**
+   * Makes `open` a no-op if there's already a `rawSocket`.
+   * This avoids memory / socket leaks if `open` is called twice (e.g. by a user
+   * calling `ddp.connect` twice) without properly disposing of the
+   * socket connection.
+   *
+   * `rawSocket` gets automatically set to `null` only when it goes into a
+   * closed or error state.
+   *
+   * This way `rawSocket` is disposed of correctly: the socket connection is closed,
+   * and the object can be garbage collected.
+   *
+   * @emits 'open' event
+   * @emits 'error' event
+   */
+  open() {
+    if (this.rawSocket) {
+      return;
+    }
+    this.closing = false;
+    this.rawSocket = new this.SocketConstructor(this.endpoint);
+
+    /*
+     *   Calls to `onopen` and `onclose` directly trigger the `open` and
+     *   `close` events on the `Socket` instance.
+     */
+    this.rawSocket.onopen = () => this.emit('open');
+    this.rawSocket.onclose = () => {
+      this.rawSocket = null;
+      this.emit('close');
+      // TODO check in tests if this is still true when on close callbacks
+      this.closing = false;
+    };
+    /*
+     *   Calls to `onmessage` trigger a `message:in` event on the `Socket`
+     *   instance only once the message (first parameter to `onmessage`) has
+     *   been successfully parsed into a javascript object.
+     */
+    this.rawSocket.onmessage = (message) => {
+      var object;
+      try {
+        object = EJSON.parse(message.data);
+      } catch (ignore) {
+        // Simply ignore the malformed message and return
+        return;
+      }
+      // Outside the try-catch block as it must only catch JSON parsing
+      // errors, not errors that may occur inside a "message:in" event
+      // handler
+      this.emit('message:in', object);
+    };
+
+    /**
+     * Delegate the catched error one level up
+     * @param event {Event} a generic Event that contains the error
+     */
+    this.rawSocket.onerror = (event) => {
+      event.isRaw = true;
+      this.emit('error', event);
+    };
+  }
+
+  /**
+   * Attempts to close the socket.
+   * Leads to emitting the 'close' event.
+   * @emits 'close' event
+   */
+  close() {
+    /*
+     *   Avoid throwing an error if `rawSocket === null`
+     */
+    if (this.rawSocket) {
+      this.closing = true;
+      this.rawSocket.close();
+    }
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Data.html">Data</a></li><li><a href="Meteor.html">Meteor</a></li><li><a href="Mongo.html">Mongo</a></li><li><a href="Tracker.html">Tracker</a></li><li><a href="User.html">User</a></li></ul><h3>Classes</h3><ul><li><a href="AccountsPassword.html">AccountsPassword</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Cursor.html">Cursor</a></li><li><a href="DDP.html">DDP</a></li><li><a href="MongoID.ObjectID.html">ObjectID</a></li><li><a href="Tracker.Computation.html">Computation</a></li><li><a href="Tracker.Dependency.html">Dependency</a></li><li><a href="module.html#.exports">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#MongoID">MongoID</a></li><li><a href="global.html#SHA256">SHA256</a></li><li><a href="global.html#close">close</a></li><li><a href="global.html#empty">empty</a></li><li><a href="global.html#getObservers">getObservers</a></li><li><a href="global.html#hasOwn">hasOwn</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#isPlainObject">isPlainObject</a></li><li><a href="global.html#isWindow">isWindow</a></li><li><a href="global.html#localCollections">localCollections</a></li><li><a href="global.html#open">open</a></li><li><a href="global.html#process">process</a></li><li><a href="global.html#push">push</a></li><li><a href="global.html#send">send</a></li><li><a href="global.html#stringify">stringify</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#uniqueId">uniqueId</a></li><li><a href="global.html#withNoYieldsAllowed">withNoYieldsAllowed</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Apr 17 2024 08:46:35 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

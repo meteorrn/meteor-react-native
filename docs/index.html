@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><div align="center">
+  <a href="https://github.com/meteorrn/meteor-react-native">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="logo.svg">
+    <img alt="Novu Logo" src="logo.svg" width="280"/>
+  </picture>
+  </a>
+</div>
+<h1 align="center">Meteor React Native</h1>
+<div align="center">
+<p><a href="https://meteor.com"><img src="https://img.shields.io/badge/Meteor-npm%20package-green?logo=meteor&amp;logoColor=white" alt="built for Meteor"></a>
+<a href="https://github.com/meteorrn/meteor-react-native/actions/workflows/node.js.yml"><img src="https://github.com/meteorrn/meteor-react-native/actions/workflows/node.js.yml/badge.svg" alt="Node.js CI"></a>
+<a href="https://github.com/meteorrn/meteor-react-native/actions/workflows/codeql-analysis.yml"><img src="https://github.com/meteorrn/meteor-react-native/actions/workflows/codeql-analysis.yml/badge.svg" alt="CodeQL"></a>
+<img src="https://img.shields.io/npm/v/%40meteorrn/core" alt="npm version">
+<img src="https://img.shields.io/npm/dm/@meteorrn/core" alt="npm downloads">
+<a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="code style: prettier"></a>
+<img src="https://img.shields.io/npm/l/%40meteorrn%2Fcore" alt="NPM"></p>
+</div>
+<p align="center">
+Connect your React Native app to your Meteor server, and take advantage of Meteor-specific features like accounts, reactive data trackers, etc. Compatible with the latest version of React Native.
+</p>
+<p align="center">
+<a href="https://guide.meteor.com/react-native.html">Meteor Guide</a>
+<span>·</span>
+<a href="https://dev.to/jankapunkt/meteor-and-react-native-create-a-native-mobile-app-2ile">Beginners Workshop</a>
+<span>·</span>
+<a href="https://github.com/meteorrn/meteor-react-native/blob/master/docs/index.html">Full API Documentation</a>
+<span>·</span>
+<a href="https://github.com/meteorrn/sample">Example Project</a>
+<span>·</span>
+<a href="https://github.com/jankapunkt/meteor-react-native-starter">Starter Template (Expo)</a>
+<span>·</span>
+<a href="https://github.com/meteorrn">More packages and resources</a>
+</p>
+<h2>Features</h2>
+<ul>
+<li>🪄 Meteor's &quot;automagical&quot; features for your mobile app</li>
+<li>🌱 Easy to set up and integrate</li>
+<li>🚀 Build mobile apps with React-Native + Meteor in no time</li>
+<li>🌈 Zero-Config Accounts / Authentication</li>
+<li>📦 Storage-independent with zero-config defaults</li>
+<li>👋 Supportive community in the <a href="https://forums.meteor.com">Meteor Forums</a>, <a href="https://meteor-community.slack.com/">Slack</a> or <a href="https://discord.gg/9GDmECsYdH">Discord</a>!</li>
+</ul>
+<h2>Table of Contents</h2>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#installation">Installation</a>
+<ul>
+<li><a href="#use-a-different-async-storage">Use a different async storage</a></li>
+<li><a href="#using-expo-secure-store">Using Expo Secure Store</a></li>
+</ul>
+</li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#companion-packages">Companion Packages</a></li>
+<li><a href="#compatibility">Compatibility</a></li>
+<li><a href="#using-on-web">Using on Web</a></li>
+<li><a href="#changelog">Changelog</a></li>
+<li><a href="#package-interface">Package Interface</a>
+<ul>
+<li><a href="#usage-of-the-package-interface">Usage of the package interface</a></li>
+<li><a href="#differences-from-meteor-core-to-note">Differences from Meteor Core to Note:</a></li>
+</ul>
+</li>
+<li><a href="#showcase">Showcase</a></li>
+<li><a href="#contribution-and-maintenance">Contribution and maintenance</a></li>
+<li><a href="#license">License</a></li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<h2>Installation</h2>
+<ol>
+<li><code>npm install --save @meteorrn/core</code></li>
+<li>Confirm you have peer dependency <code>@react-native-community/netinfo</code> installed</li>
+<li>Confirm you have <code>@react-native-async-storage/async-storage@&gt;=1.8.1</code> installed.
+If you are using Expo, or otherwise cannot use <code>@react-native-async-storage/async-storage</code>, read below</li>
+</ol>
+<h3>Use a different async storage</h3>
+<p>This package uses <code>@react-native-async-storage/async-storage</code> by default.
+This may cause issues if you are using certain React Native versions, or if you are using Expo.
+To use a custom AsyncStorage implementation, pass it as an option in <code>Meteor.connect</code>:</p>
+<pre class="prettyprint source lang-javascript"><code>import { AsyncStorage } from 'react-native';
+
+// ...
+
+Meteor.connect('wss://myapp.meteor.com/websocket', { AsyncStorage });
+</code></pre>
+<p>If you are using the <code>AsyncStorage</code> API yourself, its important that you use the same version that MeteorRN is using, or issues could be caused due to the conflicting versions.</p>
+<p>Make sure you are using the same AsyncStorage you pass into Meteor (or <code>@react-native-async-storage/async-storage</code> if you aren't passing anything), or you can use <a href="#package-interface">MeteorRN's package interface</a>.</p>
+<h3>Using Expo Secure Store</h3>
+<p>This example shows how to use Expo's secure store implementation as Async storage.
+Note, that secure storage in both Android and iOS have a low upper size limit of a few megabytes.</p>
+<pre class="prettyprint source lang-js"><code>import * as SecureStore from 'expo-secure-store';
+
+// ...
+
+Meteor.connect('wss://myapp.meteor.com/websocket', {
+  AsyncStorage: {
+    getItem: SecureStore.getItemAsync,
+    setItem: SecureStore.setItemAsync,
+    removeItem: SecureStore.deleteItemAsync,
+  },
+});
+</code></pre>
+<h2>Basic Usage</h2>
+<pre class="prettyprint source lang-javascript"><code>import Meteor, { Mongo, withTracker } from '@meteorrn/core';
+
+// &quot;mycol&quot; should match the name of the collection on your meteor server,
+// or pass null for a local collection
+let MyCol = new Mongo.Collection('mycol');
+
+Meteor.connect('wss://myapp.meteor.com/websocket'); // Note the /websocket after your URL
+
+class App extends React.Component {
+  render() {
+    let { myThing } = this.props;
+
+    return (
+      &lt;View>
+        &lt;Text>Here is the thing: {myThing.name}&lt;/Text>
+      &lt;/View>
+    );
+  }
+}
+
+let AppContainer = withTracker(() => {
+  Meteor.subscribe('myThing');
+  let myThing = MyCol.findOne();
+
+  return {
+    myThing,
+  };
+})(App);
+
+export default AppContainer;
+</code></pre>
+<p><strong>Unique Scenarios:</strong>
+Running the app on a physical device but want to connect to local development machine? Check out <a href="https://github.com/TheRealNate/meteor-react-native/issues/82#issuecomment-1012867899">this issue comment</a>.</p>
+<h2>Companion Packages</h2>
+<p>The <code>@meteorrn/core</code> package has been kept as light as possible. To access more features, you can use companion packages.</p>
+<p>Here are some examples:</p>
+<ul>
+<li><code>@meteorrn/oauth-google</code>: Allows you to let users login to your app with Google</li>
+<li><code>@meteorrn/oauth-facebook</code>: Allows you to let users login to your app with Facebook</li>
+</ul>
+<p>For the full list of officially recognized packages,
+check out <a href="https://github.com/meteorrn">the @meteorrn github org</a>.</p>
+<h2>Compatibility</h2>
+<p>This package is compatible with React Native versions from 0.60.0 to latest (0.63.2)</p>
+<p>For React Native &lt;0.60.0 use <a href="https://github.com/inProgress-team/react-native-meteor">react-native-meteor</a>.</p>
+<p><strong>Migrating from <code>react-native-meteor</code>:</strong></p>
+<ul>
+<li>cursoredFind is no longer an option. All .find() calls will return cursors (to match Meteor)</li>
+<li><code>MeteorListView</code> &amp; <code>MeteorComplexListView</code> have been removed</li>
+<li><code>CollectionFS</code> has been removed</li>
+<li><code>createContainer</code> has been removed</li>
+<li>Mixins (<code>connectMeteor</code>) have been removed</li>
+<li><code>composeWithTracker</code> has been removed</li>
+</ul>
+<h2>Using on Web</h2>
+<p>While this package was designed with React Native in mind, it is also capable of running on web (using <code>react-dom</code>). This can be useful if you need a light-weight Meteor implementation, if you want to create a client app separate from your server codebase, etc. The only change required is providing an AsyncStorage implementation. Here is a simple example:</p>
+<pre class="prettyprint source lang-js"><code>const AsyncStorage = {
+    setItem:async (key, value) => window.localStorage.setItem(key, value),
+    getItem:async (key) => window.localStorage.getItem(key)
+    removeItem:async (key) => window.localStorage.removeItem(key)
+}
+
+Meteor.connect(&quot;wss://.../websock&quot;, {AsyncStorage});
+</code></pre>
+<h2>Changelog</h2>
+<p>The <a href="https://github.com/TheRealNate/meteor-react-native/releases">GitHub Releases Tab</a> includes a full changelog</p>
+<h2>Package Interface</h2>
+<p>To ensure that MeteorRN companion packages use the same versions of external packages like AsyncStorage as the core,
+<code>@meteorrn/core</code> provides a package interface, where companion packages can access certain packages.
+Currently, package interface returns an object with the following properties:</p>
+<ul>
+<li>AsyncStorage</li>
+</ul>
+<h3>Usage of the package interface</h3>
+<pre class="prettyprint source lang-js"><code>import Meteor from '@meteorrn/core';
+
+const { AsyncStorage } = Meteor.packageInterface();
+</code></pre>
+<h3>Differences from Meteor Core to Note:</h3>
+<ul>
+<li>This API does not implement <code>observeChanges</code> (but it does implement <code>observe</code>)</li>
+</ul>
+<h2>Advanced topics</h2>
+<h3>Logging library internals</h3>
+<p>The library includes several internal classes and constructs,
+that are mostly operate on their own and without user's influence.</p>
+<p>Debugging the library working as expected requires listening to several events.
+The following shows several events that allow for detailed logging and inspection.</p>
+<blockquote>
+<p>The logging can be useful for analysis and instrumentation of production apps
+where no console access is possible</p>
+</blockquote>
+<h4>Data level events (high level)</h4>
+<p>The most convenient way to track internals is via <code>Data.onChange</code>:</p>
+<pre class="prettyprint source lang-js"><code>const Data = Meteor.getData();
+data.onChange((event) => console.debug(event));
+</code></pre>
+<p>Under the hood this does:</p>
+<pre class="prettyprint source lang-js"><code>this.db.on('change', cb);
+this.ddp.on('connected', cb);
+this.ddp.on('disconnected', cb);
+this.on('loggingIn', cb);
+this.on('loggingOut', cb);
+this.on('change', cb);
+</code></pre>
+<p>You can also listen on <code>loggingIn</code>, <code>loggingOut</code>, <code>onLogin</code>, <code>onLoginFailure</code>
+and <code>change</code> individually:</p>
+<pre class="prettyprint source lang-js"><code>const Data = Meteor.getData();
+Data.on('loggingIn', (e) => console.debug('loggingIn', e));
+// ...
+</code></pre>
+<h4>DDP events (high-level)</h4>
+<pre class="prettyprint source lang-js"><code>const events = [
+  // connection messages
+  'connected',
+  'disconnected',
+  // Subscription messages (Meteor Publications)
+  'ready',
+  'nosub',
+  'added',
+  'changed',
+  'removed',
+  // Method messages (Meteor Methods)
+  'result',
+  'updated',
+  // Error messages
+  'error',
+];
+const Data = Meteor.getData();
+events.forEach((eventName) => {
+  Data.ddp.on(eventName, (event) => console.debug(eventName, event));
+});
+</code></pre>
+<h4>Websocket events (low-level)</h4>
+<p>The library attempts to use the native Websocket, provided by ReactNative.
+With the following events you can hook into the low-level messaging with the server:</p>
+<ul>
+<li><code>open</code> - the Websocket successfully opens</li>
+<li><code>close</code> - the Websocket successfully closes</li>
+<li><code>message:out</code> - a message is sent to the server</li>
+<li><code>message:in</code> - a message comes in from the server</li>
+<li><code>error</code> - an error occurred on the Websocket level</li>
+</ul>
+<pre class="prettyprint source lang-js"><code>const Data = Meteor.getData();
+const socket = Data.ddp.socket;
+const events = ['open', 'close', 'message:out', 'message:in', 'error'];
+events.forEach((eventName) => {
+  socket.on(eventName, (event) => console.debug(eventName, event));
+});
+</code></pre>
+<h4>Raw Websocket (lowest-level)</h4>
+<p>There is the possibility to hook into Websocket one level lower by accessing the
+raw socket.</p>
+<blockquote>
+<p>This is highly discouraged for production, use at your own risk!
+Note, that Data.ddp.socket listens to some of these already (e.g. error)
+and bubbles them up but also handles cleanup and garbage collection properly.
+Raw socket errors will have the <code>isRaw</code> property set to <code>true</code>.</p>
+</blockquote>
+<pre class="prettyprint source lang-js"><code>const Data = Meteor.getData();
+const rawSocket = Data.ddp.socket.rawSocket;
+rawSocket.onopen = (e) => console.debug('raw open', e);
+rawSocket.onmessage = (e) => console.debug('raw message', e);
+rawSocket.onclose = (e) => console.debug('raw close', e);
+rawSocket.onerror = (e) => console.debug('raw error', e);
+</code></pre>
+<h4>Minimongo (low-level)</h4>
+<p>You can hook into DB events from minimongo directly:</p>
+<pre class="prettyprint source lang-js"><code>const Data = Meteor.getData();
+Data.db.on('change', (e) => console.debug(e));
+</code></pre>
+<h3>Send logs and errors to the server and external services</h3>
+<p>While Meteor relies on Websocket connections and DDP as protocol,
+you might want sometimes to send data over HTTP.</p>
+<p>The following example provides an easy way to listen to errors and send them
+to a service via <code>fetch</code> request:</p>
+<pre class="prettyprint source lang-js"><code>// in your App code
+const errorToBody = (err) => {
+  const errProps = Object.getOwnPropertyNames(err);
+  const formBody = [];
+  for (const prop of errProps) {
+    const encodedKey = encodeURIComponent(prop);
+    const encodedValue = encodeURIComponent(err[prop]);
+    formBody.push(encodedKey + '=' + encodedValue);
+  }
+  return formBody.join('&');
+};
+
+const sendError = (err) => {
+  fetch('https://mydomain.tld/log/error', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
+    body: errToBody(err),
+  })
+    .then(console.debug)
+    .catch(console.error);
+};
+
+// hook into all DDP and socket-level errors
+const Data = Meteor.getData();
+Data.dpp.on('error', (e) => {
+  const error = e instanceof Error ? e : e?.error;
+  return error && sendError(error);
+});
+</code></pre>
+<h4>Accounts</h4>
+<h2>Showcase</h2>
+<table>
+<thead>
+<tr>
+<th>Whazzup.co</th>
+<th>StarlingRealtime</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://user-images.githubusercontent.com/16267331/120551863-84907c80-c3c4-11eb-8e32-39b950b67875.png" height="200" align="center"></td>
+<td><img src="https://uploads-ssl.webflow.com/5f112aac57df16c9ac9c21e0/5f11b8a2e5a66ea03a1a9835_android-chrome-512x512%20copy.png" height="200" align="center"></td>
+</tr>
+<tr>
+<td><a href="https://whazzup.co/">Whazzup.co</a> uses Meteor React Native in their native app</td>
+<td><a href="https://www.starlingrealtime.com/">StarlingRealtime</a> uses Meteor React Native in their production app</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>lea.online</th>
+<th>Plan B Schule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://avatars.githubusercontent.com/u/48286741?s=250&v=4" height="200" align="center"></td>
+<td><img src="https://planb.schule/wp-content/uploads/2024/01/logo-blau.png" height="200" align="center"></td>
+</tr>
+<tr>
+<td><a href="https://github.com/leaonline">lea.online</a> uses Meteor React Native in their <a href="https://github.com/leaonline/leaonline-app">native mobile learning app</a></td>
+<td><a href="https://www.planb.schule">Plan B Schule</a> uses Meteor React Native in their production app</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Want to showcase your app using meteor-react-native?</strong> Just create a PR to add your logo here.</p>
+<h2>Contribution and maintenance</h2>
+<p>Meteor React Native is maintained by <a href="https://github.com/jankapunkt">Jan Küster</a>
+and was formerly maintained by <a href="github.com/therealnate">Nathaniel Dsouza</a>
+who is available for consultation: nate@notaiyet.io</p>
+<blockquote>
+<p>We appreciate any contributions to this project!</p>
+</blockquote>
+<p>If you have an issue, a question or want to discuss things, then use our <a href="https://github.com/meteorrn/meteor-react-native/issues/new/choose">issue link</a> that will help you find the
+right spot to ask or tell.</p>
+<p>If you want to contribute code, then please, make sure you have read our <a href="./CONTRIBUTING.md">contribution guide</a> and our
+<a href="./CODE_OF_CONDUCT.md">code of conduct</a>.</p>
+<p>You can <a href="https://github.com/meteorrn/meteor-react-native/discussions/categories/q-a">ask us anytime</a>, if you get stuck or any of these documents are unclear to you.</p>
+<h2>License</h2>
+<p>MIT, see <a href="./LICENSE">license file</a></p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Data.html">Data</a></li><li><a href="Meteor.html">Meteor</a></li><li><a href="Mongo.html">Mongo</a></li><li><a href="Tracker.html">Tracker</a></li><li><a href="User.html">User</a></li></ul><h3>Classes</h3><ul><li><a href="AccountsPassword.html">AccountsPassword</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Cursor.html">Cursor</a></li><li><a href="DDP.html">DDP</a></li><li><a href="MongoID.ObjectID.html">ObjectID</a></li><li><a href="Tracker.Computation.html">Computation</a></li><li><a href="Tracker.Dependency.html">Dependency</a></li><li><a href="module.html#.exports">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#MongoID">MongoID</a></li><li><a href="global.html#SHA256">SHA256</a></li><li><a href="global.html#close">close</a></li><li><a href="global.html#empty">empty</a></li><li><a href="global.html#getObservers">getObservers</a></li><li><a href="global.html#hasOwn">hasOwn</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#isPlainObject">isPlainObject</a></li><li><a href="global.html#isWindow">isWindow</a></li><li><a href="global.html#localCollections">localCollections</a></li><li><a href="global.html#open">open</a></li><li><a href="global.html#process">process</a></li><li><a href="global.html#push">push</a></li><li><a href="global.html#send">send</a></li><li><a href="global.html#stringify">stringify</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#uniqueId">uniqueId</a></li><li><a href="global.html#withNoYieldsAllowed">withNoYieldsAllowed</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Apr 17 2024 08:46:35 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

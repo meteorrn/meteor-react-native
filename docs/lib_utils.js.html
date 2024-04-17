@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: lib/utils.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: lib/utils.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { SHA256 } from './sha256';
+
+var i = 0;
+
+/**
+ * Returns an ever incrementing integer value as string
+ * @returns {string}
+ */
+export function uniqueId() {
+  return (i++).toString();
+}
+
+/**
+ * Returns a Meteor-Accounts compatible password hash.
+ * @param password
+ * @returns {{digest: string, algorithm: string}}
+ */
+export function hashPassword(password) {
+  // XXX: we should extract this function in a way to let clients inject
+  // it, so they can leverage react-native crypto packages that
+  // implement a secure hashing algorithm like bcrypt
+  // but ut we should do it in a way, that this is the default
+  return {
+    digest: SHA256(password),
+    algorithm: 'sha-256',
+  };
+}
+
+//From Meteor core
+var class2type = {};
+
+var toString = class2type.toString;
+
+/**
+ * Short for Object.prototype.hasOwnProperty.call
+ * @param obj {*}
+ * @param prop {string}
+ * @returns {boolean}
+ */
+export const hasOwn = (obj, prop) =>
+  Object.prototype.hasOwnProperty.call(obj, prop);
+
+var support = {};
+
+// Populate the class2type map
+// TODO should we include Symbol, Generator, Iterator, BigInt etc.?
+const typeMap = 'Boolean Number String Function Array Date RegExp Object Error';
+typeMap.split(' ').forEach((name, i) => {
+  class2type[`[object ${name}]`] = name.toLowerCase();
+});
+
+/**
+ * Attempts to reliably determine the type of a given value
+ * @param obj {any}
+ * @returns {string}
+ */
+function type(obj) {
+  if (obj == null) {
+    return obj + '';
+  }
+  return typeof obj === 'object' || typeof obj === 'function'
+    ? class2type[toString.call(obj)] || 'object'
+    : typeof obj;
+}
+
+/**
+ * Ducktyping check if an object is the window object
+ * @param obj
+ * @returns {boolean}
+ */
+function isWindow(obj) {
+  /* jshint eqeqeq: false */
+  return obj != null &amp;&amp; obj == obj.window;
+}
+
+/**
+ * Checks, whether a given object is a plain object,
+ * as opposed to objects that are instances of a class
+ * other than Object.
+ * @param obj
+ * @returns {boolean}
+ */
+export function isPlainObject(obj) {
+  var key;
+
+  // Must be an Object.
+  // Because of IE, we also have to check the presence of the constructor property.
+  // Make sure that DOM nodes and window objects don't pass through, as well
+  if (!obj || type(obj) !== 'object' || obj.nodeType || isWindow(obj)) {
+    return false;
+  }
+
+  try {
+    // Not own constructor property must be Object
+    if (
+      obj.constructor &amp;&amp;
+      !hasOwn(obj, 'constructor') &amp;&amp;
+      !hasOwn(obj.constructor.prototype, 'isPrototypeOf')
+    ) {
+      return false;
+    }
+  } catch (e) {
+    // IE8,9 Will throw exceptions on certain host objects #9897
+    return false;
+  }
+
+  // Support: IE&lt;9
+  // Handle iteration over inherited properties before own properties.
+  if (support.ownLast) {
+    for (key in obj) {
+      return hasOwn(obj, key);
+    }
+  }
+
+  // Own properties are enumerated firstly, so to speed up,
+  // if last one is own, then all properties are own.
+  for (key in obj) {
+  }
+
+  return key === undefined || hasOwn(obj, key);
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Data.html">Data</a></li><li><a href="Meteor.html">Meteor</a></li><li><a href="Mongo.html">Mongo</a></li><li><a href="Tracker.html">Tracker</a></li><li><a href="User.html">User</a></li></ul><h3>Classes</h3><ul><li><a href="AccountsPassword.html">AccountsPassword</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Cursor.html">Cursor</a></li><li><a href="DDP.html">DDP</a></li><li><a href="MongoID.ObjectID.html">ObjectID</a></li><li><a href="Tracker.Computation.html">Computation</a></li><li><a href="Tracker.Dependency.html">Dependency</a></li><li><a href="module.html#.exports">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#MongoID">MongoID</a></li><li><a href="global.html#SHA256">SHA256</a></li><li><a href="global.html#close">close</a></li><li><a href="global.html#empty">empty</a></li><li><a href="global.html#getObservers">getObservers</a></li><li><a href="global.html#hasOwn">hasOwn</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#isPlainObject">isPlainObject</a></li><li><a href="global.html#isWindow">isWindow</a></li><li><a href="global.html#localCollections">localCollections</a></li><li><a href="global.html#open">open</a></li><li><a href="global.html#process">process</a></li><li><a href="global.html#push">push</a></li><li><a href="global.html#send">send</a></li><li><a href="global.html#stringify">stringify</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#uniqueId">uniqueId</a></li><li><a href="global.html#withNoYieldsAllowed">withNoYieldsAllowed</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Apr 17 2024 08:46:35 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

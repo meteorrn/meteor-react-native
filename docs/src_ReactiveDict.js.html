@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/ReactiveDict.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: src/ReactiveDict.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import EJSON from 'ejson';
+import MongoID from '../lib/mongo-id';
+import Tracker from './Tracker';
+
+/**
+ * Use EJSON to strinify a given value
+ * @param value {any}
+ * @returns {string}
+ */
+const stringify = function (value) {
+  if (value === undefined) return 'undefined';
+  return EJSON.stringify(value);
+};
+
+/**
+ * Uses EJSON to parse a ejsonable string
+ * @private
+ * @param serialized {string}
+ * @returns {undefined|*}
+ */
+const parse = function (serialized) {
+  if (serialized === undefined || serialized === 'undefined') return undefined;
+  return EJSON.parse(serialized);
+};
+
+/**
+ * The reference implementation to Meteor's ReactiveDict
+ *
+ * A ReactiveDict stores an arbitrary set of key-value pairs.
+ * Use it to manage internal state in your components, ie. like the currently selected item in a list.
+ * Each key is individully reactive such that calling set for a key will invalidate any Computations
+ * that called get with that key, according to the usual contract for reactive data sources.
+ *
+ * @see https://docs.meteor.com/api/reactive-dict.html
+ * @class
+ */
+export default class ReactiveDict {
+  constructor(dictName) {
+    this.keys = {};
+    if (typeof dictName === 'object') {
+      for (var i in dictName) {
+        this.keys[i] = stringify(dictName[i]);
+      }
+    }
+
+    this.keyDeps = {};
+    this.keyValueDeps = {};
+  }
+  set(keyOrObject, value) {
+    if (typeof keyOrObject === 'object' &amp;&amp; value === undefined) {
+      this._setObject(keyOrObject);
+      return;
+    }
+    // the input isn't an object, so it must be a key
+    // and we resume with the rest of the function
+    const key = keyOrObject;
+
+    value = stringify(value);
+
+    let oldSerializedValue = 'undefined';
+    if (Object.keys(this.keys).indexOf(key) != -1) {
+      oldSerializedValue = this.keys[key];
+    }
+    if (value === oldSerializedValue) return;
+
+    this.keys[key] = value;
+    if (this.keyDeps[key]) {
+      this.keyDeps[key].changed();
+    }
+
+    //Data.notify('change');
+  }
+  setDefault(key, value) {
+    // for now, explicitly check for undefined, since there is no
+    // ReactiveDict.clear().  Later we might have a ReactiveDict.clear(), in which case
+    // we should check if it has the key.
+    if (this.keys[key] === undefined) {
+      this.set(key, value);
+    }
+  }
+  get(key) {
+    this._ensureKey(key);
+    this.keyDeps[key].depend();
+    return parse(this.keys[key]);
+  }
+
+  _ensureKey(key) {
+    if (!this.keyDeps[key]) {
+      this.keyDeps[key] = new Tracker.Dependency();
+      this.keyValueDeps[key] = {};
+    }
+  }
+  equals(key, value) {
+    // We don't allow objects (or arrays that might include objects) for
+    // .equals, because JSON.stringify doesn't canonicalize object key
+    // order. (We can make equals have the right return value by parsing the
+    // current value and using EJSON.equals, but we won't have a canonical
+    // element of keyValueDeps[key] to store the dependency.) You can still use
+    // "EJSON.equals(reactiveDict.get(key), value)".
+    //
+    // XXX we could allow arrays as long as we recursively check that there
+    // are no objects
+    this._ensureKey(key);
+    this.keyDeps[key].depend();
+    if (
+      typeof value !== 'string' &amp;&amp;
+      typeof value !== 'number' &amp;&amp;
+      typeof value !== 'boolean' &amp;&amp;
+      typeof value !== 'undefined' &amp;&amp;
+      !(value instanceof Date) &amp;&amp;
+      !(value instanceof MongoID.ObjectID) &amp;&amp;
+      value !== null
+    )
+      throw new Error('ReactiveDict.equals: value must be scalar');
+
+    let oldValue = undefined;
+    if (Object.keys(this.keys).indexOf(key) != -1) {
+      oldValue = parse(this.keys[key]);
+    }
+    return EJSON.equals(oldValue, value);
+  }
+  _setObject(object) {
+    // XXX: fixed bug, where object was read into array-indices
+    Object.entries(object).forEach(([key, value]) => {
+      this.set(key, value);
+    });
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Data.html">Data</a></li><li><a href="Meteor.html">Meteor</a></li><li><a href="Mongo.html">Mongo</a></li><li><a href="Tracker.html">Tracker</a></li><li><a href="User.html">User</a></li></ul><h3>Classes</h3><ul><li><a href="AccountsPassword.html">AccountsPassword</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Cursor.html">Cursor</a></li><li><a href="DDP.html">DDP</a></li><li><a href="MongoID.ObjectID.html">ObjectID</a></li><li><a href="Tracker.Computation.html">Computation</a></li><li><a href="Tracker.Dependency.html">Dependency</a></li><li><a href="module.html#.exports">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#MongoID">MongoID</a></li><li><a href="global.html#SHA256">SHA256</a></li><li><a href="global.html#close">close</a></li><li><a href="global.html#empty">empty</a></li><li><a href="global.html#getObservers">getObservers</a></li><li><a href="global.html#hasOwn">hasOwn</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#isPlainObject">isPlainObject</a></li><li><a href="global.html#isWindow">isWindow</a></li><li><a href="global.html#localCollections">localCollections</a></li><li><a href="global.html#open">open</a></li><li><a href="global.html#process">process</a></li><li><a href="global.html#push">push</a></li><li><a href="global.html#send">send</a></li><li><a href="global.html#stringify">stringify</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#uniqueId">uniqueId</a></li><li><a href="global.html#withNoYieldsAllowed">withNoYieldsAllowed</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Apr 17 2024 08:46:35 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

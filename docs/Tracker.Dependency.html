@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: Dependency</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Class: Dependency</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="Tracker.html">Tracker</a>.</span>Dependency<span class="signature">()</span><span class="type-signature"></span></h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+
+    
+    <h4 class="name" id="Dependency"><span class="type-signature"></span>new Dependency<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">A Dependency represents an atomic unit of reactive data that a
+computation might depend on. Reactive data sources such as Session or
+Minimongo internally create different Dependency objects for different
+pieces of data, each of which may be depended on by multiple computations.
+When the data changes, the computations are invalidated.</p>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_Tracker.js.html">src/Tracker.js</a>, <a href="src_Tracker.js.html#line401">line 401</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="changed"><span class="type-signature"></span>changed<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Invalidate all dependent computations immediately and remove them as dependents.</p>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_Tracker.js.html">src/Tracker.js</a>, <a href="src_Tracker.js.html#line446">line 446</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="depend"><span class="type-signature"></span>depend<span class="signature">(fromComputation<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+
+    
+    <p class="summary">Declares that the current computation (or `fromComputation` if given) depends on `dependency`.  The computation will be invalidated the next time `dependency` changes.
+
+   If there is no current computation and `depend()` is called with no arguments, it does nothing and returns false.
+
+   Returns true if the computation is a new dependent of `dependency` rather than an existing one.</p>
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>fromComputation</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Tracker.Computation.html">Tracker.Computation</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">An optional computation declared to depend on `dependency` instead of the current computation.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_Tracker.js.html">src/Tracker.js</a>, <a href="src_Tracker.js.html#line423">line 423</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="hasDependents"><span class="type-signature"></span>hasDependents<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+
+    
+    <p class="summary">True if this Dependency has one or more dependent Computations, which would be invalidated if this Dependency were to change.</p>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_Tracker.js.html">src/Tracker.js</a>, <a href="src_Tracker.js.html#line459">line 459</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Data.html">Data</a></li><li><a href="Meteor.html">Meteor</a></li><li><a href="Mongo.html">Mongo</a></li><li><a href="Tracker.html">Tracker</a></li><li><a href="User.html">User</a></li></ul><h3>Classes</h3><ul><li><a href="AccountsPassword.html">AccountsPassword</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Cursor.html">Cursor</a></li><li><a href="DDP.html">DDP</a></li><li><a href="MongoID.ObjectID.html">ObjectID</a></li><li><a href="Tracker.Computation.html">Computation</a></li><li><a href="Tracker.Dependency.html">Dependency</a></li><li><a href="module.html#.exports">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#MongoID">MongoID</a></li><li><a href="global.html#SHA256">SHA256</a></li><li><a href="global.html#close">close</a></li><li><a href="global.html#empty">empty</a></li><li><a href="global.html#getObservers">getObservers</a></li><li><a href="global.html#hasOwn">hasOwn</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#isPlainObject">isPlainObject</a></li><li><a href="global.html#isWindow">isWindow</a></li><li><a href="global.html#localCollections">localCollections</a></li><li><a href="global.html#open">open</a></li><li><a href="global.html#process">process</a></li><li><a href="global.html#push">push</a></li><li><a href="global.html#send">send</a></li><li><a href="global.html#stringify">stringify</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#uniqueId">uniqueId</a></li><li><a href="global.html#withNoYieldsAllowed">withNoYieldsAllowed</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Apr 17 2024 08:46:35 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

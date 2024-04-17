@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/user/User.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: src/user/User.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Data from '../Data';
+import { hashPassword } from '../../lib/utils';
+import Mongo from '../Mongo';
+import Meteor from '../Meteor.js';
+import ReactiveDict from '../ReactiveDict';
+
+const TOKEN_KEY = 'reactnativemeteor_usertoken';
+const Users = new Mongo.Collection('users');
+
+/**
+ * @namespace User
+ * @type {object}
+ * @summary Represents all user/Accounts related functionality,
+ * that is to be available on the `Meteor` Object.
+ */
+const User = {
+  users: Users,
+  _reactiveDict: new ReactiveDict(),
+
+  user() {
+    let user_id = this._reactiveDict.get('_userIdSaved');
+
+    if (!user_id) return null;
+
+    return Users.findOne(user_id);
+  },
+  userId() {
+    let user_id = this._reactiveDict.get('_userIdSaved');
+
+    if (!user_id) return null;
+
+    const user = Users.findOne(user_id);
+    return user &amp;&amp; user._id;
+  },
+  _isLoggingIn: true,
+  _isLoggingOut: false,
+  loggingIn() {
+    return this._reactiveDict.get('_loggingIn');
+  },
+  loggingOut() {
+    return User._isLoggingOut;
+  },
+  logout(callback) {
+    this._isTokenLogin = false;
+    User._startLoggingOut();
+    Meteor.call('logout', (err) => {
+      User.handleLogout();
+      Meteor.connect();
+
+      typeof callback == 'function' &amp;&amp; callback(err);
+    });
+  },
+  handleLogout() {
+    Data._options.AsyncStorage.removeItem(TOKEN_KEY);
+    Data._tokenIdSaved = null;
+    this._reactiveDict.set('_userIdSaved', null);
+
+    User._userIdSaved = null;
+    User._endLoggingOut();
+  },
+  loginWithPassword(selector, password, callback) {
+    this._isTokenLogin = false;
+    if (typeof selector === 'string') {
+      if (selector.indexOf('@') === -1) selector = { username: selector };
+      else selector = { email: selector };
+    }
+
+    User._startLoggingIn();
+    Meteor.call(
+      'login',
+      {
+        user: selector,
+        password: hashPassword(password),
+      },
+      (err, result) => {
+        User._handleLoginCallback(err, result);
+
+        typeof callback == 'function' &amp;&amp; callback(err);
+      }
+    );
+  },
+  loginWithPasswordAnd2faCode(selector, password, code, callback) {
+    this._isTokenLogin = false;
+    if (typeof selector === 'string') {
+      if (selector.indexOf('@') === -1) selector = { username: selector };
+      else selector = { email: selector };
+    }
+
+    User._startLoggingIn();
+    Meteor.call(
+      'login',
+      {
+        user: selector,
+        password: hashPassword(password),
+        code,
+      },
+      (err, result) => {
+        User._handleLoginCallback(err, result);
+
+        typeof callback == 'function' &amp;&amp; callback(err);
+      }
+    );
+  },
+  logoutOtherClients(callback = () => {}) {
+    Meteor.call('getNewToken', (err, res) => {
+      if (err) return callback(err);
+
+      User._handleLoginCallback(err, res);
+
+      Meteor.call('removeOtherTokens', (err) => {
+        callback(err);
+      });
+    });
+  },
+  _login(user, callback) {
+    User._startLoggingIn();
+    Meteor.call('login', user, (err, result) => {
+      User._handleLoginCallback(err, result);
+
+      typeof callback == 'function' &amp;&amp; callback(err);
+    });
+  },
+  _startLoggingIn() {
+    this._reactiveDict.set('_loggingIn', true);
+    Data.notify('loggingIn');
+  },
+  _startLoggingOut() {
+    User._isLoggingOut = true;
+    Data.notify('loggingOut');
+  },
+  _endLoggingIn() {
+    this._reactiveDict.set('_loggingIn', false);
+    Data.notify('loggingIn');
+  },
+  _endLoggingOut() {
+    User._isLoggingOut = false;
+    Data.notify('loggingOut');
+  },
+  _handleLoginCallback(err, result) {
+    if (!err) {
+      Meteor.isVerbose &amp;&amp;
+        console.info(
+          'User._handleLoginCallback::: token:',
+          result.token,
+          'id:',
+          result.id
+        );
+      Data._options.AsyncStorage.setItem(TOKEN_KEY, result.token);
+      Data._tokenIdSaved = result.token;
+      this._reactiveDict.set('_userIdSaved', result.id);
+      User._userIdSaved = result.id;
+      User._endLoggingIn();
+      this._isTokenLogin = false;
+      Data.notify('onLogin');
+    } else {
+      Meteor.isVerbose &amp;&amp;
+        console.info('User._handleLoginCallback::: error:', err);
+      if (this._isTokenLogin) {
+        setTimeout(() => {
+          if (User._userIdSaved) {
+            return;
+          }
+          this._timeout *= 2;
+          if (Meteor.user()) {
+            return;
+          }
+          User._loginWithToken(User._userIdSaved);
+        }, this._timeout);
+      }
+      // Signify we aren't logginging in any more after a few seconds
+      if (this._timeout > 2000) {
+        User._endLoggingIn();
+      }
+      User._endLoggingIn();
+      // we delegate the error to enable better logging
+      Data.notify('onLoginFailure', err);
+    }
+    Data.notify('change');
+  },
+
+  _timeout: 50,
+  _isTokenLogin: false,
+  _isCallingLogin: false,
+  _loginWithToken(value) {
+    if (!value) {
+      Meteor.isVerbose &amp;&amp;
+        console.info(
+          'User._loginWithToken::: parameter value is null, will not save as token.'
+        );
+    } else {
+      Data._tokenIdSaved = value;
+    }
+
+    if (value !== null) {
+      this._isTokenLogin = true;
+      Meteor.isVerbose &amp;&amp; console.info('User._loginWithToken::: token:', value);
+      if (this._isCallingLogin) {
+        return;
+      }
+      this._isCallingLogin = true;
+      User._startLoggingIn();
+      Meteor.call('login', { resume: value }, (err, result) => {
+        this._isCallingLogin = false;
+        if (err?.error == 'too-many-requests') {
+          Meteor.isVerbose &amp;&amp;
+            console.info(
+              'User._handleLoginCallback::: too many requests retrying:',
+              err
+            );
+          let time = err.details?.timeToReset || err.timeToReset;
+          setTimeout(() => {
+            if (User._userIdSaved) {
+              return;
+            }
+            this._loadInitialUser();
+          }, time + 100);
+        } else if (err?.error === 403) {
+          User.logout();
+        } else {
+          User._handleLoginCallback(err, result);
+        }
+      });
+    } else {
+      Meteor.isVerbose &amp;&amp; console.info('User._loginWithToken::: token is null');
+      User._endLoggingIn();
+    }
+  },
+  getAuthToken() {
+    return Data._tokenIdSaved;
+  },
+  async _loadInitialUser() {
+    this._timeout = 500;
+
+    User._startLoggingIn();
+    var value = null;
+    try {
+      value = await Data._options.AsyncStorage.getItem(TOKEN_KEY);
+    } catch (error) {
+      console.warn('AsyncStorage error: ' + error.message);
+    } finally {
+      User._loginWithToken(value);
+    }
+  },
+};
+
+export default User;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Data.html">Data</a></li><li><a href="Meteor.html">Meteor</a></li><li><a href="Mongo.html">Mongo</a></li><li><a href="Tracker.html">Tracker</a></li><li><a href="User.html">User</a></li></ul><h3>Classes</h3><ul><li><a href="AccountsPassword.html">AccountsPassword</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Cursor.html">Cursor</a></li><li><a href="DDP.html">DDP</a></li><li><a href="MongoID.ObjectID.html">ObjectID</a></li><li><a href="Tracker.Computation.html">Computation</a></li><li><a href="Tracker.Dependency.html">Dependency</a></li><li><a href="module.html#.exports">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#MongoID">MongoID</a></li><li><a href="global.html#SHA256">SHA256</a></li><li><a href="global.html#close">close</a></li><li><a href="global.html#empty">empty</a></li><li><a href="global.html#getObservers">getObservers</a></li><li><a href="global.html#hasOwn">hasOwn</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#isPlainObject">isPlainObject</a></li><li><a href="global.html#isWindow">isWindow</a></li><li><a href="global.html#localCollections">localCollections</a></li><li><a href="global.html#open">open</a></li><li><a href="global.html#process">process</a></li><li><a href="global.html#push">push</a></li><li><a href="global.html#send">send</a></li><li><a href="global.html#stringify">stringify</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#uniqueId">uniqueId</a></li><li><a href="global.html#withNoYieldsAllowed">withNoYieldsAllowed</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Apr 17 2024 08:46:35 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

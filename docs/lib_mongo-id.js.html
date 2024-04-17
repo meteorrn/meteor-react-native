@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: lib/mongo-id.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: lib/mongo-id.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//https://github.com/meteor/meteor/tree/master/packages/mongo-id
+import EJSON from 'ejson';
+
+/**
+ * Reference implementation of Meteor's MongoID
+ * @type {{}}
+ */
+const MongoID = {};
+
+const objectIdRegex = /^[0-9a-f]*$/;
+
+MongoID._looksLikeObjectID = function _looksLikeObjectID(str) {
+  return str.length === 24 &amp;&amp; objectIdRegex.test(str);
+};
+
+/**
+ * Create a Mongo-style ObjectID. If you don't specify a hexString,
+ * the ObjectID will be generated randomly (not using MongoDB's ID construction rules).
+ * @param hexString {string=}
+ *     Optional. The 24-character hexadecimal contents of the ObjectID to create
+ * @constructor
+ * @see https://docs.meteor.com/api/collections.html#Mongo-ObjectID
+ */
+MongoID.ObjectID = function ObjectID(hexString) {
+  // TODO rewrite es ES6 class!
+  //random-based impl of Mongo ObjectID
+  var self = this;
+  if (hexString) {
+    hexString = hexString.toLowerCase();
+    if (!MongoID._looksLikeObjectID(hexString)) {
+      throw new Error('Invalid hexadecimal string for creating an ObjectID');
+    }
+    // meant to work with _.isEqual(), which relies on structural equality
+    self._str = hexString;
+  } else {
+    // self._str = Random.hexString(24);
+    throw new Error(
+      'Random.hexString not implemented, please pass a hexString'
+    );
+  }
+};
+
+MongoID.ObjectID.prototype.toString = function toString() {
+  var self = this;
+  return 'ObjectID("' + self._str + '")';
+};
+
+MongoID.ObjectID.prototype.equals = function equals(other) {
+  var self = this;
+  return (
+    other instanceof MongoID.ObjectID &amp;&amp; self.valueOf() === other.valueOf()
+  );
+};
+
+MongoID.ObjectID.prototype.clone = function clone() {
+  var self = this;
+  return new MongoID.ObjectID(self._str);
+};
+
+MongoID.ObjectID.prototype.typeName = function typeName() {
+  return 'oid';
+};
+
+MongoID.ObjectID.prototype.getTimestamp = function getTimestamp() {
+  var self = this;
+  return parseInt(self._str.substr(0, 8), 16);
+};
+
+MongoID.ObjectID.prototype.valueOf =
+  MongoID.ObjectID.prototype.toJSONValue =
+  MongoID.ObjectID.prototype.toHexString =
+    function () {
+      return this._str;
+    };
+
+EJSON.addType('oid', function (str) {
+  return new MongoID.ObjectID(str);
+});
+
+MongoID.idStringify = function idStringify(id) {
+  if (id instanceof MongoID.ObjectID) {
+    return id.valueOf();
+  } else if (typeof id === 'string') {
+    if (id === '') {
+      return id;
+    } else if (
+      id.substr(0, 1) === '-' || // escape previously dashed strings
+      id.substr(0, 1) === '~' || // escape escaped numbers, true, false
+      MongoID._looksLikeObjectID(id) || // escape object-id-form strings
+      id.substr(0, 1) === '{'
+    ) {
+      // escape object-form strings, for maybe implementing later
+      return '-' + id;
+    } else {
+      return id; // other strings go through unchanged.
+    }
+  } else if (id === undefined) {
+    return '-';
+  } else if (typeof id === 'object' &amp;&amp; id !== null) {
+    throw new Error(
+      'Meteor does not currently support objects other than ObjectID as ids'
+    );
+  } else {
+    // Numbers, true, false, null
+    return '~' + JSON.stringify(id);
+  }
+};
+
+MongoID.idParse = function idParse(id) {
+  if (id === '') {
+    return id;
+  } else if (id === '-') {
+    return undefined;
+  } else if (id.substr(0, 1) === '-') {
+    return id.substr(1);
+  } else if (id.substr(0, 1) === '~') {
+    return JSON.parse(id.substr(1));
+  } else if (MongoID._looksLikeObjectID(id)) {
+    return new MongoID.ObjectID(id);
+  } else {
+    return id;
+  }
+};
+
+module.exports = MongoID;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Data.html">Data</a></li><li><a href="Meteor.html">Meteor</a></li><li><a href="Mongo.html">Mongo</a></li><li><a href="Tracker.html">Tracker</a></li><li><a href="User.html">User</a></li></ul><h3>Classes</h3><ul><li><a href="AccountsPassword.html">AccountsPassword</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Cursor.html">Cursor</a></li><li><a href="DDP.html">DDP</a></li><li><a href="MongoID.ObjectID.html">ObjectID</a></li><li><a href="Tracker.Computation.html">Computation</a></li><li><a href="Tracker.Dependency.html">Dependency</a></li><li><a href="module.html#.exports">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#MongoID">MongoID</a></li><li><a href="global.html#SHA256">SHA256</a></li><li><a href="global.html#close">close</a></li><li><a href="global.html#empty">empty</a></li><li><a href="global.html#getObservers">getObservers</a></li><li><a href="global.html#hasOwn">hasOwn</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#isPlainObject">isPlainObject</a></li><li><a href="global.html#isWindow">isWindow</a></li><li><a href="global.html#localCollections">localCollections</a></li><li><a href="global.html#open">open</a></li><li><a href="global.html#process">process</a></li><li><a href="global.html#push">push</a></li><li><a href="global.html#send">send</a></li><li><a href="global.html#stringify">stringify</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#uniqueId">uniqueId</a></li><li><a href="global.html#withNoYieldsAllowed">withNoYieldsAllowed</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Apr 17 2024 08:46:35 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
