@@ -1,18 +1,41 @@
 import { WebSocket } from 'mock-socket';
-import {
-  Collection,
-  localCollections,
-  runObservers,
-} from '../../src/Collection';
+import Mongo from '../../src/Mongo';
+import { endpoint, props } from '../testHelpers';
+import { localCollections, runObservers } from '../../src/Collection';
 import { expect } from 'chai';
 import Data from '../../src/Data';
 import DDP from '../../lib/ddp';
 import Random from '../../lib/Random';
 import { server } from '../hooks/mockServer';
+import Tracker from '../../src/Tracker';
+
+const Collection = Mongo.Collection;
+const objectProps = props({});
+const defaultProps = [
+  '_collection',
+  '_name',
+  '_transform',
+  'constructor',
+  'find',
+  'findOne',
+  'insert',
+  'update',
+  'remove',
+  'helpers',
+  '__defineGetter__',
+  '__defineSetter__',
+  'hasOwnProperty',
+  '__lookupGetter__',
+  '__lookupSetter__',
+  'isPrototypeOf',
+  'propertyIsEnumerable',
+  'toString',
+  'valueOf',
+  '__proto__',
+  'toLocaleString',
+];
 
 describe('Collection', function () {
-  const endpoint = 'ws://localhost:3000/websocket';
-
   // for proper collection tests we need the server to be active
 
   before(function () {
@@ -20,6 +43,7 @@ describe('Collection', function () {
       Data.ddp = new DDP({
         SocketConstructor: WebSocket,
         endpoint,
+        autoConnect: false,
       });
       Data.ddp.socket.on('open', () => {
         Data.ddp.socket.emit('message:in', { msg: 'connected' });
@@ -46,12 +70,17 @@ describe('Collection', function () {
   });
 
   describe('constructor', function () {
+    it('is exported via Mongo', () => {
+      expect(Mongo.Collection).to.equal(Collection);
+    });
     it('creates a new collection and one in Minimongo', function () {
       const name = Random.id(6);
       const c = new Collection(name);
       expect(c._name).to.equal(name);
       expect(c._transform).to.equal(null);
-      expect(Data.db.collections[name]).to.equal(c._collection);
+      expect(c._collection).to.equal(Data.db.collections[name]);
+      expect(c._collection.name).to.equal(name);
+      expect(c._collection.constructor.name).to.equal('Collection');
     });
     it('creates a local collection and a random counterpart in minimongo', function () {
       const c = new Collection(null);
@@ -84,6 +113,14 @@ describe('Collection', function () {
       transform = () => ({ foo: 'bar' });
       c = new Collection(Random.id(), { transform });
       expect(c._transform({ _id })).to.deep.equal({ _id, foo: 'bar' });
+    });
+    it('does not imply prototype pollution', () => {
+      objectProps.forEach((name) => {
+        expect(() => new Mongo.Collection(name)).to.throw(
+          `Object-prototype property ${name} is not a supported Collection name`
+        );
+        expect(props({})).to.deep.equal(objectProps);
+      });
     });
   });
 
@@ -172,6 +209,55 @@ describe('Collection', function () {
         });
         done();
       });
+    });
+    it('triggers a reactive observer', (done) => {
+      const collectionName = Random.id(6);
+      const c = new Mongo.Collection(collectionName);
+
+      Tracker.autorun((comp) => {
+        const doc = c.findOne({ foo: 1 });
+        if (doc) {
+          comp.stop();
+          done();
+        }
+      });
+
+      setTimeout(() => c.insert({ foo: 1 }), 50);
+    });
+    it('does not imply prototype pollution', (done) => {
+      const collectionName = Random.id(6);
+      const c = new Mongo.Collection(collectionName);
+      objectProps.forEach((name) => c.find(name).fetch());
+      expect(props({})).to.deep.equal(objectProps);
+      const insertDoc = {};
+      objectProps.forEach((prop) => {
+        insertDoc[prop] = 'foo';
+      });
+
+      Tracker.autorun((comp) => {
+        if (c.find().count() < 1) {
+          return;
+        }
+
+        c._name = '__proto__';
+        try {
+          c.find(insertDoc);
+        } catch {}
+        try {
+          expect(props({})).to.deep.equal(objectProps);
+        } catch (e) {
+          comp.stop();
+          return done(e);
+        }
+
+        comp.stop();
+        done();
+      });
+
+      setTimeout(() => {
+        c._name = collectionName;
+        c.insert(insertDoc);
+      }, 50);
     });
   });
 

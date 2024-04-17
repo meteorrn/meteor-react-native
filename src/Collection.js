@@ -9,12 +9,12 @@ import { hasOwn, isPlainObject } from '../lib/utils.js';
  * @private
  * @type {object}
  */
-const observers = {};
+const observers = Object.create(null);
 /**
  * @private
  * @type {object}
  */
-const observersByComp = {};
+const observersByComp = Object.create(null);
 /**
  * Get the list of callbacks for changes on a collection
  * @param {string} type - Type of change happening.
@@ -45,7 +45,7 @@ export function getObservers(type, collection, newDocument) {
     });
   }
   // Find the observers related to the specific query
-  if (observersByComp[collection]) {
+  if (observersByComp[collection] && !(collection in {})) {
     let keys = Object.keys(observersByComp[collection]);
     for (let i = 0; i < keys.length; i++) {
       observersByComp[collection][keys[i]].callbacks.forEach(
@@ -184,6 +184,17 @@ export class Collection {
       localCollections.push(name);
     }
 
+    // XXX: apparently using a name that occurs in Object prototype causes
+    // Data.db[name] to return the full MemoryDb implementation from Minimongo
+    // instead of a collection.
+    // A respective issues has been opened: https://github.com/meteorrn/minimongo-cache
+    // Additionally, this is subject to prototype pollution.
+    if (name in {}) {
+      throw new Error(
+        `Object-prototype property ${name} is not a supported Collection name`
+      );
+    }
+
     if (!Data.db[name]) Data.db.addCollection(name);
 
     this._collection = Data.db[name];
@@ -232,7 +243,8 @@ export class Collection {
     // collection is changed it needs to be re-run
     if (Tracker.active && Tracker.currentComputation) {
       let id = Tracker.currentComputation._id;
-      observersByComp[this._name] = observersByComp[this._name] || {};
+      observersByComp[this._name] =
+        observersByComp[this._name] || Object.create(null);
       if (!observersByComp[this._name][id]) {
         let item = {
           computation: Tracker.currentComputation,
@@ -240,6 +252,7 @@ export class Collection {
         };
         observersByComp[this._name][id] = item;
       }
+
       let item = observersByComp[this._name][id];
 
       item.callbacks.push({
