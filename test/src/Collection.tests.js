@@ -11,29 +11,6 @@ import Tracker from '../../src/Tracker';
 
 const Collection = Mongo.Collection;
 const objectProps = props({});
-const defaultProps = [
-  '_collection',
-  '_name',
-  '_transform',
-  'constructor',
-  'find',
-  'findOne',
-  'insert',
-  'update',
-  'remove',
-  'helpers',
-  '__defineGetter__',
-  '__defineSetter__',
-  'hasOwnProperty',
-  '__lookupGetter__',
-  '__lookupSetter__',
-  'isPrototypeOf',
-  'propertyIsEnumerable',
-  'toString',
-  'valueOf',
-  '__proto__',
-  'toLocaleString',
-];
 
 describe('Collection', function () {
   // for proper collection tests we need the server to be active

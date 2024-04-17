@@ -1,9 +1,8 @@
 import sinon from 'sinon';
 import Meteor from '../src/Meteor';
+export const stubs = new Map();
 
 export const endpoint = 'ws://localhost:3000/websocket';
-
-export const stubs = new Map();
 
 export const stub = (target, name, handler) => {
   if (stubs.get(target)) {
@@ -50,6 +49,7 @@ export const awaitDisconnected = async () => {
   });
 };
 
+// credits: https://stackoverflow.com/a/30158566/3098783
 export const props = (obj) => {
   let p = [];
   for (; obj != null; obj = Object.getPrototypeOf(obj)) {
