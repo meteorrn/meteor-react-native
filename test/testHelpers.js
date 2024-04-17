@@ -1,6 +1,5 @@
 import sinon from 'sinon';
 import Meteor from '../src/Meteor';
-
 export const stubs = new Map();
 
 export const endpoint = 'ws://localhost:3000/websocket';
