@@ -26,13 +26,13 @@ class AccountsPassword {
    * @param {Function} [callback] Client only, optional callback. Called with no arguments on success, or with a single `Error` argument on failure.
    */
   createUser = (options, callback = () => {}) => {
-    options = { ...options }
+    options = { ...options };
 
     if (typeof options.password !== 'string') {
-      throw new Error("options.password must be a string");
+      throw new Error('options.password must be a string');
     }
     if (!options.password) {
-      return callback(new Error("Password may not be empty"));
+      return callback(new Error('Password may not be empty'));
     }
 
     // Replace password with the hashed password.
@@ -57,15 +57,15 @@ class AccountsPassword {
    */
   changePassword = (oldPassword, newPassword, callback = () => {}) => {
     if (!User.user()) {
-      return callback(new Error('Must be logged in to change password'))
+      return callback(new Error('Must be logged in to change password'));
     }
 
-    if (!(typeof newPassword === "string" || newPassword instanceof String)) {
+    if (!(typeof newPassword === 'string' || newPassword instanceof String)) {
       return callback(new Error('Password must be a string'));
     }
 
     if (!newPassword) {
-      return callback(new Error("Password may not be empty"));
+      return callback(new Error('Password may not be empty'));
     }
 
     call(
@@ -98,16 +98,16 @@ class AccountsPassword {
    * @param callback {function(e:Error)=} optional callback that is invoked with one optional error argument
    */
   resetPassword = (token, newPassword, callback = () => {}) => {
-    if (!(typeof token === "string" || token instanceof String)) {
-      return callback(new Error("Token must be a string"));
+    if (!(typeof token === 'string' || token instanceof String)) {
+      return callback(new Error('Token must be a string'));
     }
 
-    if (!(typeof newPassword === "string" || newPassword instanceof String)) {
-      return callback(new Error("Password must be a string"));
+    if (!(typeof newPassword === 'string' || newPassword instanceof String)) {
+      return callback(new Error('Password must be a string'));
     }
 
     if (!newPassword) {
-      return callback(new Error("Password may not be empty"));
+      return callback(new Error('Password may not be empty'));
     }
 
     call('resetPassword', token, hashPassword(newPassword), (err, result) => {

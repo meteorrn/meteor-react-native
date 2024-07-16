@@ -7,6 +7,8 @@ import ReactiveDict from '../ReactiveDict';
 // TODO make this configurable
 const TOKEN_KEY = 'reactnativemeteor_usertoken';
 const Users = new Mongo.Collection('users');
+const userIdKey = '_userIdSaved';
+const loggingInKey = '_loggingIn';
 
 /**
  * @namespace User
@@ -19,14 +21,14 @@ const User = {
   _reactiveDict: new ReactiveDict(),
 
   user() {
-    let user_id = this._reactiveDict.get('_userIdSaved');
+    let user_id = this._reactiveDict.get(userIdKey);
 
     if (!user_id) return null;
 
     return Users.findOne(user_id);
   },
   userId() {
-    let user_id = this._reactiveDict.get('_userIdSaved');
+    let user_id = this._reactiveDict.get(userIdKey);
 
     if (!user_id) return null;
 
@@ -36,7 +38,7 @@ const User = {
   _isLoggingIn: true,
   _isLoggingOut: false,
   loggingIn() {
-    return this._reactiveDict.get('_loggingIn');
+    return !!this._reactiveDict.get(loggingInKey);
   },
   loggingOut() {
     return User._isLoggingOut;
@@ -54,53 +56,18 @@ const User = {
   handleLogout() {
     Data._options.AsyncStorage.removeItem(TOKEN_KEY);
     Data._tokenIdSaved = null;
-    this._reactiveDict.set('_userIdSaved', null);
+    this._reactiveDict.set(userIdKey, null);
 
     User._userIdSaved = null;
     User._endLoggingOut();
   },
   loginWithPassword(selector, password, callback) {
     this._isTokenLogin = false;
-    if (typeof selector === 'string') {
-      if (selector.indexOf('@') === -1) selector = { username: selector };
-      else selector = { email: selector };
-    }
-
-    User._startLoggingIn();
-    Meteor.call(
-      'login',
-      {
-        user: selector,
-        password: hashPassword(password),
-      },
-      (err, result) => {
-        User._handleLoginCallback(err, result);
-
-        typeof callback == 'function' && callback(err);
-      }
-    );
+    login({ selector, password, callback });
   },
   loginWithPasswordAnd2faCode(selector, password, code, callback) {
     this._isTokenLogin = false;
-    if (typeof selector === 'string') {
-      if (selector.indexOf('@') === -1) selector = { username: selector };
-      else selector = { email: selector };
-    }
-
-    User._startLoggingIn();
-    Meteor.call(
-      'login',
-      {
-        user: selector,
-        password: hashPassword(password),
-        code,
-      },
-      (err, result) => {
-        User._handleLoginCallback(err, result);
-
-        typeof callback == 'function' && callback(err);
-      }
-    );
+    login({ selector, password, code, callback });
   },
   logoutOtherClients(callback = () => {}) {
     Meteor.call('getNewToken', (err, res) => {
@@ -122,7 +89,7 @@ const User = {
     });
   },
   _startLoggingIn() {
-    this._reactiveDict.set('_loggingIn', true);
+    this._reactiveDict.set(loggingInKey, true);
     Data.notify('loggingIn');
   },
   _startLoggingOut() {
@@ -130,7 +97,7 @@ const User = {
     Data.notify('loggingOut');
   },
   _endLoggingIn() {
-    this._reactiveDict.set('_loggingIn', false);
+    this._reactiveDict.set(loggingInKey, false);
     Data.notify('loggingIn');
   },
   _endLoggingOut() {
@@ -148,7 +115,7 @@ const User = {
         );
       Data._options.AsyncStorage.setItem(TOKEN_KEY, result.token);
       Data._tokenIdSaved = result.token;
-      this._reactiveDict.set('_userIdSaved', result.id);
+      this._reactiveDict.set(userIdKey, result.id);
       User._userIdSaved = result.id;
       User._endLoggingIn();
       this._isTokenLogin = false;
@@ -233,7 +200,7 @@ const User = {
     this._timeout = 500;
 
     User._startLoggingIn();
-    var value = null;
+    let value = null;
     try {
       value = await Data._options.AsyncStorage.getItem(TOKEN_KEY);
     } catch (error) {
@@ -242,6 +209,32 @@ const User = {
       User._loginWithToken(value);
     }
   },
+};
+
+const login = ({ selector, password, code, callback }) => {
+  if (typeof selector === 'string') {
+    if (selector.indexOf('@') === -1) {
+      selector = { username: selector };
+    } else {
+      selector = { email: selector };
+    }
+  }
+
+  const options = {
+    user: selector,
+    password: hashPassword(password),
+  };
+
+  if (typeof code !== 'undefined') {
+    options.code = code;
+  }
+
+  User._startLoggingIn();
+  Meteor.call('login', options, (err, result) => {
+    User._handleLoginCallback(err, result);
+
+    typeof callback == 'function' && callback(err);
+  });
 };
 
 export default User;

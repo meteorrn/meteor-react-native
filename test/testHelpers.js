@@ -15,7 +15,7 @@ export const stub = (target, name, handler) => {
     stubbedTarget.value(handler);
   }
   stubs.set(stubbedTarget, name);
-  return stubbedTarget
+  return stubbedTarget;
 };
 
 export const restore = (target, name) => {
