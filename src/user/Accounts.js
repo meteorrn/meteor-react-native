@@ -11,18 +11,30 @@ import Meteor from '../Meteor.js';
  * @class
  * @see https://docs.meteor.com/api/accounts
  * @see https://docs.meteor.com/api/passwords
+ * @see https://github.com/meteor/meteor/blob/devel/packages/accounts-password/password_client.js
  */
 class AccountsPassword {
   _hashPassword = hashPassword;
 
   /**
-   *
-   * @param options {object}
-   * @param options.username {string=} username is optional, if an email is given
-   * @param options.email {string=} email is optional, if a username is given
-   * @param callback {function(e:Error)=} optional callback that is invoked with one optional error argument
+   * Create a new user.
+   * @param {Object} options
+   * @param {String} options.username A unique name for this user.
+   * @param {String} options.email The user's email address.
+   * @param {String} options.password The user's password. This is __not__ sent in plain text over the wire.
+   * @param {Object} options.profile The user's profile, typically including the `name` field.
+   * @param {Function} [callback] Client only, optional callback. Called with no arguments on success, or with a single `Error` argument on failure.
    */
   createUser = (options, callback = () => {}) => {
+    options = { ...options }
+
+    if (typeof options.password !== 'string') {
+      throw new Error("options.password must be a string");
+    }
+    if (!options.password) {
+      return callback(new Error("Password may not be empty"));
+    }
+
     // Replace password with the hashed password.
     options.password = hashPassword(options.password);
 
@@ -44,20 +56,23 @@ class AccountsPassword {
    * @param callback {function(e:Error)=} optional callback that is invoked with one optional error argument
    */
   changePassword = (oldPassword, newPassword, callback = () => {}) => {
-    //TODO check Meteor.user() to prevent if not logged
+    if (!User.user()) {
+      return callback(new Error('Must be logged in to change password'))
+    }
 
-    if (typeof newPassword != 'string' || !newPassword) {
-      // TODO make callback(new Error(...)) instead
-      return callback('Password may not be empty');
+    if (!(typeof newPassword === "string" || newPassword instanceof String)) {
+      return callback(new Error('Password must be a string'));
+    }
+
+    if (!newPassword) {
+      return callback(new Error("Password may not be empty"));
     }
 
     call(
       'changePassword',
       oldPassword ? hashPassword(oldPassword) : null,
       hashPassword(newPassword),
-      (err, res) => {
-        callback(err);
-      }
+      callback
     );
   };
 
@@ -69,17 +84,10 @@ class AccountsPassword {
    */
   forgotPassword = (options, callback = () => {}) => {
     if (!options.email) {
-      // TODO check this! I doubt it's implemented on the server
-      //   to let the client decide which email to use.
-      //   The only valid scenario is, when users have multiple emails
-      //   but even then the prop should be optional as not ever user
-      //   will have multiple emails
-      return callback('Must pass options.email');
+      return callback(new Error('Must pass options.email'));
     }
 
-    call('forgotPassword', options, (err) => {
-      callback(err);
-    });
+    call('forgotPassword', options, callback);
   };
 
   /**
@@ -90,8 +98,16 @@ class AccountsPassword {
    * @param callback {function(e:Error)=} optional callback that is invoked with one optional error argument
    */
   resetPassword = (token, newPassword, callback = () => {}) => {
+    if (!(typeof token === "string" || token instanceof String)) {
+      return callback(new Error("Token must be a string"));
+    }
+
+    if (!(typeof newPassword === "string" || newPassword instanceof String)) {
+      return callback(new Error("Password must be a string"));
+    }
+
     if (!newPassword) {
-      return callback('Must pass a new password');
+      return callback(new Error("Password may not be empty"));
     }
 
     call('resetPassword', token, hashPassword(newPassword), (err, result) => {

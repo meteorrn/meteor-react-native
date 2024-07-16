@@ -4,6 +4,7 @@ import Mongo from '../Mongo';
 import Meteor from '../Meteor.js';
 import ReactiveDict from '../ReactiveDict';
 
+// TODO make this configurable
 const TOKEN_KEY = 'reactnativemeteor_usertoken';
 const Users = new Mongo.Collection('users');
 
