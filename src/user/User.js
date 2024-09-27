@@ -270,7 +270,7 @@ const User = {
         console.info(
           'User._loginWithToken::: token is null, ending logging in.'
         );
-      Data.notify('onLoginFailure', err);
+      Data.notify('onLoginFailure', new Error("Token doesn't exist"));
       Data.notify('change');
       User._endLoggingIn();
     }
