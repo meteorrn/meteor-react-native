@@ -134,6 +134,7 @@ const User = {
     Data.notify('loggingOut');
   },
   _endLoggingIn() {
+    this._isCallingLogin = false; // reset this flag
     Meteor._reactiveDict.set('_userReady', true);
     this._reactiveDict.set('_loggingIn', false);
     Data.notify('loggingIn');
@@ -223,15 +224,15 @@ const User = {
     }
 
     if (value !== null) {
-      this._isTokenLogin = true;
+      User._isTokenLogin = true;
       Meteor.isVerbose && console.info('User._loginWithToken::: token:', value);
-      /* 
+      
        if (this._isCallingLogin) {
         Meteor.isVerbose &&
           console.info('User._loginWithToken::: already calling login');
         return;
       }
-        */
+      
       this._isCallingLogin = true;
       User._startLoggingIn();
       Meteor.call('login', { resume: value }, (err, result) => {
