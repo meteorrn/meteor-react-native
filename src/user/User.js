@@ -225,11 +225,13 @@ const User = {
     if (value !== null) {
       this._isTokenLogin = true;
       Meteor.isVerbose && console.info('User._loginWithToken::: token:', value);
-      if (this._isCallingLogin) {
+      /* 
+       if (this._isCallingLogin) {
         Meteor.isVerbose &&
           console.info('User._loginWithToken::: already calling login');
         return;
       }
+        */
       this._isCallingLogin = true;
       User._startLoggingIn();
       Meteor.call('login', { resume: value }, (err, result) => {
