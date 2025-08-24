@@ -54,6 +54,7 @@ const Meteor = {
     return {
       connected: !!this._reactiveDict.get('connected'),
       status: Data.ddp ? Data.ddp.status : 'disconnected',
+      hasDdp: !!Data.ddp,
       //retryCount: 0
       //retryTime:
       //reason:

@@ -160,7 +160,6 @@ describe('Collection', function () {
           foo: 'bar',
           _version: 1,
         });
-        console.debug(server())
         server().message(null);
         done();
       });

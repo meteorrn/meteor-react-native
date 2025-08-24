@@ -25,7 +25,7 @@ export async function mochaGlobalSetup() {
     }
   };
 
-  console.debug('mockserver wait for connected...')
+  console.debug('mockserver wait for connected...');
   await new Promise((resolve) => {
     _server.on('connection', (socket) => {
       console.debug('mockserver listening');
@@ -35,7 +35,7 @@ export async function mochaGlobalSetup() {
       resolve();
     });
   });
-  console.debug('end of setup')
+  console.debug('end of setup');
 }
 
 export async function mochaGlobalTeardown() {
