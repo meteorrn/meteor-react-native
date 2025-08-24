@@ -28,7 +28,6 @@ export async function mochaGlobalSetup() {
   console.debug('mockserver wait for connected...');
   await new Promise((resolve) => {
     _server.on('connection', (socket) => {
-      console.debug('mockserver listening');
       socket.on('message', (data) => {
         currentMessageFn(data, _server, socket);
       });

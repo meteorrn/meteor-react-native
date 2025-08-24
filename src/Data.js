@@ -3,7 +3,7 @@ import Tracker from './Tracker.js';
 import {
   batchedUpdates,
   runAfterInteractions,
-} from '../helpers/reactNativeBindings';
+} from '../helpers/reactNativeBindings.js';
 
 /**
  * @private
