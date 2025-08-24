@@ -1,7 +1,6 @@
 import { WebSocket } from 'mock-socket';
 import Mongo from '../../src/Mongo.js';
 import { endpoint, props } from '../testHelpers.js';
-import { localCollections, runObservers } from '../../src/Collection.js';
 import { expect } from 'chai';
 import Data from '../../src/Data.js';
 import DDP from '../../lib/ddp.js';
