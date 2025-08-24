@@ -20,7 +20,8 @@ process.nextTick = setImmediate;
 /**
  * @private
  */
-afterInteractions = runAfterInteractions;
+const afterInteractions = runAfterInteractions;
+global.afterInteractions = afterInteractions;
 
 /**
  * @private
