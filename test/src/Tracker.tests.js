@@ -1,4 +1,4 @@
-import Tracker from '../../src/Tracker';
+import Tracker from '../../src/Tracker.js';
 import { expect } from 'chai';
 
 const eql = (a, b, deep) =>

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import ReactiveDict from '../../src/ReactiveDict';
-import MongoID from '../../lib/mongo-id';
+import ReactiveDict from '../../src/ReactiveDict.js';
+import MongoID from '../../lib/mongo-id.js';
 
 describe('ReactiveDict', function () {
   it('sets to undefined', function () {

@@ -1,6 +1,6 @@
-const endpoint = 'ws://localhost:3000/websocket';
 import { Server } from 'mock-socket';
 
+const endpoint = 'ws://localhost:3000/websocket';
 let _server;
 
 // with this we mock a websocket server that runs for the full test-suite,

@@ -1,6 +1,6 @@
 import EJSON from 'ejson';
-import MongoID from '../lib/mongo-id';
-import Tracker from './Tracker';
+import MongoID from '../lib/mongo-id.js';
+import Tracker from './Tracker.js';
 
 /**
  * Use EJSON to strinify a given value

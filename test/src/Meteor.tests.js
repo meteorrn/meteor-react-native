@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import Meteor from '../../src/Meteor';
-import { stub, restoreAll, asyncTimeout } from '../testHelpers';
-import DDP from '../../lib/ddp';
+import Meteor from '../../src/Meteor.js';
+import { stub, restoreAll } from '../testHelpers.js';
+import DDP from '../../lib/ddp.js';
 
 describe('Meteor - integration', function () {
   afterEach(() => {

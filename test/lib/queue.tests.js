@@ -1,4 +1,4 @@
-import Queue from '../../lib/queue';
+import Queue from '../../lib/queue.js';
 import { expect } from 'chai';
 
 describe('queue', function () {
