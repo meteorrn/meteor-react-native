@@ -19,15 +19,15 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: cache dependencies
         uses: actions/cache@v4
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node20-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node22-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node20-
+            ${{ runner.os }}-node22-
       - run: npm ci --legacy-peer-deps
       - run: npm run lint
 
@@ -37,7 +37,7 @@ jobs:
     needs: [lintjs]
     strategy:
       matrix:
-        node: [18, 20, 22]
+        node: [22, 24]
     steps:
       - name: Checkout ${{ matrix.node }}
         uses: actions/checkout@v5
@@ -51,9 +51,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node20-${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node22-${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node20-${{ matrix.node }}
+            ${{ runner.os }}-node22-${{ matrix.node }}
       - run: npm ci --legacy-peer-deps
       - run: npm run test:coverage
 
@@ -63,7 +63,7 @@ jobs:
     needs: [unittest]
     strategy:
       matrix:
-        node: [18, 20, 22]
+        node: [22, 24]
     steps:
       - uses: actions/checkout@v5
       - name: Use Node.js ${{ matrix.node-version }}
