@@ -1,4 +1,4 @@
-import Data from './Data';
+import Data from './Data.js';
 
 /**
  * Calls a method over DDP with given arguments

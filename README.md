@@ -25,6 +25,8 @@
 Connect your React Native app to your Meteor server, and take advantage of Meteor-specific features like accounts, reactive data trackers, etc. Compatible with the latest version of React Native.
 </p>
 
+> Please note: this repo will migrate to ESM-only end of 2025. Please prepare your projects accordingly.
+
 <p align="center">
 <a href="https://guide.meteor.com/react-native.html">Meteor Guide</a>
 <span>·</span>

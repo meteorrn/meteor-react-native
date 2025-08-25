@@ -3,7 +3,7 @@ import Tracker from './Tracker.js';
 import {
   batchedUpdates,
   runAfterInteractions,
-} from '../helpers/reactNativeBindings';
+} from '../helpers/reactNativeBindings.js';
 
 /**
  * @private
@@ -20,7 +20,8 @@ process.nextTick = setImmediate;
 /**
  * @private
  */
-afterInteractions = runAfterInteractions;
+const afterInteractions = runAfterInteractions;
+global.afterInteractions = afterInteractions;
 
 /**
  * @private

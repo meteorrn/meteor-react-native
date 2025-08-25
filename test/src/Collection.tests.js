@@ -1,13 +1,12 @@
 import { WebSocket } from 'mock-socket';
-import Mongo from '../../src/Mongo';
-import { endpoint, props } from '../testHelpers';
-import { localCollections, runObservers } from '../../src/Collection';
+import Mongo from '../../src/Mongo.js';
+import { endpoint, props } from '../testHelpers.js';
 import { expect } from 'chai';
-import Data from '../../src/Data';
-import DDP from '../../lib/ddp';
-import Random from '../../lib/Random';
-import { server } from '../hooks/mockServer';
-import Tracker from '../../src/Tracker';
+import Data from '../../src/Data.js';
+import DDP from '../../lib/ddp.js';
+import Random from '../../lib/Random.js';
+import { server } from '../hooks/mockServer.js';
+import Tracker from '../../src/Tracker.js';
 
 const Collection = Mongo.Collection;
 const objectProps = props({});

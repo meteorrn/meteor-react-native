@@ -1,4 +1,4 @@
-import { hashPassword, isPlainObject, uniqueId } from '../../lib/utils';
+import { hashPassword, isPlainObject, uniqueId } from '../../lib/utils.js';
 import { expect } from 'chai';
 
 describe('utils', function () {

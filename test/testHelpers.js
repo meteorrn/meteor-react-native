@@ -1,5 +1,4 @@
 import sinon from 'sinon';
-import Meteor from '../src/Meteor';
 
 export const endpoint = 'ws://localhost:3000/websocket';
 
@@ -38,17 +37,8 @@ export const restoreAll = () => {
   });
 };
 
-export const awaitDisconnected = async () => {
-  Meteor.disconnect();
-  await new Promise((resolve) => {
-    let timer = setInterval(() => {
-      if (Meteor.status().status === 'disconnected') {
-        clearInterval(timer);
-        resolve();
-      }
-    }, 100);
-  });
-};
+export const asyncTimeout = (ms) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 export const props = (obj) => {
   let p = [];

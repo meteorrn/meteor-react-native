@@ -1,5 +1,5 @@
 import React, { forwardRef, memo } from 'react';
-import useTracker from './useTracker';
+import useTracker from './useTracker.js';
 
 /**
  * Wraps a component/App, so it runs, once the data
