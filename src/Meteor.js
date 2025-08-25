@@ -1,17 +1,14 @@
 import Tracker from './Tracker.js';
 import EJSON from 'ejson';
 import DDP from '../lib/ddp.js';
-import Random from '../lib/Random';
-
-import Data from './Data';
-import Mongo from './Mongo';
-import { Collection, getObservers, localCollections } from './Collection';
-import call from './Call';
-
-import withTracker from './components/withTracker';
-import useTracker from './components/useTracker';
-
-import ReactiveDict from './ReactiveDict';
+import Random from '../lib/Random.js';
+import Data from './Data.js';
+import Mongo from './Mongo.js';
+import { Collection, getObservers, localCollections } from './Collection.js';
+import call from './Call.js';
+import withTracker from './components/withTracker.js';
+import useTracker from './components/useTracker.js';
+import ReactiveDict from './ReactiveDict.js';
 
 /**
  * @namespace Meteor
@@ -54,6 +51,7 @@ const Meteor = {
     return {
       connected: !!this._reactiveDict.get('connected'),
       status: Data.ddp ? Data.ddp.status : 'disconnected',
+      hasDdp: !!Data.ddp,
       //retryCount: 0
       //retryTime:
       //reason:

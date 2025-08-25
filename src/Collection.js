@@ -1,8 +1,8 @@
 import Tracker from './Tracker.js';
 import EJSON from 'ejson';
-import Data from './Data';
-import Random from '../lib/Random';
-import call from './Call';
+import Data from './Data.js';
+import Random from '../lib/Random.js';
+import call from './Call.js';
 import { hasOwn, isPlainObject } from '../lib/utils.js';
 
 /**

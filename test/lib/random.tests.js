@@ -1,4 +1,4 @@
-import Random from '../../lib/Random';
+import Random from '../../lib/Random.js';
 import { expect } from 'chai';
 
 describe('Random', function () {

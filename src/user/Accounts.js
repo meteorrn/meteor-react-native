@@ -1,7 +1,7 @@
-import Data from '../Data';
-import call from '../Call';
-import User from './User';
-import { hashPassword } from '../../lib/utils';
+import Data from '../Data.js';
+import call from '../Call.js';
+import User from './User.js';
+import { hashPassword } from '../../lib/utils.js';
 import Meteor from '../Meteor.js';
 
 /**

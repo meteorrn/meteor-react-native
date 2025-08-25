@@ -1,7 +1,7 @@
-import DDP from '../../lib/ddp';
+import DDP from '../../lib/ddp.js';
 import { WebSocket } from 'mock-socket';
 import { expect } from 'chai';
-import { server } from '../hooks/mockServer';
+import { server } from '../hooks/mockServer.js';
 
 describe('ddp', function () {
   let validOptions;

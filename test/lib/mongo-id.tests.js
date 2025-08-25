@@ -1,4 +1,4 @@
-import MongoID from '../../lib/mongo-id';
+import MongoID from '../../lib/mongo-id.js';
 import EJSON from 'ejson';
 import { expect } from 'chai';
 

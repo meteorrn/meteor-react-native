@@ -1,4 +1,4 @@
-import { Collection } from './Collection';
+import { Collection } from './Collection.js';
 
 /**
  * Mongo namespace, contains only Mongo.Collection
