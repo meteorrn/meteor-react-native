@@ -2,6 +2,7 @@
   "name": "@meteorrn/core",
   "version": "2.9.0",
   "description": "Full Meteor Client for React Native",
+  "types": "src/Meteor.d.ts",
   "main": "src/index.js",
   "repository": {
     "type": "git",
