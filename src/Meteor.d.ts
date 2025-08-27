@@ -74,7 +74,7 @@ declare module '@meteorrn/core' {
 
     ddp: Data; 
 
-    _handleLoginCallback(err?: MeteorError, res: { token: string, id: string }): void;
+    _handleLoginCallback(err: MeteorError | null | undefined, res: { token: string, id: string }): void;
   }
 
   interface Accounts {
