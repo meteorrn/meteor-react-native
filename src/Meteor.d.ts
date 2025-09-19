@@ -1,8 +1,8 @@
-import { AsyncStorageStatic } from "@react-native-async-storage/async-storage";
+import { AsyncStorageStatic } from '@react-native-async-storage/async-storage';
 
 declare module '@meteorrn/core' {
   type Callback = (...args: unknown[]) => void;
-  
+
   type Status =
     | 'change'
     | 'connected'
@@ -10,7 +10,7 @@ declare module '@meteorrn/core' {
     | 'loggingIn'
     | 'loggingOut';
 
-  type useTracker<T> = (cb: () => T) => T
+  type useTracker<T> = (cb: () => T) => T;
 
   interface Data {
     getUrl(): string;
@@ -28,9 +28,9 @@ declare module '@meteorrn/core' {
   }
 
   interface MeteorError {
-    error: string
-    reason?: string
-    details?: string
+    error: string;
+    reason?: string;
+    details?: string;
   }
 
   interface User {
@@ -43,9 +43,9 @@ declare module '@meteorrn/core' {
   }
 
   interface ConnectOptions {
-    suppressUrlErrors: boolean
-    AsyncStorage: AsyncStorageStatic
-    reachabilityUrl: string
+    suppressUrlErrors: boolean;
+    AsyncStorage: AsyncStorageStatic;
+    reachabilityUrl: string;
   }
 
   interface Meteor {
@@ -72,9 +72,12 @@ declare module '@meteorrn/core' {
 
     useTracker<T>(): useTracker<T>;
 
-    ddp: Data; 
+    ddp: Data;
 
-    _handleLoginCallback(err: MeteorError | null | undefined, res: { token: string, id: string }): void;
+    _handleLoginCallback(
+      err: MeteorError | null | undefined,
+      res: { token: string; id: string }
+    ): void;
   }
 
   interface Accounts {
@@ -86,8 +89,5 @@ declare module '@meteorrn/core' {
   export default Meteor;
 
   // Export other members
-  export {
-    useTracker,
-    Accounts,
-  }
+  export { useTracker, Accounts };
 }
