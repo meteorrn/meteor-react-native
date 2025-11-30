@@ -146,7 +146,6 @@ const Meteor = {
     this.ddp = ddp;
 
     Data.ddp.on('connected', () => {
-      
       // Clear the collections of any stale data in case this is a reconnect
       if (Data.db && Data.db.collections) {
         for (var collection in Data.db.collections) {
@@ -165,7 +164,7 @@ const Meteor = {
       });
       this._reactiveDict.set('connected', true);
       this.connected = true;
-      Data.notify('change');  
+      Data.notify('change');
     });
 
     let lastDisconnect = null;

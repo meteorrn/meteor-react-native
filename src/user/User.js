@@ -62,7 +62,7 @@ const User = {
 
     User._userIdSaved = null;
     User._endLoggingOut();
-  },  
+  },
   loginWithCustomHandler(req, callback) {
     User._isTokenLogin = false;
     User._startLoggingIn();
@@ -70,8 +70,8 @@ const User = {
     Meteor.call('login', req, (err, result) => {
       User._handleLoginCallback(err, result);
 
-        typeof callback == 'function' && callback(err);
-      });
+      typeof callback == 'function' && callback(err);
+    });
   },
   loginWithPassword(selector, password, callback) {
     User._isTokenLogin = false;
@@ -235,7 +235,7 @@ const User = {
     if (value !== null) {
       User._isTokenLogin = true;
       Meteor.isVerbose && console.info('User._loginWithToken::: token:', value);
-      
+
       this._isCallingLogin = true;
       User._startLoggingIn();
       Meteor.call('login', { resume: value }, (err, result) => {
