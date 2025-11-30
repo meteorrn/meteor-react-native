@@ -127,8 +127,14 @@ const Meteor = {
       }
     }
 
+    if (!options.AsyncTokenStorage) {
+      options.AsyncTokenStorage = options.AsyncStorage;
+    }
+
     Data._endpoint = endpoint;
     Data._options = options;
+
+    this._reactiveDict.set('_userReady', false);
 
     const ddp = new DDP({
       endpoint: endpoint,
@@ -140,6 +146,7 @@ const Meteor = {
     this.ddp = ddp;
 
     Data.ddp.on('connected', () => {
+      
       // Clear the collections of any stale data in case this is a reconnect
       if (Data.db && Data.db.collections) {
         for (var collection in Data.db.collections) {
@@ -153,12 +160,12 @@ const Meteor = {
       if (this.isVerbose) {
         console.info('Connected to DDP server.');
       }
-      this._loadInitialUser().then(() => {
+      User._loadInitialUser().then(() => {
         this._subscriptionsRestart();
       });
       this._reactiveDict.set('connected', true);
       this.connected = true;
-      Data.notify('change');
+      Data.notify('change');  
     });
 
     let lastDisconnect = null;
@@ -178,6 +185,9 @@ const Meteor = {
         sub.ready = false;
         sub.readyDeps.changed();
       }
+
+      // Mark user as not ready
+      this._reactiveDict.set('_userReady', false);
 
       if (!Data.ddp.autoReconnect) return;
 
@@ -310,6 +320,7 @@ const Meteor = {
         }
 
         // Reconnect if we lose internet
+
         NetInfo.addEventListener(
           ({ type, isConnected, isInternetReachable, isWifiEnabled }) => {
             if (isConnected && Data.ddp.autoReconnect) {
@@ -321,7 +332,10 @@ const Meteor = {
         console.warn(
           'Warning: NetInfo not installed, so DDP will not automatically reconnect'
         );
+        Data.ddp.connect();
       }
+    } else {
+      Data.ddp.connect();
     }
   },
   subscribe(name) {
